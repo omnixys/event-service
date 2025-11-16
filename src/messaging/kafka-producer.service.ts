@@ -29,6 +29,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import type { Producer, ProducerRecord } from 'kafkajs';
+import { KafkaTopics } from './kafka-topic.properties.js';
 
 /**
  * Verwaltet den Kafka Producer als langlebige, wiederverwendbare Instanz.
@@ -84,20 +85,30 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
     });
   }
 
-  // async sendUserId(
-  //   payload: UserDTO,
-  //   service: string,
-  //   trace?: TraceContext,
-  // ): Promise<void> {
-  //   const envelope: KafkaEnvelope<typeof payload> = {
-  //     event: 'sendUserId',
-  //     service,
-  //     version: 'v1',
-  //     trace,
-  //     payload,
-  //   };
-  //   await this.send(KafkaTopics.event.sendUserId, envelope, trace);
-  // }
+  /**
+   * Convenience-Methode für Einladungsgenehmigung: sendet an auth.create
+   * @param payload - Nutzdaten des Benutzers
+   * @param service - Ursprungs-Service
+   * @param trace - Optionaler Tracing-Kontext
+   */
+  async addSeatID(
+    payload: {
+      seatId: string;
+      guestProfileId: string;
+      eventId: string;
+    },
+    service: string,
+    trace?: TraceContext,
+  ): Promise<void> {
+    const envelope: KafkaEnvelope<typeof payload> = {
+      event: 'addSeatId',
+      service,
+      version: 'v1',
+      trace,
+      payload,
+    };
+    await this.send(KafkaTopics.ticket.addSeat, envelope, trace);
+  }
 
   async disconnect(): Promise<void> {
     if (this.producer) {

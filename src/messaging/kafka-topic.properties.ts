@@ -28,6 +28,9 @@ export const KafkaTopics = {
     receiveUserId: `${SERVICE}.sendId.authentication`,
     receiveUserUpdate: `${SERVICE}.updateUser.authentication`,
   },
+  ticket: {
+    addSeat: 'ticket.add.seat',
+  },
   logstream: {
     log: `logstream.log.${SERVICE}`,
   },

@@ -17,6 +17,7 @@
 
 import { AdminModule } from './admin/admin.module.js';
 import { env } from './config/env.js';
+import { EventModule } from './event/event.module.js';
 import { HandlerModule } from './handlers/handler.module.js';
 import { HealthModule } from './health/health.module.js';
 import { LoggerModule } from './logger/logger.module.js';
@@ -29,6 +30,7 @@ import {
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
+import { FastifyRequest, FastifyReply } from 'fastify';
 
 const { SCHEMA_TARGET } = env;
 
@@ -36,6 +38,7 @@ const { SCHEMA_TARGET } = env;
   imports: [
     AdminModule,
     HandlerModule,
+    EventModule,
     HealthModule,
     LoggerModule,
     KafkaModule,
@@ -56,16 +59,16 @@ const { SCHEMA_TARGET } = env;
         csrfPrevention: false,
         introspection: true,
 
-        // context: ({
-        //   req,
-        //   res,
-        // }: {
-        //   req: FastifyRequest;
-        //   res: FastifyReply;
-        // }) => ({
-        //   req,
-        //   res,
-        // }),
+        context: ({
+          req,
+          res,
+        }: {
+          req: FastifyRequest;
+          res: FastifyReply;
+        }) => ({
+          req,
+          res,
+        }),
       }),
     }),
   ],

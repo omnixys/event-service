@@ -5,21 +5,24 @@ export class Seat {
   @Field(() => ID)
   id!: string;
 
+  // eventId is required in Prisma, so it must NOT be nullable
   @Field(() => String)
   eventId!: string;
 
-  @Field(() => String)
-  section!: string;
+  // Optional string values → nullable: true + correct TS type: string | null
+  @Field(() => String, { nullable: true })
+  section?: string | null;
 
-  @Field(() => String)
-  table!: string;
+  @Field(() => String, { nullable: true })
+  table?: string | null;
 
-  @Field(() => Number)
-  number!: number;
+  // In Prisma: number is String?, NOT number => must be string | null
+  @Field(() => Number, { nullable: true })
+  number?: number | null;
 
-  @Field(() => String)
-  note!: string;
+  @Field(() => String, { nullable: true })
+  note?: string | null;
 
-  @Field(() => String)
-  guestId!: string;
+  @Field(() => String, { nullable: true })
+  guestId?: string | null;
 }
