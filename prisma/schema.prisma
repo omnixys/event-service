@@ -58,7 +58,7 @@ model Seat {
   eventId String  @map("event_id")
   section String? @map("section")
   table   String? @map("table")
-  number  String? @map("number")
+  number  Int? @map("number")
   note    String? @map("note")
   guestId String? @map("guest_id")
 
