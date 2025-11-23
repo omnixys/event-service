@@ -46,4 +46,19 @@ export class UpdateEventInput {
   @IsInt()
   @Min(10)
   rotateSeconds?: number;
+
+  @Field(() => String, { nullable: true })
+  location?: string;
+
+  @Field(() => String, { nullable: true })
+  dressCode?: string;
+
+  @Field(() => String, { nullable: true })
+  description?: string;
+
+  @Field(() => Int, { nullable: true })
+  defaultSection?: number;
+
+  @Field(() => Int, { nullable: true })
+  defaultTable?: number;
 }

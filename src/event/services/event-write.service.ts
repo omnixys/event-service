@@ -1,26 +1,22 @@
 // TODO resolve eslint
 
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { CreateSeatDTO } from '../models/dto/create-seat.dto.js';
 import { Event } from '../models/entities/event.entity.js';
+import { CreateEventInput } from '../models/inputs/create-event.input.js';
+import { UpdateEventInput } from '../models/inputs/update-event.input.js';
+import { SeatWriteService } from './seat-write.service.js';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { UserRole } from '@prisma/client'; // wichtig
-import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 
 @Injectable()
 export class EventWriteService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly seatWriteService: SeatWriteService,
+  ) {}
 
-  async create(
-    data: {
-      name: string;
-      startsAt: string;
-      endsAt: string;
-      allowReEntry?: boolean;
-      rotateSeconds?: number;
-      maxSeats?: number;
-    },
-    userId: string,
-  ): Promise<Event> {
+  async create(data: CreateEventInput, userId: string): Promise<Event> {
     // 1️⃣ Event erstellen
     const event = await this.prisma.event.create({
       data: {
@@ -28,8 +24,13 @@ export class EventWriteService {
         startsAt: new Date(data.startsAt),
         endsAt: new Date(data.endsAt),
         allowReEntry: data.allowReEntry ?? true,
-        rotateSeconds: data.rotateSeconds ?? 300,
-        maxSeats: data.maxSeats ?? 300,
+        rotateSeconds: data.rotateSeconds,
+        maxSeats: data.maxSeats,
+        location: data.location,
+        dressCode: data.dressCode,
+        description: data.description,
+        defaultSection: data.defaultSection,
+        defaultTable: data.defaultTable,
       },
     });
 
@@ -41,6 +42,13 @@ export class EventWriteService {
         role: UserRole.ADMIN,
       },
     });
+
+    await this.generateDefaultSeats(
+      event.id,
+      data.maxSeats,
+      data.defaultSection,
+      data.defaultTable,
+    );
 
     return event;
   }
@@ -72,5 +80,44 @@ export class EventWriteService {
     // event.delete() cascade-löscht auch Seats & UserEventRole (wegen Prisma)
     await this.prisma.event.delete({ where: { id } });
     return true;
+  }
+
+  private async generateDefaultSeats(
+    eventId: string,
+    maxSeats: number = 50,
+    sections: number = 5,
+    tables: number = 2,
+  ): Promise<void> {
+    if (!sections || !tables || sections <= 0 || tables <= 0) {
+      return;
+    }
+
+    const totalTables = sections * tables;
+    const baseSeatsPerTable = Math.floor(maxSeats / totalTables);
+    let remaining = maxSeats % totalTables;
+
+    const seatCreates: CreateSeatDTO[] = [];
+
+    for (let s = 1; s <= sections; s++) {
+      for (let t = 1; t <= tables; t++) {
+        // seats for this table
+        const seatCount = baseSeatsPerTable + (remaining > 0 ? 1 : 0);
+        if (remaining > 0) {
+          remaining--;
+        }
+
+        for (let seatNum = 1; seatNum <= seatCount; seatNum++) {
+          seatCreates.push({
+            eventId,
+            section: String(s),
+            table: String(t),
+            number: seatNum,
+          });
+        }
+      }
+    }
+
+    // Perform bulk insert
+    await this.seatWriteService.bulkImport2(seatCreates);
   }
 }

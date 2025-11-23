@@ -1,4 +1,10 @@
-import { Field, GraphQLISODateTime, ID, ObjectType } from '@nestjs/graphql';
+import {
+  Field,
+  GraphQLISODateTime,
+  ID,
+  Int,
+  ObjectType,
+} from '@nestjs/graphql';
 
 @ObjectType()
 export class Event {
@@ -28,4 +34,19 @@ export class Event {
 
   @Field(() => GraphQLISODateTime)
   updatedAt!: Date;
+
+  @Field(() => String, { nullable: true })
+  location?: string | null;
+
+  @Field(() => String, { nullable: true })
+  dressCode?: string | null;
+
+  @Field(() => String, { nullable: true })
+  description?: string | null;
+
+  @Field(() => Int)
+  defaultSection?: number;
+
+  @Field(() => Int)
+  defaultTable?: number;
 }

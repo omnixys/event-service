@@ -9,9 +9,14 @@ CREATE TABLE "event" (
     "ends_at" TIMESTAMP(3) NOT NULL,
     "allow_re_entry" BOOLEAN NOT NULL DEFAULT true,
     "rotate_seconds" INTEGER NOT NULL DEFAULT 300,
-    "max_seats" INTEGER NOT NULL DEFAULT 300,
+    "max_seats" INTEGER NOT NULL DEFAULT 50,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "location" TEXT,
+    "dress_code" TEXT,
+    "description" TEXT,
+    "default_section" INTEGER NOT NULL DEFAULT 5,
+    "default_table" INTEGER NOT NULL DEFAULT 2,
 
     CONSTRAINT "event_pkey" PRIMARY KEY ("id")
 );
@@ -22,7 +27,7 @@ CREATE TABLE "seat" (
     "event_id" TEXT NOT NULL,
     "section" TEXT,
     "table" TEXT,
-    "number" TEXT,
+    "number" INTEGER,
     "note" TEXT,
     "guest_id" TEXT,
 
