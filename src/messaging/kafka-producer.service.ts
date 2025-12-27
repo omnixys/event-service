@@ -14,20 +14,14 @@
  * For more information, visit <https://www.gnu.org/licenses/>.
  */
 
-import {
-  LoggerPlusService,
-  setGlobalKafkaProducer,
-} from '../logger/logger-plus.service.js';
+import { CreateSeatDTO } from '../event/models/dto/create-seat.dto.js';
+import { LoggerPlusService, setGlobalKafkaProducer } from '../logger/logger-plus.service.js';
 import type { TraceContext } from '../trace/trace-context.util.js';
 import type { KafkaEnvelope } from './decorators/kafka-envelope.type.js';
 import { KafkaHeaderBuilder } from './kafka-header-builder.js';
+import { KafkaTopics } from './kafka-topic.properties.js';
 // import { KafkaTopics } from './kafka-topic.properties.js';
-import {
-  Inject,
-  Injectable,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import type { Producer, ProducerRecord } from 'kafkajs';
 // import { KafkaTopics } from './kafka-topic.properties.js';
 
@@ -62,11 +56,7 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
    * Sendet eine Nachricht an das angegebene Topic.
    * Fehler führen nicht zum Abbruch (Fire-and-Forget).
    */
-  async send<T>(
-    topic: string,
-    message: KafkaEnvelope<T>,
-    trace?: TraceContext,
-  ): Promise<void> {
+  async send<T>(topic: string, message: KafkaEnvelope<T>, trace?: TraceContext): Promise<void> {
     const headers = KafkaHeaderBuilder.buildStandardHeaders(
       topic,
       message.event,
@@ -91,24 +81,20 @@ export class KafkaProducerService implements OnModuleInit, OnModuleDestroy {
    * @param service - Ursprungs-Service
    * @param trace - Optionaler Tracing-Kontext
    */
-  // async addSeatID(
-  //   payload: {
-  //     seatId: string;
-  //     guestProfileId: string;
-  //     eventId: string;
-  //   },
-  //   service: string,
-  //   trace?: TraceContext,
-  // ): Promise<void> {
-  //   const envelope: KafkaEnvelope<typeof payload> = {
-  //     event: 'addSeatId',
-  //     service,
-  //     version: 'v1',
-  //     trace,
-  //     payload,
-  //   };
-  //   await this.send(KafkaTopics.ticket.addSeat, envelope, trace);
-  // }
+  async generateSeats(
+    payload: CreateSeatDTO,
+    service: string,
+    trace?: TraceContext,
+  ): Promise<void> {
+    const envelope: KafkaEnvelope<typeof payload> = {
+      event: 'generateSeats',
+      service,
+      version: 'v1',
+      trace,
+      payload,
+    };
+    await this.send(KafkaTopics.seat.generateSeats, envelope, trace);
+  }
 
   async disconnect(): Promise<void> {
     if (this.producer) {

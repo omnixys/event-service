@@ -21,20 +21,13 @@ import { LoggerPlus } from '../logger/logger-plus.js';
 import { TraceContextProvider } from '../trace/trace-context.provider.js';
 import { KafkaEventDispatcherService } from './kafka-event-dispatcher.service.js';
 import { getKafkaTopicsBy } from './kafka-topic.properties.js';
-import {
-  Injectable,
-  OnApplicationShutdown,
-  OnModuleDestroy,
-  OnModuleInit,
-} from '@nestjs/common';
 import { MyKafkaEvent } from './my-kafka-event.js';
+import { Injectable, OnApplicationShutdown, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 
 const { SERVICE } = env;
 
 @Injectable()
-export class KafkaConsumerService
-  implements OnModuleInit, OnModuleDestroy, OnApplicationShutdown
-{
+export class KafkaConsumerService implements OnModuleInit, OnModuleDestroy, OnApplicationShutdown {
   private readonly logger = new LoggerPlus(KafkaConsumerService.name);
   private readonly consumer = createKafkaConsumer();
   private isRunning = false;
@@ -92,18 +85,12 @@ export class KafkaConsumerService
                 },
               );
             } catch (err) {
-              this.logger.error(
-                'Kafka message processing error on %s → %o',
-                topic,
-                err,
-              );
+              this.logger.error('Kafka message processing error on %s → %o', topic, err);
             }
           },
         })
         .then(() => this.logger.info('Kafka consumer run loop exited.'))
-        .catch((err) =>
-          this.logger.error('Kafka consumer run loop error %o', err),
-        );
+        .catch((err) => this.logger.error('Kafka consumer run loop error %o', err));
 
       this.logger.info('Kafka consumer started.');
     } catch (err) {

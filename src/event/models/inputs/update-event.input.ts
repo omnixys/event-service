@@ -1,64 +1,9 @@
-// TODO resolve eslint
-
-import { Field, ID, InputType, Int } from '@nestjs/graphql';
-import {
-  IsOptional,
-  IsString,
-  IsDateString,
-  IsInt,
-  Min,
-  IsBoolean,
-} from 'class-validator';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import { CreateEventInput } from './create-event.input.js';
+import { Field, InputType, PartialType } from '@nestjs/graphql';
 
 @InputType()
-export class UpdateEventInput {
-  @Field(() => ID)
-  id!: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsString()
-  name?: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsDateString()
-  startsAt?: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  @IsDateString()
-  endsAt?: string;
-
-  @Field(() => Boolean, { nullable: true })
-  @IsOptional()
-  @IsBoolean()
-  allowReEntry?: boolean;
-
-  @Field(() => Int, { nullable: true })
-  @IsOptional()
-  @IsInt()
-  @Min(10)
-  maxSeats?: number;
-
-  @Field(() => Int, { nullable: true })
-  @IsOptional()
-  @IsInt()
-  @Min(10)
-  rotateSeconds?: number;
-
-  @Field(() => String, { nullable: true })
-  location?: string;
-
-  @Field(() => String, { nullable: true })
-  dressCode?: string;
-
-  @Field(() => String, { nullable: true })
-  description?: string;
-
-  @Field(() => Int, { nullable: true })
-  defaultSection?: number;
-
-  @Field(() => Int, { nullable: true })
-  defaultTable?: number;
+export class UpdateEventInput extends PartialType(CreateEventInput) {
+  @Field({ nullable: false })
+  id!: string; // Must always be included
 }

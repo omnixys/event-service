@@ -1,32 +1,22 @@
 import { AuthModule } from '../auth/auth.module.js';
+import { ScalarsModule } from '../core/scalars/scalar.module.js';
 import { PrismaModule } from '../prisma/prisma.module.js';
+import { EventFieldsResolver } from './resolvers/event-fields.resolver.js';
 import { EventMutationResolver } from './resolvers/event-mutation.resolver.js';
 import { EventQueryResolver } from './resolvers/event-query.resolver.js';
-import { SeatMutationResolver } from './resolvers/seat-mutation.resolver.js';
-import { SeatQueryResolver } from './resolvers/seat-query.resolver.js';
 import { EventReadService } from './services/event-read.service.js';
 import { EventWriteService } from './services/event-write.service.js';
-import { SeatReadService } from './services/seat-read.service.js';
-import { SeatWriteService } from './services/seat-write.service.js';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [PrismaModule, AuthModule],
+  imports: [PrismaModule, AuthModule, ScalarsModule],
   providers: [
-    EventMutationResolver,
     EventQueryResolver,
+    EventMutationResolver,
+    EventFieldsResolver,
     EventWriteService,
     EventReadService,
-    SeatMutationResolver,
-    SeatQueryResolver,
-    SeatWriteService,
-    SeatReadService,
   ],
-  exports: [
-    EventWriteService,
-    EventReadService,
-    SeatWriteService,
-    SeatReadService,
-  ],
+  exports: [EventWriteService, EventReadService],
 })
 export class EventModule {}

@@ -27,6 +27,12 @@ ARG NODE_VERSION=24.10.0
 # ---------------------------------------------------------------------------------------
 FROM node:${NODE_VERSION}-bookworm-slim AS base
 WORKDIR /home/node
+
+# Prisma braucht OpenSSL 3 in Bookworm
+USER root
+RUN apt-get update && apt-get install -y openssl libssl-dev && \
+    rm -rf /var/lib/apt/lists/*
+    
 RUN corepack enable pnpm
 USER node
 
@@ -39,7 +45,13 @@ FROM base AS dist
 COPY --chown=node:node package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY --chown=node:node . .
+
+# TS build
 RUN pnpm run build
+
+# Prisma Client generieren (jetzt existiert prisma/schema.prisma)
+RUN pnpm prisma generate
+
 
 # ---------------------------------------------------------------------------------------
 # Stage 2: Production dependencies
@@ -49,6 +61,11 @@ RUN pnpm run build
 FROM base AS dependencies
 COPY --chown=node:node package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile --ignore-scripts
+
+# Prisma Client auch hier generieren (prod deps)
+COPY --from=dist --chown=node:node /home/node/prisma ./prisma
+RUN pnpm prisma generate
+
 
 # ---------------------------------------------------------------------------------------
 # Stage 3: Final runtime image

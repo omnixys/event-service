@@ -54,7 +54,7 @@ export const env = {
   KEYS_PATH: process.env.KEYS_PATH ?? './keys',
 
   /** Tempo tracing endpoint */
-  TEMPO_URI: process.env.TEMPO_URI ?? '',
+  TEMPO_URI: process.env.TEMPO_URI ?? 'http://localhost:4318/v1/traces',
 
   /** Port on which the Node/NestJS server runs */
   PORT: Number(process.env.PORT ?? 4000),
@@ -70,6 +70,7 @@ export const env = {
   /** Kafka configuration */
   KAFKA_BROKER: process.env.KAFKA_BROKER ?? 'localhost:9092',
   SERVICE: process.env.SERVICE ?? 'SERVICE',
+  DATABASE_URL: process.env.DATABASE_URL ?? 'DATABASE_URL',
 
   /** Health endpoints */
   KEYCLOAK_HEALTH_URL: process.env.KEYCLOAK_HEALTH_URL ?? '',

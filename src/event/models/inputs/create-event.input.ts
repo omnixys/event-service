@@ -1,56 +1,98 @@
-// TODO resolve eslin t
-
-import { Field, InputType, Int, GraphQLISODateTime } from '@nestjs/graphql';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { SeatingConfigInput } from '../dto/seating-config.dto.js';
+import { AddressInput } from './address.input.js';
+import { DescriptionBlockInput } from './description-block.input.js';
+import { FAQInput } from './faq.input.js';
+import { MediaInput } from './media.input.js';
+import { SettingsInput } from './settings.input.js';
+import { TeamMemberInput } from './team-member.input.js';
+import { ThemeInput } from './theme.input.js';
+import { TimelineInput } from './timeline.input.js';
+import { Field, InputType } from '@nestjs/graphql';
+import { Type } from 'class-transformer';
 import {
   IsBoolean,
   IsDateString,
   IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
+  Max,
   Min,
 } from 'class-validator';
 
 @InputType()
 export class CreateEventInput {
-  @Field(() => String)
+  @Field()
   @IsString()
   @IsNotEmpty()
   name!: string;
 
-  @Field(() => GraphQLISODateTime)
+  @Field()
   @IsDateString()
   startsAt!: string;
 
-  @Field(() => GraphQLISODateTime)
+  @Field()
   @IsDateString()
   endsAt!: string;
 
-  @Field({ defaultValue: true })
+  @Field()
   @IsBoolean()
-  allowReEntry?: boolean = true;
+  allowReEntry!: boolean;
 
-  @Field(() => Int, { defaultValue: 50, nullable: true })
+  @Field()
   @IsInt()
-  @Min(10)
-  maxSeats?: number = 50;
+  @Min(30)
+  @Max(3600)
+  rotateSeconds!: number;
 
-  @Field(() => Int, { defaultValue: 300, nullable: true })
+  @Field()
   @IsInt()
-  @Min(10)
-  rotateSeconds?: number = 300;
+  @Min(1)
+  maxSeats!: number;
 
-  @Field(() => String, { nullable: true })
-  location?: string | null;
+  // Optional nested objects
 
-  @Field(() => String, { nullable: true })
-  dressCode?: string | null;
+  @Field(() => [AddressInput], { nullable: true })
+  @Type(() => AddressInput)
+  @IsOptional()
+  address?: AddressInput;
 
-  @Field(() => String, { nullable: true })
-  description?: string | null;
+  @Field(() => SettingsInput, { nullable: true })
+  @Type(() => SettingsInput)
+  @IsOptional()
+  settings?: SettingsInput;
 
-  @Field(() => Int, { defaultValue: 5, nullable: true })
-  defaultSection?: number = 5;
+  @Field(() => ThemeInput, { nullable: true })
+  @Type(() => ThemeInput)
+  @IsOptional()
+  theme?: ThemeInput;
 
-  @Field(() => Int, { defaultValue: 2, nullable: true })
-  defaultTable?: number = 2;
+  @Field(() => [MediaInput], { nullable: true })
+  @Type(() => MediaInput)
+  @IsOptional()
+  media?: MediaInput[];
+
+  @Field(() => [DescriptionBlockInput], { nullable: true })
+  @Type(() => DescriptionBlockInput)
+  @IsOptional()
+  description?: DescriptionBlockInput[];
+
+  @Field(() => [FAQInput], { nullable: true })
+  @Type(() => FAQInput)
+  @IsOptional()
+  faqs?: FAQInput[];
+
+  @Field(() => [TeamMemberInput], { nullable: true })
+  @Type(() => TeamMemberInput)
+  @IsOptional()
+  team?: TeamMemberInput[];
+
+  @Field(() => [TimelineInput], { nullable: true })
+  @Type(() => TimelineInput)
+  @IsOptional()
+  timeline?: TimelineInput[];
+
+  @Field(() => SeatingConfigInput, { nullable: true })
+  config?: SeatingConfigInput;
 }

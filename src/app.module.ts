@@ -23,10 +23,7 @@ import { HealthModule } from './health/health.module.js';
 import { LoggerModule } from './logger/logger.module.js';
 import { RequestLoggerMiddleware } from './logger/request-logger.middleware.js';
 import { KafkaModule } from './messaging/kafka.module.js';
-import {
-  ApolloFederationDriver,
-  ApolloFederationDriverConfig,
-} from '@nestjs/apollo';
+import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -59,13 +56,7 @@ const { SCHEMA_TARGET } = env;
         csrfPrevention: false,
         introspection: true,
 
-        context: ({
-          req,
-          res,
-        }: {
-          req: FastifyRequest;
-          res: FastifyReply;
-        }) => ({
+        context: ({ req, res }: { req: FastifyRequest; res: FastifyReply }) => ({
           req,
           res,
         }),

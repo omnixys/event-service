@@ -1,6 +1,8 @@
+import { SeatingConfigInput } from './seating-config.dto.js';
+
 export interface CreateSeatDTO {
   eventId: string;
-  section: string;
-  table: string;
-  number: number;
+  config?: SeatingConfigInput;
+  maxSeats: number;
+  actorId: string;
 }

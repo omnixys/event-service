@@ -71,13 +71,8 @@ export class KafkaModule implements OnApplicationShutdown {
    * Schließt Producer & Consumer sauber.
    */
   async onApplicationShutdown(signal?: string): Promise<void> {
-    this.logger.log(
-      `[KafkaModule] 🧹 Application shutdown triggered (${signal ?? 'manual'})`,
-    );
-    await Promise.allSettled([
-      this.producer.disconnect(),
-      this.consumer.disconnect(),
-    ]);
+    this.logger.log(`[KafkaModule] 🧹 Application shutdown triggered (${signal ?? 'manual'})`);
+    await Promise.allSettled([this.producer.disconnect(), this.consumer.disconnect()]);
     this.logger.log(`[KafkaModule] ✅ Kafka services disconnected`);
   }
 }

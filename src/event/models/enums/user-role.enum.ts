@@ -22,4 +22,4 @@ export enum UserRole {
   GUEST = 'GUEST',
   SECURITY = 'SECURITY',
 }
-registerEnumType(UserRole, { name: 'Role' });
+registerEnumType(UserRole, { name: 'UserRole' });

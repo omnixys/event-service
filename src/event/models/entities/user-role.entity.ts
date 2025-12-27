@@ -1,5 +1,5 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { UserRole } from '../enums/user-role.enum.js';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 
 @ObjectType()
 export class UserEventRole {

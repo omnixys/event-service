@@ -26,9 +26,13 @@ const { SERVICE } = env;
 export const KafkaTopics = {
   [SERVICE]: {
     addGuest: `ticket.add.${SERVICE}`,
+    addUserRole: `${SERVICE}.addRole.authentication`,
   },
   logstream: {
     log: `logstream.log.${SERVICE}`,
+  },
+  seat: {
+    generateSeats: `seat.generateSeat.${SERVICE}`,
   },
   admin: {
     restart: `${SERVICE}.restart.admin`,
