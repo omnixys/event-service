@@ -42,6 +42,8 @@ USER node
 # - Result: ./dist folder containing compiled JS files.
 # ---------------------------------------------------------------------------------------
 FROM base AS dist
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 COPY --chown=node:node package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY --chown=node:node . .
