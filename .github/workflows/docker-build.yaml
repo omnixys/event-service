@@ -194,6 +194,7 @@ jobs:
             APP_VERSION=${{ env.CURRENT_VERSION }}
             APP_NAME=${{ secrets.SERVICE }}
             NODE_VERSION=${{ matrix.node-version }}
+            DATABASE_URL=${{ env.DATABASE_URL }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
