@@ -59,6 +59,9 @@ RUN pnpm prisma generate
 # - No dev packages or build tools are included.
 # ---------------------------------------------------------------------------------------
 FROM base AS dependencies
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+
 COPY --chown=node:node package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile --ignore-scripts
 
