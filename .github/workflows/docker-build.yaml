@@ -74,6 +74,9 @@ env:
   LOG_DIRECTORY: ${{ secrets.LOG_DIRECTORY }}
   LOG_FILE_DEFAULT_NAME: ${{ secrets.LOG_FILE_DEFAULT_NAME }}
 
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  SHADOW_DATABASE_URL: ${{ secrets.SHADOW_DATABASE_URL }}
+
 jobs:
   push-docker:
     # if: ${{ github.event.workflow_run.conclusion == 'success' }}
