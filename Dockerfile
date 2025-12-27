@@ -43,7 +43,11 @@ USER node
 # ---------------------------------------------------------------------------------------
 FROM base AS dist
 ARG DATABASE_URL
+ARG SHADOW_DATABASE_URL
+
 ENV DATABASE_URL=${DATABASE_URL}
+ENV SHADOW_DATABASE_URL=${SHADOW_DATABASE_URL}
+
 COPY --chown=node:node package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --ignore-scripts
 COPY --chown=node:node . .
@@ -62,7 +66,10 @@ RUN pnpm prisma generate
 # ---------------------------------------------------------------------------------------
 FROM base AS dependencies
 ARG DATABASE_URL
+ARG SHADOW_DATABASE_URL
+
 ENV DATABASE_URL=${DATABASE_URL}
+ENV SHADOW_DATABASE_URL=${SHADOW_DATABASE_URL}
 
 COPY --chown=node:node package.json pnpm-lock.yaml ./
 RUN pnpm install --prod --frozen-lockfile --ignore-scripts
