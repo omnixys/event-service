@@ -10,41 +10,48 @@
  * - Optional minimal seating structure
  */
 
-    import { PrismaClient } from '../src/prisma/generated/client.js';
+    import { PrismaClient, UserRole } from '../src/prisma/generated/client.js';
     import { PrismaPg } from '@prisma/adapter-pg';
     import 'dotenv/config';
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
 const prisma = new PrismaClient({ adapter });
 
-  const users: { id: string; username: string }[] = [
+  const users: { id: string; username: string; role: UserRole }[] = [
     {
-      id: '23b51749-e8d1-4222-8f3f-d4097c3e55ec',
+      id: 'dde8114c-2637-462a-90b9-413924fa3f55',
       username: 'admin',
+      role: 'ADMIN',
     },
     {
-      id: 'b4d4c3f7-f7cd-4304-ad74-d8ea70fdea1b',
+      id: '694d2e8e-0932-4c8f-a1c4-e300dc235be4',
       username: 'caleb',
+      role: 'ADMIN',
     },
     {
-      id: 'ad923615-15c6-46f8-bdc0-71f9880b6a09',
+      id: 'f9de3f8a-5b79-4f3a-9267-10c1b9ce2a03',
       username: 'rachel',
+      role: 'ADMIN',
     },
     {
-      id: '3a709c62-9148-4029-8180-943fcb1ded39',
+      id: 'ae489d9b-96ce-4942-bcb1-c2e2a0c92e83',
       username: 'guest',
+      role: 'GUEST',
     },
     {
-      id: 'a3b50666-e26c-44b4-934f-be61bbacac0d',
+      id: '20e7e44e-9bcd-4016-bebd-36f8d75357b6',
       username: 'security',
+      role: 'SECURITY',
     },
     {
-      id: 'ebab68d5-1e88-48d0-b7b3-de76e159e75f',
+      id: '9e219f6f-7706-4294-8b5b-a4105999846f',
       username: 'audrey',
+      role: 'ADMIN',
     },
     {
-      id: '18824eb8-b909-4de7-8637-eaa73be69b17',
-      username: 'christabel',
+      id: '18bbde19-7e76-45dc-b204-f5c397e11362',
+      username: 'christabelle',
+      role: 'ADMIN',
     },
   ];
 
@@ -379,25 +386,38 @@ Tauche ein in eine Welt, in der Technologie und Kreativität miteinander verschm
   //
   // 7) User Roles
   //
-  await prisma.userEventRole.createMany({
-    data: [
-      {
-        eventId: event.id,
-        userId: '23b51749-e8d1-4222-8f3f-d4097c3e55ec',
-        role: 'ADMIN',
-      },
-      {
-        eventId: event.id,
-        userId: 'a3b50666-e26c-44b4-934f-be61bbacac0d',
-        role: 'SECURITY',
-      },
-      // {
-      //   eventId: event.id,
-      //   userId: '3a709c62-9148-4029-8180-943fcb1ded39',
-      //   role: 'GUEST',
-      // },
-    ],
-  });
+
+  for (const user of users) {
+    if (user.username === 'admin' || user.username === 'guest' || user.username === 'security') {
+      await prisma.userEventRole.create({
+        data: {
+          eventId: event.id,
+          userId: user.id,
+          role: user.role,
+        },
+      });
+    }
+  }
+
+  // await prisma.userEventRole.createMany({
+  //   data: [
+  //     {
+  //       eventId: event.id,
+  //       userId: '23b51749-e8d1-4222-8f3f-d4097c3e55ec',
+  //       role: 'ADMIN',
+  //     },
+  //     {
+  //       eventId: event.id,
+  //       userId: 'a3b50666-e26c-44b4-934f-be61bbacac0d',
+  //       role: 'SECURITY',
+  //     },
+  //     {
+  //       eventId: event.id,
+  //       userId: '3a709c62-9148-4029-8180-943fcb1ded39',
+  //       role: 'GUEST',
+  //     },
+  //   ],
+  // });
   console.log('✔ User Roles inserted');
 
   //
@@ -693,7 +713,7 @@ async function seed2() {
         data: {
           eventId: event.id,
           userId: user.id,
-          role: 'ADMIN',
+          role: user.role,
         },
       });
   }
