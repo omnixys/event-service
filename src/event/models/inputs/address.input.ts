@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql';
 import { IsString } from 'class-validator';
 
 @InputType()
-export class AddressInput {
+export class EventAddressInput {
   @Field()
   @IsString()
   street!: string;

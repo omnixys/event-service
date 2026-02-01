@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { SeatingConfigInput } from '../dto/seating-config.dto.js';
-import { AddressInput } from './address.input.js';
+import { EventAddressInput } from './address.input.js';
 import { DescriptionBlockInput } from './description-block.input.js';
 import { FAQInput } from './faq.input.js';
 import { MediaInput } from './media.input.js';
@@ -53,10 +53,10 @@ export class CreateEventInput {
 
   // Optional nested objects
 
-  @Field(() => [AddressInput], { nullable: true })
-  @Type(() => AddressInput)
+  @Field(() => [EventAddressInput], { nullable: true })
+  @Type(() => EventAddressInput)
   @IsOptional()
-  address?: AddressInput;
+  address?: EventAddressInput;
 
   @Field(() => SettingsInput, { nullable: true })
   @Type(() => SettingsInput)
