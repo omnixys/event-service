@@ -2,6 +2,10 @@
 
 All notable changes in this project will be documented in this file.
 
+## <small>1.0.1 (2026-02-25)</small>
+
+- fix(ci): update CI ([5c091f54ce01038fea424923b71cf82af2ee8942](https://github.com/omnixys/omnixys-event-service/commit/5c091f54ce01038fea424923b71cf82af2ee8942))
+
 ## 1.0.0 (2026-02-25)
 
 - feat(event-service): implement EventService logic and GraphQL resolvers ([a53ef7b42c3ccab619897fc57441642b6a644007](https://github.com/omnixys/omnixys-event-service/commit/a53ef7b42c3ccab619897fc57441642b6a644007))
