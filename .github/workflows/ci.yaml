@@ -57,7 +57,7 @@ env:
   KC_CLIENT_SECRET: ${{ secrets.KC_CLIENT_SECRET }}
 
   KEYS_PATH: ${{ secrets.KEYS_PATH }}
-  SERVICE: ${{ secrets.SERVICE }}
+  SERVICE: ${{ vars.SERVICE }}
   PORT: ${{ secrets.PORT }}
   GRAPHQL_PLAYGROUND: ${{ secrets.GRAPHQL_PLAYGROUND }}
   NODE_ENV: ${{ secrets.NODE_ENV }}
@@ -78,7 +78,7 @@ env:
 
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
   SHADOW_DATABASE_URL: ${{ secrets.SHADOW_DATABASE_URL }}
-  
+
 jobs:
   ci:
     name: Run Lint, Build, Test, and Typecheck
