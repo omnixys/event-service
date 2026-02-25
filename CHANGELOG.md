@@ -2,6 +2,11 @@
 
 All notable changes in this project will be documented in this file.
 
+## <small>1.0.2 (2026-02-25)</small>
+
+- fix(ci): change serets.SERVICE to vars.SERVICE ([c57204b47d1a629517534ea6097d61d04b5219c2](https://github.com/omnixys/omnixys-event-service/commit/c57204b47d1a629517534ea6097d61d04b5219c2))
+- Merge branch 'main' of https://github.com/omnixys/omnixys-event-service ([1f6f0fc9d9db31be1ed6887d0dd331494beb56a2](https://github.com/omnixys/omnixys-event-service/commit/1f6f0fc9d9db31be1ed6887d0dd331494beb56a2))
+
 ## <small>1.0.1 (2026-02-25)</small>
 
 - fix(ci): update CI ([5c091f54ce01038fea424923b71cf82af2ee8942](https://github.com/omnixys/omnixys-event-service/commit/5c091f54ce01038fea424923b71cf82af2ee8942))
