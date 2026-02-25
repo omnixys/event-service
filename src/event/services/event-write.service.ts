@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
+import { KafkaProducerService } from '../../kafka/kafka-producer.service.js';
 import { LoggerPlusService } from '../../logger/logger-plus.service.js';
-import { KafkaProducerService } from '../../messaging/kafka-producer.service.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { withSpan } from '../../trace/utils/span.utils.js';
 import { UserRole } from '../models/enums/user-role.enum.js';

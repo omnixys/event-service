@@ -17,7 +17,7 @@ datasource db {
 // ──────────────────────────────────────────────────────────
 // EVENT ROOT
 // ──────────────────────────────────────────────────────────
-//
+
 model Event {
   id       String   @id @default(cuid()) @map("id")
   name     String   @map("name")

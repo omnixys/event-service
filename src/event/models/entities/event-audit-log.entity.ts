@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { JsonScalar } from '../../../core/scalars/json.scalar.js';
 import { Field, ID, ObjectType } from '@nestjs/graphql';

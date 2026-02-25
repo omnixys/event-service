@@ -79,7 +79,7 @@ env:
 
 jobs:
   push-docker:
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: 🐳 Build & Push Multi-Arch Images (Docker)
     runs-on: ubuntu-latest
     strategy:
@@ -144,7 +144,7 @@ jobs:
           cosign sign --yes --recursive ${{ env.IMAGE_NAME }}:latest
 
   push-github:
-    # if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     name: 🐳 Build & Push Multi-Arch Images (Github)
     runs-on: ubuntu-latest
     strategy:

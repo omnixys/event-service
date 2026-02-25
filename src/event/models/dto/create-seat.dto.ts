@@ -1,4 +1,4 @@
-import { SeatingConfigInput } from './seating-config.dto.js';
+import type { SeatingConfigInput } from './seating-config.dto.js';
 
 export interface CreateSeatDTO {
   eventId: string;

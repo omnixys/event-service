@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import { SeatingConfigInput } from '../dto/seating-config.dto.js';
 import { EventAddressInput } from './address.input.js';
 import { DescriptionBlockInput } from './description-block.input.js';
