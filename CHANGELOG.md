@@ -2,6 +2,10 @@
 
 All notable changes in this project will be documented in this file.
 
+## <small>1.0.3 (2026-02-26)</small>
+
+- fix(release-ci): fix Release CI Job ([55b72abcdb61fcbe86aee00552f3b0b6fc337cdf](https://github.com/omnixys/omnixys-event-service/commit/55b72abcdb61fcbe86aee00552f3b0b6fc337cdf))
+
 ## <small>1.0.2 (2026-02-25)</small>
 
 - fix(ci): change serets.SERVICE to vars.SERVICE ([c57204b47d1a629517534ea6097d61d04b5219c2](https://github.com/omnixys/omnixys-event-service/commit/c57204b47d1a629517534ea6097d61d04b5219c2))
