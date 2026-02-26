@@ -2,6 +2,11 @@
 
 All notable changes in this project will be documented in this file.
 
+## <small>1.0.4 (2026-02-26)</small>
+
+- Merge branch 'main' of https://github.com/omnixys/omnixys-event-service ([d519579c2f6f86a40c0d399460affac6f9b2e921](https://github.com/omnixys/omnixys-event-service/commit/d519579c2f6f86a40c0d399460affac6f9b2e921))
+- fix(release-ci): add @semantic-release/npm ([bfcf0c0946dc91a7bcb74fe0a5f411636d896ff3](https://github.com/omnixys/omnixys-event-service/commit/bfcf0c0946dc91a7bcb74fe0a5f411636d896ff3))
+
 ## <small>1.0.3 (2026-02-26)</small>
 
 - fix(release-ci): fix Release CI Job ([55b72abcdb61fcbe86aee00552f3b0b6fc337cdf](https://github.com/omnixys/omnixys-event-service/commit/55b72abcdb61fcbe86aee00552f3b0b6fc337cdf))
