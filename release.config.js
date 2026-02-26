@@ -123,6 +123,17 @@ export default {
     ],
 
     /**
+     * 🔥 THIS is what you were missing
+     * Updates package.json version
+     */
+    [
+      '@semantic-release/npm',
+      {
+        npmPublish: false,
+      },
+    ],
+
+    /**
      * Commit release artifacts back to repository
      */
     [
@@ -148,7 +159,7 @@ export default {
         releaseBodyTemplate: `
 Today, we are excited to share the **v{{version}}** release 🎉
 
-This release includes stability improvements, bug fixes, and internal refinements for the **Event Service**.
+This release includes stability improvements, bug fixes, and internal refinements for the **User Service**.
 
 ---
 
@@ -156,8 +167,8 @@ This release includes stability improvements, bug fixes, and internal refinement
 
 ---
 
-📦 **Service:** Omnixys Event Service  
-🔗 **Repository:** https://github.com/omnixys/omnixys-event-service  
+📦 **Service:** Omnixys User Service  
+🔗 **Repository:** https://github.com/omnixys/omnixys-user-service  
 🧭 **Docs:** https://omnixys.com/docs
 `,
       },
