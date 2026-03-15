@@ -18,8 +18,6 @@ export class EventMapper {
     return {
       id: event.id,
       name: event.name,
-      startsAt: event.startsAt,
-      endsAt: event.endsAt,
       owner: event.owner,
       createdAt: event.createdAt,
       updatedAt: event.updatedAt,
@@ -35,6 +33,8 @@ export class EventMapper {
             isActive: event.settings.isActive,
             dressCode: n2u(event.settings.dressCode),
             description: n2u(event.settings.description),
+            startsAt: event.settings.startsAt,
+            endsAt: event.settings.endsAt,
             createdAt: event.settings.createdAt,
             updatedAt: event.settings.updatedAt,
           }

@@ -11,12 +11,6 @@ export class EventPayload {
   name!: string;
 
   @Field()
-  startsAt!: Date;
-
-  @Field()
-  endsAt!: Date;
-
-  @Field()
   owner!: string;
 
   @Field()

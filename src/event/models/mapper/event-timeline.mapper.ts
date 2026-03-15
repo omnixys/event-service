@@ -1,8 +1,8 @@
-import type { EventTimeline } from '../../../prisma/generated/client.js';
+import type { Timeline } from '../../../prisma/generated/client.js';
 import type { EventTimelinePayload } from '../payloads/event-timeline.payload.js';
 
 export class EventTimelineMapper {
-  static toPayload(entity: EventTimeline): EventTimelinePayload {
+  static toPayload(entity: Timeline): EventTimelinePayload {
     return {
       id: entity.id,
       eventId: entity.eventId,
@@ -12,7 +12,7 @@ export class EventTimelineMapper {
     };
   }
 
-  static toPayloadList(list: EventTimeline[]): EventTimelinePayload[] {
+  static toPayloadList(list: Timeline[]): EventTimelinePayload[] {
     return list.map((t) => this.toPayload(t));
   }
 }

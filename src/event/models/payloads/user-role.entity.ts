@@ -1,8 +1,8 @@
 import { UserRoleType } from '../../../prisma/generated/client.js';
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
-export class UserEventRolePayload {
+export class UserRolePayload {
   @Field(() => ID)
   id!: string;
 

@@ -29,8 +29,6 @@ export type EventMinAggregateOutputType = {
   name: string | null;
   owner: string | null;
   parentId: string | null;
-  startsAt: Date | null;
-  endsAt: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 };
@@ -40,8 +38,6 @@ export type EventMaxAggregateOutputType = {
   name: string | null;
   owner: string | null;
   parentId: string | null;
-  startsAt: Date | null;
-  endsAt: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 };
@@ -51,8 +47,6 @@ export type EventCountAggregateOutputType = {
   name: number;
   owner: number;
   parentId: number;
-  startsAt: number;
-  endsAt: number;
   createdAt: number;
   updatedAt: number;
   _all: number;
@@ -63,8 +57,6 @@ export type EventMinAggregateInputType = {
   name?: true;
   owner?: true;
   parentId?: true;
-  startsAt?: true;
-  endsAt?: true;
   createdAt?: true;
   updatedAt?: true;
 };
@@ -74,8 +66,6 @@ export type EventMaxAggregateInputType = {
   name?: true;
   owner?: true;
   parentId?: true;
-  startsAt?: true;
-  endsAt?: true;
   createdAt?: true;
   updatedAt?: true;
 };
@@ -85,8 +75,6 @@ export type EventCountAggregateInputType = {
   name?: true;
   owner?: true;
   parentId?: true;
-  startsAt?: true;
-  endsAt?: true;
   createdAt?: true;
   updatedAt?: true;
   _all?: true;
@@ -176,8 +164,6 @@ export type EventGroupByOutputType = {
   name: string;
   owner: string;
   parentId: string | null;
-  startsAt: Date;
-  endsAt: Date;
   createdAt: Date;
   updatedAt: Date;
   _count: EventCountAggregateOutputType | null;
@@ -205,8 +191,6 @@ export type EventWhereInput = {
   name?: Prisma.StringFilter<'Event'> | string;
   owner?: Prisma.StringFilter<'Event'> | string;
   parentId?: Prisma.StringNullableFilter<'Event'> | string | null;
-  startsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
-  endsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
   createdAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
   parent?: Prisma.XOR<
@@ -231,8 +215,6 @@ export type EventOrderByWithRelationInput = {
   name?: Prisma.SortOrder;
   owner?: Prisma.SortOrder;
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder;
-  startsAt?: Prisma.SortOrder;
-  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   parent?: Prisma.EventOrderByWithRelationInput;
@@ -252,8 +234,6 @@ export type EventWhereUniqueInput = Prisma.AtLeast<
     name?: Prisma.StringFilter<'Event'> | string;
     owner?: Prisma.StringFilter<'Event'> | string;
     parentId?: Prisma.StringNullableFilter<'Event'> | string | null;
-    startsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
-    endsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
     createdAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
     parent?: Prisma.XOR<
@@ -280,8 +260,6 @@ export type EventOrderByWithAggregationInput = {
   name?: Prisma.SortOrder;
   owner?: Prisma.SortOrder;
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder;
-  startsAt?: Prisma.SortOrder;
-  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   _count?: Prisma.EventCountOrderByAggregateInput;
@@ -301,8 +279,6 @@ export type EventScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<'Event'> | string;
   owner?: Prisma.StringWithAggregatesFilter<'Event'> | string;
   parentId?: Prisma.StringNullableWithAggregatesFilter<'Event'> | string | null;
-  startsAt?: Prisma.DateTimeWithAggregatesFilter<'Event'> | Date | string;
-  endsAt?: Prisma.DateTimeWithAggregatesFilter<'Event'> | Date | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'Event'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'Event'> | Date | string;
 };
@@ -311,8 +287,6 @@ export type EventCreateInput = {
   id?: string;
   name: string;
   owner: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
@@ -328,8 +302,6 @@ export type EventUncheckedCreateInput = {
   name: string;
   owner: string;
   parentId?: string | null;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
@@ -343,8 +315,6 @@ export type EventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
@@ -360,8 +330,6 @@ export type EventUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
@@ -376,8 +344,6 @@ export type EventCreateManyInput = {
   name: string;
   owner: string;
   parentId?: string | null;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -386,8 +352,6 @@ export type EventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -397,8 +361,6 @@ export type EventUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -423,8 +385,6 @@ export type EventCountOrderByAggregateInput = {
   name?: Prisma.SortOrder;
   owner?: Prisma.SortOrder;
   parentId?: Prisma.SortOrder;
-  startsAt?: Prisma.SortOrder;
-  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -434,8 +394,6 @@ export type EventMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder;
   owner?: Prisma.SortOrder;
   parentId?: Prisma.SortOrder;
-  startsAt?: Prisma.SortOrder;
-  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -445,8 +403,6 @@ export type EventMinOrderByAggregateInput = {
   name?: Prisma.SortOrder;
   owner?: Prisma.SortOrder;
   parentId?: Prisma.SortOrder;
-  startsAt?: Prisma.SortOrder;
-  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -692,8 +648,6 @@ export type EventCreateWithoutChildrenInput = {
   id?: string;
   name: string;
   owner: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
@@ -708,8 +662,6 @@ export type EventUncheckedCreateWithoutChildrenInput = {
   name: string;
   owner: string;
   parentId?: string | null;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput;
@@ -730,8 +682,6 @@ export type EventCreateWithoutParentInput = {
   id?: string;
   name: string;
   owner: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   children?: Prisma.EventCreateNestedManyWithoutParentInput;
@@ -745,8 +695,6 @@ export type EventUncheckedCreateWithoutParentInput = {
   id?: string;
   name: string;
   owner: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
@@ -793,8 +741,6 @@ export type EventUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
@@ -809,8 +755,6 @@ export type EventUncheckedUpdateWithoutChildrenInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput;
@@ -855,8 +799,6 @@ export type EventScalarWhereInput = {
   name?: Prisma.StringFilter<'Event'> | string;
   owner?: Prisma.StringFilter<'Event'> | string;
   parentId?: Prisma.StringNullableFilter<'Event'> | string | null;
-  startsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
-  endsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
   createdAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
 };
@@ -865,8 +807,6 @@ export type EventCreateWithoutSettingsInput = {
   id?: string;
   name: string;
   owner: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
@@ -881,8 +821,6 @@ export type EventUncheckedCreateWithoutSettingsInput = {
   name: string;
   owner: string;
   parentId?: string | null;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
@@ -923,8 +861,6 @@ export type EventUpdateWithoutSettingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
@@ -939,8 +875,6 @@ export type EventUncheckedUpdateWithoutSettingsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
@@ -953,8 +887,6 @@ export type EventCreateWithoutAnalyticsInput = {
   id?: string;
   name: string;
   owner: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
@@ -969,8 +901,6 @@ export type EventUncheckedCreateWithoutAnalyticsInput = {
   name: string;
   owner: string;
   parentId?: string | null;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
@@ -1011,8 +941,6 @@ export type EventUpdateWithoutAnalyticsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
@@ -1027,8 +955,6 @@ export type EventUncheckedUpdateWithoutAnalyticsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
@@ -1041,8 +967,6 @@ export type EventCreateWithoutTimelinesInput = {
   id?: string;
   name: string;
   owner: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
@@ -1057,8 +981,6 @@ export type EventUncheckedCreateWithoutTimelinesInput = {
   name: string;
   owner: string;
   parentId?: string | null;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
@@ -1099,8 +1021,6 @@ export type EventUpdateWithoutTimelinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
@@ -1115,8 +1035,6 @@ export type EventUncheckedUpdateWithoutTimelinesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
@@ -1129,8 +1047,6 @@ export type EventCreateWithoutRolesInput = {
   id?: string;
   name: string;
   owner: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
@@ -1145,8 +1061,6 @@ export type EventUncheckedCreateWithoutRolesInput = {
   name: string;
   owner: string;
   parentId?: string | null;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
@@ -1187,8 +1101,6 @@ export type EventUpdateWithoutRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
@@ -1203,8 +1115,6 @@ export type EventUncheckedUpdateWithoutRolesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
@@ -1217,8 +1127,6 @@ export type EventCreateManyParentInput = {
   id?: string;
   name: string;
   owner: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -1227,8 +1135,6 @@ export type EventUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   children?: Prisma.EventUpdateManyWithoutParentNestedInput;
@@ -1242,8 +1148,6 @@ export type EventUncheckedUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
@@ -1257,8 +1161,6 @@ export type EventUncheckedUpdateManyWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
   owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -1334,8 +1236,6 @@ export type EventSelect<
     name?: boolean;
     owner?: boolean;
     parentId?: boolean;
-    startsAt?: boolean;
-    endsAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     parent?: boolean | Prisma.Event$parentArgs<ExtArgs>;
@@ -1358,8 +1258,6 @@ export type EventSelectCreateManyAndReturn<
     name?: boolean;
     owner?: boolean;
     parentId?: boolean;
-    startsAt?: boolean;
-    endsAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     parent?: boolean | Prisma.Event$parentArgs<ExtArgs>;
@@ -1376,8 +1274,6 @@ export type EventSelectUpdateManyAndReturn<
     name?: boolean;
     owner?: boolean;
     parentId?: boolean;
-    startsAt?: boolean;
-    endsAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     parent?: boolean | Prisma.Event$parentArgs<ExtArgs>;
@@ -1390,8 +1286,6 @@ export type EventSelectScalar = {
   name?: boolean;
   owner?: boolean;
   parentId?: boolean;
-  startsAt?: boolean;
-  endsAt?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
 };
@@ -1400,14 +1294,7 @@ export type EventOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  | 'id'
-  | 'name'
-  | 'owner'
-  | 'parentId'
-  | 'startsAt'
-  | 'endsAt'
-  | 'createdAt'
-  | 'updatedAt',
+  'id' | 'name' | 'owner' | 'parentId' | 'createdAt' | 'updatedAt',
   ExtArgs['result']['event']
 >;
 export type EventInclude<
@@ -1454,8 +1341,6 @@ export type $EventPayload<
       name: string;
       owner: string;
       parentId: string | null;
-      startsAt: Date;
-      endsAt: Date;
       createdAt: Date;
       updatedAt: Date;
     },
@@ -2126,8 +2011,6 @@ export interface EventFieldRefs {
   readonly name: Prisma.FieldRef<'Event', 'String'>;
   readonly owner: Prisma.FieldRef<'Event', 'String'>;
   readonly parentId: Prisma.FieldRef<'Event', 'String'>;
-  readonly startsAt: Prisma.FieldRef<'Event', 'DateTime'>;
-  readonly endsAt: Prisma.FieldRef<'Event', 'DateTime'>;
   readonly createdAt: Prisma.FieldRef<'Event', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'Event', 'DateTime'>;
 }

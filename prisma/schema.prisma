@@ -27,9 +27,6 @@ model Event {
   parent   Event?  @relation("EventHierarchy", fields: [parentId], references: [id])
   children Event[] @relation("EventHierarchy")
 
-  startsAt DateTime
-  endsAt   DateTime
-
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -55,6 +52,9 @@ model Settings {
   isActive    Boolean @default(true) @map("is_active")
   dressCode   String? @map("dress_code")
   description String? @map("description")
+
+  startsAt DateTime
+  endsAt   DateTime
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

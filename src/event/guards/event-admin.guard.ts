@@ -46,7 +46,7 @@ export class EventAdminGuard implements CanActivate {
     }
 
     // Check if user has ADMIN role
-    const role = await this.prisma.userEventRole.findUnique({
+    const role = await this.prisma.role.findUnique({
       where: { userId_eventId: { userId: user.id, eventId } },
       select: { role: true },
     });

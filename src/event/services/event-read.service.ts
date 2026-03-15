@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { LoggerPlusService } from '../../logger/logger-plus.service.js';
-import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { EventTimelineMapper } from '../models/mapper/event-timeline.mapper.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
@@ -114,7 +113,7 @@ export class EventReadService {
           select: { role: true },
         },
       },
-      orderBy: { startsAt: 'asc' },
+      orderBy: { name: 'asc' },
     });
 
     this.logger.debug('User events resolved', {

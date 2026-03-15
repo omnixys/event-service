@@ -45,6 +45,8 @@ export type SettingsMinAggregateOutputType = {
   isActive: boolean | null;
   dressCode: string | null;
   description: string | null;
+  startsAt: Date | null;
+  endsAt: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 };
@@ -58,6 +60,8 @@ export type SettingsMaxAggregateOutputType = {
   isActive: boolean | null;
   dressCode: string | null;
   description: string | null;
+  startsAt: Date | null;
+  endsAt: Date | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 };
@@ -71,6 +75,8 @@ export type SettingsCountAggregateOutputType = {
   isActive: number;
   dressCode: number;
   description: number;
+  startsAt: number;
+  endsAt: number;
   createdAt: number;
   updatedAt: number;
   _all: number;
@@ -95,6 +101,8 @@ export type SettingsMinAggregateInputType = {
   isActive?: true;
   dressCode?: true;
   description?: true;
+  startsAt?: true;
+  endsAt?: true;
   createdAt?: true;
   updatedAt?: true;
 };
@@ -108,6 +116,8 @@ export type SettingsMaxAggregateInputType = {
   isActive?: true;
   dressCode?: true;
   description?: true;
+  startsAt?: true;
+  endsAt?: true;
   createdAt?: true;
   updatedAt?: true;
 };
@@ -121,6 +131,8 @@ export type SettingsCountAggregateInputType = {
   isActive?: true;
   dressCode?: true;
   description?: true;
+  startsAt?: true;
+  endsAt?: true;
   createdAt?: true;
   updatedAt?: true;
   _all?: true;
@@ -228,6 +240,8 @@ export type SettingsGroupByOutputType = {
   isActive: boolean;
   dressCode: string | null;
   description: string | null;
+  startsAt: Date;
+  endsAt: Date;
   createdAt: Date;
   updatedAt: Date;
   _count: SettingsCountAggregateOutputType | null;
@@ -262,6 +276,8 @@ export type SettingsWhereInput = {
   isActive?: Prisma.BoolFilter<'Settings'> | boolean;
   dressCode?: Prisma.StringNullableFilter<'Settings'> | string | null;
   description?: Prisma.StringNullableFilter<'Settings'> | string | null;
+  startsAt?: Prisma.DateTimeFilter<'Settings'> | Date | string;
+  endsAt?: Prisma.DateTimeFilter<'Settings'> | Date | string;
   createdAt?: Prisma.DateTimeFilter<'Settings'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'Settings'> | Date | string;
   event?: Prisma.XOR<
@@ -279,6 +295,8 @@ export type SettingsOrderByWithRelationInput = {
   isActive?: Prisma.SortOrder;
   dressCode?: Prisma.SortOrderInput | Prisma.SortOrder;
   description?: Prisma.SortOrderInput | Prisma.SortOrder;
+  startsAt?: Prisma.SortOrder;
+  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   event?: Prisma.EventOrderByWithRelationInput;
@@ -297,6 +315,8 @@ export type SettingsWhereUniqueInput = Prisma.AtLeast<
     isActive?: Prisma.BoolFilter<'Settings'> | boolean;
     dressCode?: Prisma.StringNullableFilter<'Settings'> | string | null;
     description?: Prisma.StringNullableFilter<'Settings'> | string | null;
+    startsAt?: Prisma.DateTimeFilter<'Settings'> | Date | string;
+    endsAt?: Prisma.DateTimeFilter<'Settings'> | Date | string;
     createdAt?: Prisma.DateTimeFilter<'Settings'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'Settings'> | Date | string;
     event?: Prisma.XOR<
@@ -316,6 +336,8 @@ export type SettingsOrderByWithAggregationInput = {
   isActive?: Prisma.SortOrder;
   dressCode?: Prisma.SortOrderInput | Prisma.SortOrder;
   description?: Prisma.SortOrderInput | Prisma.SortOrder;
+  startsAt?: Prisma.SortOrder;
+  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   _count?: Prisma.SettingsCountOrderByAggregateInput;
@@ -347,6 +369,8 @@ export type SettingsScalarWhereWithAggregatesInput = {
     | Prisma.StringNullableWithAggregatesFilter<'Settings'>
     | string
     | null;
+  startsAt?: Prisma.DateTimeWithAggregatesFilter<'Settings'> | Date | string;
+  endsAt?: Prisma.DateTimeWithAggregatesFilter<'Settings'> | Date | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'Settings'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'Settings'> | Date | string;
 };
@@ -359,6 +383,8 @@ export type SettingsCreateInput = {
   isActive?: boolean;
   dressCode?: string | null;
   description?: string | null;
+  startsAt: Date | string;
+  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
   event?: Prisma.EventCreateNestedOneWithoutSettingsInput;
@@ -373,6 +399,8 @@ export type SettingsUncheckedCreateInput = {
   isActive?: boolean;
   dressCode?: string | null;
   description?: string | null;
+  startsAt: Date | string;
+  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -385,6 +413,8 @@ export type SettingsUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   event?: Prisma.EventUpdateOneWithoutSettingsNestedInput;
@@ -399,6 +429,8 @@ export type SettingsUncheckedUpdateInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -412,6 +444,8 @@ export type SettingsCreateManyInput = {
   isActive?: boolean;
   dressCode?: string | null;
   description?: string | null;
+  startsAt: Date | string;
+  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -424,6 +458,8 @@ export type SettingsUpdateManyMutationInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -437,6 +473,8 @@ export type SettingsUncheckedUpdateManyInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -455,6 +493,8 @@ export type SettingsCountOrderByAggregateInput = {
   isActive?: Prisma.SortOrder;
   dressCode?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
+  startsAt?: Prisma.SortOrder;
+  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -473,6 +513,8 @@ export type SettingsMaxOrderByAggregateInput = {
   isActive?: Prisma.SortOrder;
   dressCode?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
+  startsAt?: Prisma.SortOrder;
+  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -486,6 +528,8 @@ export type SettingsMinOrderByAggregateInput = {
   isActive?: Prisma.SortOrder;
   dressCode?: Prisma.SortOrder;
   description?: Prisma.SortOrder;
+  startsAt?: Prisma.SortOrder;
+  endsAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -571,6 +615,8 @@ export type SettingsCreateWithoutEventInput = {
   isActive?: boolean;
   dressCode?: string | null;
   description?: string | null;
+  startsAt: Date | string;
+  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -583,6 +629,8 @@ export type SettingsUncheckedCreateWithoutEventInput = {
   isActive?: boolean;
   dressCode?: string | null;
   description?: string | null;
+  startsAt: Date | string;
+  endsAt: Date | string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -623,6 +671,8 @@ export type SettingsUpdateWithoutEventInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -635,6 +685,8 @@ export type SettingsUncheckedUpdateWithoutEventInput = {
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -652,6 +704,8 @@ export type SettingsSelect<
     isActive?: boolean;
     dressCode?: boolean;
     description?: boolean;
+    startsAt?: boolean;
+    endsAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     event?: boolean | Prisma.Settings$eventArgs<ExtArgs>;
@@ -672,6 +726,8 @@ export type SettingsSelectCreateManyAndReturn<
     isActive?: boolean;
     dressCode?: boolean;
     description?: boolean;
+    startsAt?: boolean;
+    endsAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     event?: boolean | Prisma.Settings$eventArgs<ExtArgs>;
@@ -692,6 +748,8 @@ export type SettingsSelectUpdateManyAndReturn<
     isActive?: boolean;
     dressCode?: boolean;
     description?: boolean;
+    startsAt?: boolean;
+    endsAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     event?: boolean | Prisma.Settings$eventArgs<ExtArgs>;
@@ -708,6 +766,8 @@ export type SettingsSelectScalar = {
   isActive?: boolean;
   dressCode?: boolean;
   description?: boolean;
+  startsAt?: boolean;
+  endsAt?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
 };
@@ -724,6 +784,8 @@ export type SettingsOmit<
   | 'isActive'
   | 'dressCode'
   | 'description'
+  | 'startsAt'
+  | 'endsAt'
   | 'createdAt'
   | 'updatedAt',
   ExtArgs['result']['settings']
@@ -765,6 +827,8 @@ export type $SettingsPayload<
       isActive: boolean;
       dressCode: string | null;
       description: string | null;
+      startsAt: Date;
+      endsAt: Date;
       createdAt: Date;
       updatedAt: Date;
     },
@@ -1380,6 +1444,8 @@ export interface SettingsFieldRefs {
   readonly isActive: Prisma.FieldRef<'Settings', 'Boolean'>;
   readonly dressCode: Prisma.FieldRef<'Settings', 'String'>;
   readonly description: Prisma.FieldRef<'Settings', 'String'>;
+  readonly startsAt: Prisma.FieldRef<'Settings', 'DateTime'>;
+  readonly endsAt: Prisma.FieldRef<'Settings', 'DateTime'>;
   readonly createdAt: Prisma.FieldRef<'Settings', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'Settings', 'DateTime'>;
 }

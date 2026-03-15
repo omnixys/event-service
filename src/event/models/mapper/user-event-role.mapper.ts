@@ -1,8 +1,8 @@
-import type { UserEventRole } from '../../../prisma/generated/client.js';
-import type { UserEventRolePayload } from '../payloads/user-role.entity.js';
+import type { Role } from '../../../prisma/generated/client.js';
+import type { UserRolePayload } from '../payloads/user-role.entity.js';
 
 export class UserEventRoleMapper {
-  static toPayload(entity: UserEventRole): UserEventRolePayload {
+  static toPayload(entity: Role): UserRolePayload {
     return {
       id: entity.id,
       userId: entity.userId,
@@ -11,7 +11,7 @@ export class UserEventRoleMapper {
     };
   }
 
-  static toPayloadList(list: UserEventRole[]): UserEventRolePayload[] {
+  static toPayloadList(list: Role[]): UserRolePayload[] {
     return list.map((u) => this.toPayload(u));
   }
 }

@@ -24,6 +24,12 @@ export class SettingsPayload {
   isActive!: boolean;
 
   @Field()
+  startsAt!: Date;
+
+  @Field()
+  endsAt!: Date;
+
+  @Field()
   createdAt!: Date;
 
   @Field()

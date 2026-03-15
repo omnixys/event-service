@@ -1,6 +1,7 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, GraphQLISODateTime, InputType, Int } from '@nestjs/graphql';
 import {
   IsBoolean,
+  IsDate,
   IsInt,
   IsOptional,
   IsString,
@@ -33,4 +34,12 @@ export class CreateSettingsInput {
   @Field(() => String, { nullable: true })
   @IsOptional()
   description!: string;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  @IsDate()
+  startsAt!: Date;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  @IsDate()
+  endsAt!: Date;
 }

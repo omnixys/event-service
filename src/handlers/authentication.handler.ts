@@ -16,7 +16,6 @@
  * For more information, visit <https://www.gnu.org/licenses/>.
  */
 
-import { UserRole } from '../event/models/enums/user-role.enum.js';
 import { AssignUserRoleInput } from '../event/models/inputs/assign-user-role.input.js';
 import { EventWriteService } from '../event/services/event-write.service.js';
 import {
@@ -29,6 +28,7 @@ import {
 } from '../kafka/interface/kafka-event.interface.js';
 import { getTopic, getTopics } from '../kafka/kafka-topic.properties.js';
 import { LoggerPlusService } from '../logger/logger-plus.service.js';
+import { UserRoleType } from '../prisma/generated/client.js';
 import { Injectable } from '@nestjs/common';
 
 /**
@@ -98,7 +98,7 @@ export class AuthenticationHandler implements KafkaEventHandler {
     const input: AssignUserRoleInput = {
       userId,
       eventId,
-      eventRole: UserRole.GUEST,
+      eventRole: UserRoleType.GUEST,
     };
     await this.eventWriteService.assignUserToEvent(input, actorId);
     this.logger.debug('%o', input);

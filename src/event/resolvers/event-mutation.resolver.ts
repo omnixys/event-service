@@ -24,11 +24,11 @@ export class EventMutationResolver {
     return this.writeService.createEvent(input, currentUser.id);
   }
 
-  @Mutation(() => EventPayload)
+  @Mutation(() => Boolean)
   async updateEvent(
     @Args('input') input: UpdateEventInput,
     @CurrentUser() currentUser: CurrentUserData,
-  ): Promise<EventPayload> {
+  ): Promise<boolean> {
     return this.writeService.updateEvent(input, currentUser.id);
   }
 

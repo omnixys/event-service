@@ -1,19 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
-import { KafkaProducerService } from '../../kafka/kafka-producer.service.js';
+// import { KafkaProducerService } from '../../kafka/kafka-producer.service.js';
 import { LoggerPlusService } from '../../logger/logger-plus.service.js';
+import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { withSpan } from '../../trace/utils/span.utils.js';
-import { UserRole } from '../models/enums/user-role.enum.js';
 import { AssignUserRoleInput } from '../models/inputs/assign-user-role.input.js';
 import { CreateEventInput } from '../models/inputs/create-event.input.js';
 import { RemoveUserFromEventInput } from '../models/inputs/remove-user-from-event.input.js';
 import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
-import { withAutoOrder } from '../utils/auto-order.util.js';
-import { geocodeAddress } from '../utils/geocoding.util.js';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { trace, Tracer } from '@opentelemetry/api';
 
@@ -25,7 +20,7 @@ export class EventWriteService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly loggerService: LoggerPlusService,
-    private readonly kafkaProducerService: KafkaProducerService,
+    // private readonly kafkaProducerService: KafkaProducerService,
   ) {
     this.logger = this.loggerService.getLogger(EventWriteService.name);
     this.tracer = trace.getTracer(EventWriteService.name);
@@ -36,228 +31,171 @@ export class EventWriteService {
   // ─────────────────────────────────────────────
 
   async createEvent(input: CreateEventInput, actorId: string): Promise<EventPayload> {
-    return withSpan(this.tracer, this.logger, 'ticket.createTicket', async (span) => {
-      // 1) Create event root
-      const event = await this.prisma.event.create({
-        data: {
-          name: input.name,
-          startsAt: new Date(input.startsAt),
-          endsAt: new Date(input.endsAt),
-          allowReEntry: input.allowReEntry,
-          rotateSeconds: input.rotateSeconds,
-          maxSeats: input.maxSeats,
-          owner: actorId,
-        },
-      });
+    return withSpan(this.tracer, this.logger, 'event.write.create', async (_span) => {
+      this.logger.info('Creating event %o', { actorId, name: input.name });
 
-      this.logger.debug('createEvent: eventId: %s', event.id);
-
-      // OPTIONAL: Grant ADMIN role to owner
-      await this.prisma.userEventRole.upsert({
-        where: { userId_eventId: { userId: actorId, eventId: event.id } },
-        create: { userId: actorId, eventId: event.id, role: UserRole.ADMIN },
-        update: { role: UserRole.ADMIN },
-      });
-
-      // 2) Address (Geocoding via OSM)
-      if (input.address) {
-        const { street, zip, city, country } = input.address;
-
-        // vollständige Adresse bilden
-        const fullAddress = [street, zip, city, country].filter(Boolean).join(' ');
-
-        // Geocoding anfragen
-        const geo = await geocodeAddress(fullAddress);
-
-        await this.prisma.eventAddress.create({
+      const result = await this.prisma.$transaction(async (tx) => {
+        const event = await tx.event.create({
           data: {
-            eventId: event.id,
-            street,
-            zip,
-            city,
-            country,
-            latitude: geo.lat,
-            longitude: geo.lon,
+            name: input.name,
+            owner: actorId,
+            parentId: input.parentId,
           },
         });
-      }
 
-      // 3) Settings
-      if (input.settings) {
-        await this.prisma.eventSettings.create({
+        this.logger.debug('Event root created', { eventId: event.id });
+
+        // Owner role
+        await tx.role.upsert({
+          where: { userId_eventId: { userId: actorId, eventId: event.id } },
+          create: { userId: actorId, eventId: event.id, role: UserRoleType.ADMIN },
+          update: { role: UserRoleType.ADMIN },
+        });
+
+        // Settings
+        if (input.settings) {
+          await tx.settings.create({
+            data: {
+              eventId: event.id,
+              ...input.settings,
+            },
+          });
+        }
+
+        // Timeline: initial entry
+        await tx.timeline.create({
           data: {
             eventId: event.id,
-            data: input.settings.data ?? {},
+            type: 'event-created',
+            timestamp: new Date(),
+            label: 'Event created',
           },
         });
-      }
 
-      // 4) Theme
-      if (input.theme) {
-        await this.prisma.eventTheme.create({
-          data: { eventId: event.id, ...input.theme },
-        });
-      }
+        // Audit log
+        // await tx.eventAuditLog.create({
+        //   data: {
+        //     eventId: event.id,
+        //     actorId,
+        //     action: 'EVENT_CREATED',
+        //   },
+        // });
 
-      // 5) Media
-      if (input.media?.length) {
-        const mediaWithOrder = withAutoOrder(
-          input.media.map((m) => ({
-            eventId: event.id,
-            ...m,
-          })),
-        );
-
-        await this.prisma.eventMedia.createMany({
-          data: mediaWithOrder,
-        });
-      }
-
-      // 6) Description blocks
-      if (input.description?.length) {
-        const blocksWithOrder = withAutoOrder(
-          input.description.map((b) => ({
-            eventId: event.id,
-            ...b,
-          })),
-        );
-
-        await this.prisma.eventDescriptionBlock.createMany({
-          data: blocksWithOrder,
-        });
-      }
-
-      // 7) FAQ
-      if (input.faqs?.length) {
-        const faqsWithOrder = withAutoOrder(
-          input.faqs.map((f) => ({
-            eventId: event.id,
-            ...f,
-          })),
-        );
-
-        await this.prisma.eventFAQ.createMany({
-          data: faqsWithOrder,
-        });
-      }
-
-      // 8) Team
-      if (input.timeline?.length) {
-        const timelineWithOrder = withAutoOrder(
-          input.timeline.map((t) => ({
-            eventId: event.id,
-            ...t,
-          })),
-        );
-
-        await this.prisma.eventTimeline.createMany({
-          data: timelineWithOrder,
-        });
-      }
-
-      // 9) Timeline entry
-      await this.prisma.eventTimeline.create({
-        data: {
-          eventId: event.id,
-          type: 'event-created',
-          timestamp: new Date(),
-          label: 'Event erstellt',
-        },
+        return event;
       });
 
-      if (input.team?.length) {
-        const teamWithOrder = withAutoOrder(
-          input.team.map((t) => ({
-            eventId: event.id,
-            ...t,
-          })),
-        );
-
-        await this.prisma.eventTeamMember.createMany({
-          data: teamWithOrder,
-        });
-      }
-
-      // 11)  Audit Log
-      await this.prisma.eventAuditLog.create({
-        data: {
-          eventId: event.id,
-          actorId,
-          action: 'EVENT_CREATED',
-        },
+      this.logger.info('Event successfully created %o', {
+        eventId: result.id,
+        actorId,
       });
 
-      const sc = span.spanContext();
+      // const sc = span.spanContext();
 
-      void this.kafkaProducerService.generateSeats(
-        {
-          eventId: event.id,
-          config: input.config,
-          maxSeats: input.maxSeats,
-          actorId,
-        },
-        'event.write-service',
-        { traceId: sc.traceId, spanId: sc.spanId },
-      );
+      // void this.kafkaProducerService.generateSeats(
+      //   {
+      //     eventId: result.id,
+      //     maxSeats: input.settings?.maxSeats ?? 50,
+      //     actorId,
+      //   },
+      //   'event.write-service',
+      //   { traceId: sc.traceId, spanId: sc.spanId },
+      // );
+
+      // void this.kafkaProducerService.createAddress(
+      //   {
+      //     street: input.address?.street,
+      //     houseNumber: input.address?.houseNumber,
+      //     postalCodeId: input.address?.postalCode,
+      //     cityId: input.address?.city,
+      //     stateId: input.address?.street,
+      //     countryId: input.address?.country,
+      //     EventType: input.address?.street,
+      //     additionalInfo: input.address?.street,
+      //   },
+      //           'event.write-service',
+      //   { traceId: sc.traceId, spanId: sc.spanId },
+      // )
 
       // 🔥 return mapped EventPayload
-      return EventMapper.toPayload(event);
+      return EventMapper.toPayload(result);
     });
   }
 
   // ─────────────────────────────────────────────
   // UPDATE EVENT
   // ─────────────────────────────────────────────
-
-  async updateEvent(input: UpdateEventInput, actorId: string): Promise<EventPayload> {
-    const exists = await this.prisma.event.findUnique({
-      where: { id: input.id },
+  async updateEvent(input: UpdateEventInput, actorId: string): Promise<boolean> {
+    this.logger.info('Updating event %o', { actorId, eventId: input.eventId });
+    const exists = await this.prisma.settings.findUnique({
+      where: { id: input.eventId },
     });
 
     if (!exists) {
       throw new NotFoundException('Event does not exist');
     }
 
-    const updated = await this.prisma.event.update({
-      where: { id: input.id },
-      data: {
-        name: input.name ?? undefined,
-        startsAt: input.startsAt ? new Date(input.startsAt) : undefined,
-        endsAt: input.endsAt ? new Date(input.endsAt) : undefined,
-        allowReEntry: input.allowReEntry ?? undefined,
-        rotateSeconds: input.rotateSeconds ?? undefined,
-        maxSeats: input.maxSeats ?? undefined,
-      },
-    });
+    if (input?.settings) {
+      const { startsAt, endsAt, allowReEntry, rotateSeconds, maxSeats, description, dressCode } =
+        input.settings;
 
+      const updated = await this.prisma.settings.update({
+        where: { eventId: input.eventId },
+        data: {
+          startsAt: startsAt ? new Date(startsAt) : undefined,
+          endsAt: endsAt ? new Date(endsAt) : undefined,
+          allowReEntry: allowReEntry ?? undefined,
+          rotateSeconds: rotateSeconds ?? undefined,
+          maxSeats: maxSeats ?? undefined,
+          dressCode: dressCode ?? undefined,
+          description: description ?? undefined,
+        },
+      });
+
+      this.logger.debug('Event Settings updated: settings= %o', updated);
+    }
     // ───── Audit Log serialization Fix
-    await this.prisma.eventAuditLog.create({
-      data: {
-        eventId: input.id,
-        actorId,
-        action: 'event-updated',
-        data: JSON.parse(JSON.stringify(input)), // → safe JSON
-      },
-    });
+    // await this.prisma.eventAuditLog.create({
+    //   data: {
+    //     eventId: input.id,
+    //     actorId,
+    //     action: 'event-updated',
+    //     data: JSON.parse(JSON.stringify(input)), // → safe JSON
+    //   },
+    // });
 
-    return EventMapper.toPayload(updated);
+    return true;
   }
 
   // ─────────────────────────────────────────────
   // DELETE EVENT
   // ─────────────────────────────────────────────
-
   async deleteEvent(id: string, actorId: string): Promise<boolean> {
-    const exists = await this.prisma.event.findUnique({
-      where: { id, owner: actorId },
+    this.logger.info('Delete Event %o', { actorId, id });
+    const event = await this.prisma.event.findUnique({
+      where: { id },
+      select: { owner: true },
     });
-    if (!exists) {
-      throw new NotFoundException('Event does not exist');
+
+    if (!event) {
+      throw new NotFoundException('Event not found');
     }
 
-    await this.prisma.event.delete({
-      where: { id },
-    });
+    if (event.owner !== actorId) {
+      throw new Error('Only the owner can delete this event');
+    }
+
+    await this.prisma.$transaction([
+      this.prisma.event.delete({ where: { id } }),
+      // this.prisma.eventAuditLog.create({
+      //   data: {
+      //     eventId: id,
+      //     actorId,
+      //     action: 'EVENT_DELETED',
+      //   },
+      // }),
+    ]);
+
+    this.logger.warn('Event deleted', { eventId: id, actorId });
 
     return true;
   }
@@ -267,6 +205,7 @@ export class EventWriteService {
    * Uses UPSERT for atomic create/update logic.
    */
   async assignUserToEvent(input: AssignUserRoleInput, actorId: string): Promise<void> {
+    this.logger.info('Assign User to Event %o', { actorId, input });
     const { userId, eventId, eventRole: role } = input;
 
     // Ensure event exists (optional but recommended)
@@ -280,19 +219,19 @@ export class EventWriteService {
     }
 
     await this.prisma.$transaction([
-      this.prisma.userEventRole.upsert({
+      this.prisma.role.upsert({
         where: { userId_eventId: { userId, eventId } },
         create: { userId, eventId, role },
         update: { role },
       }),
-      this.prisma.eventAuditLog.create({
-        data: {
-          eventId,
-          actorId,
-          action: 'USER_ROLE_ASSIGNED',
-          data: { targetUserId: userId, role },
-        },
-      }),
+      // this.prisma.eventAuditLog.create({
+      //   data: {
+      //     eventId,
+      //     actorId,
+      //     action: 'USER_ROLE_ASSIGNED',
+      //     data: { targetUserId: userId, role },
+      //   },
+      // }),
     ]);
   }
 
@@ -302,6 +241,8 @@ export class EventWriteService {
    * - Atomic delete + audit log
    */
   async removeUserFromEvent(input: RemoveUserFromEventInput, actorId: string): Promise<void> {
+    this.logger.info('Remove User from Event %o', { actorId, input });
+
     const { userId: targetUserId, eventId } = input;
 
     // 1) Load event and both roles (actor + target)
@@ -309,7 +250,7 @@ export class EventWriteService {
       where: { id: eventId },
       select: {
         owner: true,
-        userRoles: {
+        roles: {
           select: {
             userId: true,
             role: true,
@@ -328,8 +269,8 @@ export class EventWriteService {
     }
 
     // Determine roles
-    const targetRole = event.userRoles.find((r) => r.userId === targetUserId);
-    const actorRole = event.userRoles.find((r) => r.userId === actorId);
+    const targetRole = event.roles.find((r) => r.userId === targetUserId);
+    const actorRole = event.roles.find((r) => r.userId === actorId);
 
     if (!targetRole) {
       throw new NotFoundException('User is not assigned to this event.');
@@ -338,20 +279,20 @@ export class EventWriteService {
     // 2) Permission Matrix
 
     // If actor is NOT owner AND tries to remove an admin → forbidden
-    if (targetRole.role === UserRole.ADMIN && actorId !== event.owner) {
+    if (targetRole.role === UserRoleType.ADMIN && actorId !== event.owner) {
       throw new Error('Only the event owner can remove an admin.');
     }
 
     // If actor is NOT admin or owner → forbidden
-    const isActorAdminOrOwner = actorRole?.role === UserRole.ADMIN || actorId === event.owner;
+    const isActorAdminOrOwner = actorRole?.role === UserRoleType.ADMIN || actorId === event.owner;
     if (!isActorAdminOrOwner) {
       throw new Error('You are not allowed to remove users from this event.');
     }
 
     // If actor is admin and tries to remove an admin → forbidden
     if (
-      actorRole?.role === UserRole.ADMIN &&
-      targetRole.role === UserRole.ADMIN &&
+      actorRole?.role === UserRoleType.ADMIN &&
+      targetRole.role === UserRoleType.ADMIN &&
       actorId !== event.owner
     ) {
       throw new Error('Admins cannot remove other admins.');
@@ -364,18 +305,18 @@ export class EventWriteService {
 
     // 3) Execute deletion + audit log
     await this.prisma.$transaction([
-      this.prisma.userEventRole.delete({
+      this.prisma.role.delete({
         where: { userId_eventId: { userId: targetUserId, eventId } },
       }),
 
-      this.prisma.eventAuditLog.create({
-        data: {
-          eventId,
-          actorId,
-          action: 'USER_ROLE_REMOVED',
-          data: { targetUserId, actorId },
-        },
-      }),
+      // this.prisma.eventAuditLog.create({
+      //   data: {
+      //     eventId,
+      //     actorId,
+      //     action: 'USER_ROLE_REMOVED',
+      //     data: { targetUserId, actorId },
+      //   },
+      // }),
     ]);
   }
 
@@ -384,6 +325,8 @@ export class EventWriteService {
     newOwnerId: string,
     actorId: string,
   ): Promise<void> {
+    this.logger.info('Transfer Ownership from %s to %s, Event=%s', actorId, newOwnerId, eventId);
+
     const event = await this.prisma.event.findUnique({
       where: { id: eventId },
       select: { owner: true },
@@ -405,18 +348,18 @@ export class EventWriteService {
 
     await this.prisma.$transaction([
       // 1️⃣ new owner gets ADMIN rights
-      this.prisma.userEventRole.upsert({
+      this.prisma.role.upsert({
         where: { userId_eventId: { userId: newOwnerId, eventId } },
-        create: { userId: newOwnerId, eventId, role: UserRole.ADMIN },
-        update: { role: UserRole.ADMIN },
+        create: { userId: newOwnerId, eventId, role: UserRoleType.ADMIN },
+        update: { role: UserRoleType.ADMIN },
       }),
 
       // 2️⃣ old owner stays ADMIN or becomes ADMIN? Up to your business logic.
       // recommended: stay ADMIN
-      this.prisma.userEventRole.upsert({
+      this.prisma.role.upsert({
         where: { userId_eventId: { userId: event.owner, eventId } },
-        create: { userId: event.owner, eventId, role: UserRole.ADMIN },
-        update: { role: UserRole.ADMIN },
+        create: { userId: event.owner, eventId, role: UserRoleType.ADMIN },
+        update: { role: UserRoleType.ADMIN },
       }),
 
       // 3️⃣ update owner field
@@ -426,47 +369,50 @@ export class EventWriteService {
       }),
 
       // 4️⃣ audit log
-      this.prisma.eventAuditLog.create({
-        data: {
-          eventId,
-          actorId,
-          action: 'OWNER_TRANSFERRED',
-          data: { oldOwner: event.owner, newOwner: newOwnerId },
-        },
-      }),
+      // this.prisma.eventAuditLog.create({
+      //   data: {
+      //     eventId,
+      //     actorId,
+      //     action: 'OWNER_TRANSFERRED',
+      //     data: { oldOwner: event.owner, newOwner: newOwnerId },
+      //   },
+      // }),
     ]);
   }
 
   async activateEvent(eventId: string, actorId: string): Promise<boolean> {
-    await this.prisma.event.update({
-      where: { id: eventId },
+    this.logger.info('Activate Event %o', { actorId, eventId });
+
+    await this.prisma.settings.update({
+      where: { eventId },
       data: { isActive: true },
     });
 
-    await this.prisma.eventAuditLog.create({
-      data: {
-        eventId,
-        actorId,
-        action: 'EVENT_ACTIVATED',
-      },
-    });
+    // await this.prisma.eventAuditLog.create({
+    //   data: {
+    //     eventId,
+    //     actorId,
+    //     action: 'EVENT_ACTIVATED',
+    //   },
+    // });
 
     return true;
   }
 
   async deactivateEvent(eventId: string, actorId: string): Promise<boolean> {
-    await this.prisma.event.update({
-      where: { id: eventId },
+    this.logger.info('Deactivate Event %o', { actorId, eventId });
+    await this.prisma.settings.update({
+      where: { eventId },
       data: { isActive: false },
     });
 
-    await this.prisma.eventAuditLog.create({
-      data: {
-        eventId,
-        actorId,
-        action: 'EVENT_DEACTIVATED',
-      },
-    });
+    // await this.prisma.eventAuditLog.create({
+    //   data: {
+    //     eventId,
+    //     actorId,
+    //     action: 'EVENT_DEACTIVATED',
+    //   },
+    // });
 
     return true;
   }

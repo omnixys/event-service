@@ -4,5 +4,5 @@ import { Field, InputType, PartialType } from '@nestjs/graphql';
 @InputType()
 export class UpdateEventInput extends PartialType(CreateEventInput) {
   @Field({ nullable: false })
-  id!: string; // Must always be included
+  eventId!: string; // Must always be included
 }

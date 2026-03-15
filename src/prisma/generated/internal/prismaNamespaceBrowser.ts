@@ -82,8 +82,6 @@ export const EventScalarFieldEnum = {
   name: 'name',
   owner: 'owner',
   parentId: 'parentId',
-  startsAt: 'startsAt',
-  endsAt: 'endsAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
 } as const;
@@ -100,6 +98,8 @@ export const SettingsScalarFieldEnum = {
   isActive: 'isActive',
   dressCode: 'dressCode',
   description: 'description',
+  startsAt: 'startsAt',
+  endsAt: 'endsAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
 } as const;
