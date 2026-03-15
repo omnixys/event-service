@@ -1,21 +1,13 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
 import { LoggerPlusService } from '../../logger/logger-plus.service.js';
+import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { UserRole } from '../models/enums/user-role.enum.js';
-import { EventAddressMapper } from '../models/mapper/event-address.mapper.js';
-import { EventAuditLogMapper } from '../models/mapper/event-audit-log.mapper.js';
-import { EventDescriptionBlockMapper } from '../models/mapper/event-description-block.mapper.js';
-import { EventFAQMapper } from '../models/mapper/event-faq.mapper.js';
-import { EventMediaMapper } from '../models/mapper/event-media.mapper.js';
-import { EventSettingsMapper } from '../models/mapper/event-settings.mapper.js';
-import { EventTeamMapper } from '../models/mapper/event-team.mapper.js';
-import { EventThemeMapper } from '../models/mapper/event-theme.mapper.js';
 import { EventTimelineMapper } from '../models/mapper/event-timeline.mapper.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
 import { UserEventRoleMapper } from '../models/mapper/user-event-role.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class EventReadService {
@@ -29,44 +21,41 @@ export class EventReadService {
   }
 
   // ─────────────────────────────────────────────
-  // ROOT EVENTS
+  // EVENT
   // ─────────────────────────────────────────────
 
   async getEventById(id: string, userId: string) {
-    const event = await this.prisma.event.findUnique({
-      where: { id },
-      include: {
-        userRoles: true,
-      },
+    this.logger.debug('Fetching event for user', { eventId: id, userId });
+
+    const event = await this.findEventOrThrow(id, userId);
+
+    const role = event.roles.find((r) => r.userId === userId)?.role;
+
+    this.logger.debug('Resolved user role for event', {
+      eventId: id,
+      userId,
+      role,
     });
 
-    if (!event) {
-      throw new NotFoundException(`Event with ID "${id}" not found`);
-    }
-
-    const role = event.userRoles.find((role) => role.userId === userId)?.role;
-    return EventMapper.toPayload(event, role as UserRole);
+    return EventMapper.toPayload(event, role);
   }
 
-  async getEventById2(id: string) {
-    const event = await this.prisma.event.findUnique({
-      where: { id },
-      include: {
-        userRoles: true,
-      },
-    });
+  async getEventByIdAsAdmin(id: string) {
+    this.logger.debug('Fetching event as admin', { eventId: id });
 
-    if (!event) {
-      throw new NotFoundException(`Event with ID "${id}" not found`);
-    }
+    const event = await this.findEventOrThrow(id, '', true);
 
     return EventMapper.toPayload(event);
   }
 
   async getAllEvents() {
+    this.logger.debug('Fetching all events');
+
     const events = await this.prisma.event.findMany({
       orderBy: { createdAt: 'desc' },
     });
+
+    this.logger.debug('Events fetched', { count: events.length });
 
     return EventMapper.toPayloadList(events);
   }
@@ -75,141 +64,119 @@ export class EventReadService {
   // RELATIONS (Payload Mapped)
   // ─────────────────────────────────────────────
 
-  async getAddress(eventId: string) {
-    const entity = await this.prisma.eventAddress.findUnique({
-      where: { eventId },
-    });
-    return entity ? EventAddressMapper.toPayload(entity) : null;
-  }
-
-  async getSettings(eventId: string) {
-    const entity = await this.prisma.eventSettings.findUnique({
-      where: { eventId },
-    });
-    return entity ? EventSettingsMapper.toPayload(entity) : null;
-  }
-
-  async getTheme(eventId: string) {
-    const entity = await this.prisma.eventTheme.findUnique({
-      where: { eventId },
-    });
-    return entity ? EventThemeMapper.toPayload(entity) : null;
-  }
-
-  async getMedia(eventId: string) {
-    const list = await this.prisma.eventMedia.findMany({
-      where: { eventId },
-      orderBy: { order: 'asc' },
-    });
-
-    return EventMediaMapper.toPayloadList(list);
-  }
-
-  async getDescriptionBlocks(eventId: string) {
-    const list = await this.prisma.eventDescriptionBlock.findMany({
-      where: { eventId },
-      orderBy: { order: 'asc' },
-    });
-
-    return EventDescriptionBlockMapper.toPayloadList(list);
-  }
-
-  async getFaqs(eventId: string) {
-    const list = await this.prisma.eventFAQ.findMany({
-      where: { eventId },
-      orderBy: { order: 'asc' },
-    });
-    return EventFAQMapper.toPayloadList(list);
-  }
-
-  async getTeam(eventId: string) {
-    const list = await this.prisma.eventTeamMember.findMany({
-      where: { eventId },
-      orderBy: { order: 'asc' },
-    });
-
-    return EventTeamMapper.toPayloadList(list);
-  }
-
-  async getAuditLogs(eventId: string) {
-    const list = await this.prisma.eventAuditLog.findMany({
-      where: { eventId },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    return EventAuditLogMapper.toPayloadList(list);
-  }
-
   async getTimeline(eventId: string) {
-    const list = await this.prisma.eventTimeline.findMany({
+    this.logger.debug('Fetching event timeline', { eventId });
+
+    const list = await this.prisma.timeline.findMany({
       where: { eventId },
       orderBy: { timestamp: 'asc' },
+    });
+
+    this.logger.debug('Timeline entries fetched', {
+      eventId,
+      count: list.length,
     });
 
     return EventTimelineMapper.toPayloadList(list);
   }
 
-  async getUserRoles(eventId: string) {
-    const list = await this.prisma.userEventRole.findMany({
+  async getRoles(eventId: string) {
+    this.logger.debug('Fetching event user roles', { eventId });
+
+    const list = await this.prisma.role.findMany({
       where: { eventId },
+    });
+
+    this.logger.debug('Roles fetched', {
+      eventId,
+      count: list.length,
     });
 
     return UserEventRoleMapper.toPayloadList(list);
   }
 
-  /**
-   * Liefert alle Events, für die der gegebene Benutzer irgendeine Rolle besitzt.
-   * - Liefert EventPayload[] inkl. myRole
-   * - Nutzt userRoles-Relation
-   * - Sortiert korrekt
-   */
+  // ─────────────────────────────────────────────
+  // USER CONTEXT
+  // ─────────────────────────────────────────────
+
   async findMyEvents(userId: string): Promise<EventPayload[]> {
-    this.logger.debug(`findMyEvents(${userId})`);
+    this.logger.debug('Fetching user events', { userId });
 
-    // 1️⃣ Alle Event-Rollen des Users holen
-    const relations = await this.prisma.userEventRole.findMany({
-      where: { userId },
-      select: {
-        eventId: true,
-        role: true,
-      },
-    });
-
-    if (relations.length === 0) {
-      return [];
-    }
-
-    // Event-IDs extrahieren
-    const eventIds = [...new Set(relations.map((r) => r.eventId))];
-
-    // 2️⃣ Events + userRoles für den User holen
     const events = await this.prisma.event.findMany({
-      where: { id: { in: eventIds } },
-      orderBy: { startsAt: 'asc' },
+      where: {
+        roles: {
+          some: { userId },
+        },
+      },
       include: {
-        userRoles: {
+        roles: {
           where: { userId },
           select: { role: true },
         },
       },
+      orderBy: { startsAt: 'asc' },
     });
 
-    // 3️⃣ Payload bauen
-    return events.map((evt) => {
-      const prismaRole = evt.userRoles[0]?.role;
+    this.logger.debug('User events resolved', {
+      userId,
+      count: events.length,
+    });
 
-      return {
-        ...EventMapper.toPayload(evt, prismaRole as UserRole),
-      };
+    return events.map((evt) => {
+      const role = evt.roles[0]?.role;
+
+      return EventMapper.toPayload(evt, role);
     });
   }
 
   async findMyGuests(eventId: string): Promise<string[]> {
-    const rows = await this.prisma.userEventRole.findMany({
+    this.logger.debug('Fetching guests for event', { eventId });
+
+    const rows = await this.prisma.role.findMany({
       where: { eventId },
       select: { userId: true },
     });
 
+    this.logger.debug('Guests resolved', {
+      eventId,
+      count: rows.length,
+    });
+
     return rows.map((r) => r.userId);
+  }
+
+  // ─────────────────────────────────────────────
+  // INTERNAL
+  // ─────────────────────────────────────────────
+
+  private async findEventOrThrow(id: string, userId: string, isAdmin: boolean = false) {
+    const event = await this.prisma.event.findUnique({
+      where: { id },
+      include: {
+        roles: isAdmin
+          ? true
+          : {
+              where: { userId },
+              take: 1,
+            },
+        settings: true,
+      },
+    });
+
+    if (!event) {
+      this.logger.warn('Event not found', { eventId: id });
+      throw new NotFoundException(`Event "${id}" not found`);
+    }
+
+    if (!isAdmin && event.roles.length === 0) {
+      this.logger.warn('User tried to access event without role', {
+        eventId: id,
+        userId,
+      });
+
+      throw new ForbiddenException('You are not part of this event');
+    }
+
+    return event;
   }
 }

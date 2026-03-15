@@ -8,10 +8,10 @@
  * 🟢 You can import this file directly.
  */
 
-export const UserRole = {
+export const UserRoleType = {
   ADMIN: 'ADMIN',
   SECURITY: 'SECURITY',
   GUEST: 'GUEST',
 } as const;
 
-export type UserRole = (typeof UserRole)[keyof typeof UserRole];
+export type UserRoleType = (typeof UserRoleType)[keyof typeof UserRoleType];

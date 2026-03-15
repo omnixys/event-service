@@ -1,9 +1,4 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import {
-  CurrentUser,
-  CurrentUserData,
-} from '../../auth/decorators/current-user.decorator.js';
-import { CookieAuthGuard } from '../../auth/guards/cookie-auth.guard.js';
 import { EventAdminGuard } from '../guards/event-admin.guard.js';
 import { EventOwnerGuard } from '../guards/event-owner.guard.js';
 import { AssignUserRoleInput } from '../models/inputs/assign-user-role.input.js';
@@ -14,6 +9,7 @@ import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventWriteService } from '../services/event-write.service.js';
 import { UseGuards } from '@nestjs/common';
 import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
+import { CookieAuthGuard, CurrentUser, CurrentUserData } from '@omnixys/auth';
 
 @Resolver(() => Event)
 export class EventMutationResolver {
@@ -46,7 +42,7 @@ export class EventMutationResolver {
   }
 
   @Mutation(() => Boolean)
-  async assignUserRoleToEvent(
+  async assignUserToEvent(
     @Args('input') input: AssignUserRoleInput,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<boolean> {

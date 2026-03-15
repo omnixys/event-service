@@ -1,26 +1,44 @@
-import type { Event } from '../../../prisma/generated/client.js';
+import type {
+  Event,
+  Settings,
+  UserRoleType,
+} from '../../../prisma/generated/client.js';
 import { n2u } from '../../utils/null-to-undefined.js';
-import type { UserRole } from '../enums/user-role.enum.js';
 import type { EventPayload } from '../payloads/event.payload.js';
 
+type EventWithSettings = Event & {
+  settings?: Settings | null;
+};
+
 export class EventMapper {
-  static toPayload(event: Event, myRole?: UserRole): EventPayload {
+  static toPayload(
+    event: EventWithSettings,
+    myRole?: UserRoleType,
+  ): EventPayload {
     return {
       id: event.id,
       name: event.name,
       startsAt: event.startsAt,
       endsAt: event.endsAt,
-      allowReEntry: event.allowReEntry,
-      rotateSeconds: event.rotateSeconds,
-      maxSeats: event.maxSeats,
       owner: event.owner,
-      description: n2u(event.description),
-      dressCode: n2u(event.dressCode),
-      isActive: event.isActive,
       createdAt: event.createdAt,
       updatedAt: event.updatedAt,
 
-      myRole: myRole === null ? undefined : myRole,
+      myRole: n2u(myRole),
+
+      settings: event.settings
+        ? {
+            id: event.settings.id,
+            allowReEntry: event.settings.allowReEntry,
+            rotateSeconds: event.settings.rotateSeconds,
+            maxSeats: event.settings.maxSeats,
+            isActive: event.settings.isActive,
+            dressCode: n2u(event.settings.dressCode),
+            description: n2u(event.settings.description),
+            createdAt: event.settings.createdAt,
+            updatedAt: event.settings.updatedAt,
+          }
+        : undefined,
     };
   }
 

@@ -1,39 +1,43 @@
-import { SeatingConfigInput } from '../dto/seating-config.dto.js';
-import { EventAddressInput } from './address.input.js';
-import { DescriptionBlockInput } from './description-block.input.js';
-import { FAQInput } from './faq.input.js';
-import { MediaInput } from './media.input.js';
-import { SettingsInput } from './settings.input.js';
-import { TeamMemberInput } from './team-member.input.js';
-import { ThemeInput } from './theme.input.js';
-import { TimelineInput } from './timeline.input.js';
-import { Field, InputType } from '@nestjs/graphql';
+import { CreateSettingsInput } from './create-settings.input.js';
+import { Field, GraphQLISODateTime, ID, InputType } from '@nestjs/graphql';
+import { UserAddressInput } from '@omnixys/graphql';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
-  IsDateString,
+  IsDate,
   IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
   Max,
   Min,
+  ValidateNested,
 } from 'class-validator';
 
 @InputType()
 export class CreateEventInput {
+  @Field(() => ID, { nullable: true })
+  @IsString()
+  @IsOptional()
+  parentId?: string;
+
+  @Field(() => ID)
+  @IsString()
+  @IsNotEmpty()
+  owner!: string;
+
   @Field()
   @IsString()
   @IsNotEmpty()
   name!: string;
 
-  @Field()
-  @IsDateString()
-  startsAt!: string;
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  @IsDate()
+  startsAt!: Date;
 
-  @Field()
-  @IsDateString()
-  endsAt!: string;
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  @IsDate()
+  endsAt!: Date;
 
   @Field()
   @IsBoolean()
@@ -51,47 +55,15 @@ export class CreateEventInput {
   maxSeats!: number;
 
   // Optional nested objects
-
-  @Field(() => [EventAddressInput], { nullable: true })
-  @Type(() => EventAddressInput)
+  @ValidateNested()
+  @Field(() => UserAddressInput, { nullable: true })
+  @Type(() => UserAddressInput)
   @IsOptional()
-  address?: EventAddressInput;
+  address?: UserAddressInput;
 
-  @Field(() => SettingsInput, { nullable: true })
-  @Type(() => SettingsInput)
+  @ValidateNested()
+  @Field(() => CreateSettingsInput)
+  @Type(() => CreateSettingsInput)
   @IsOptional()
-  settings?: SettingsInput;
-
-  @Field(() => ThemeInput, { nullable: true })
-  @Type(() => ThemeInput)
-  @IsOptional()
-  theme?: ThemeInput;
-
-  @Field(() => [MediaInput], { nullable: true })
-  @Type(() => MediaInput)
-  @IsOptional()
-  media?: MediaInput[];
-
-  @Field(() => [DescriptionBlockInput], { nullable: true })
-  @Type(() => DescriptionBlockInput)
-  @IsOptional()
-  description?: DescriptionBlockInput[];
-
-  @Field(() => [FAQInput], { nullable: true })
-  @Type(() => FAQInput)
-  @IsOptional()
-  faqs?: FAQInput[];
-
-  @Field(() => [TeamMemberInput], { nullable: true })
-  @Type(() => TeamMemberInput)
-  @IsOptional()
-  team?: TeamMemberInput[];
-
-  @Field(() => [TimelineInput], { nullable: true })
-  @Type(() => TimelineInput)
-  @IsOptional()
-  timeline?: TimelineInput[];
-
-  @Field(() => SeatingConfigInput, { nullable: true })
-  config?: SeatingConfigInput;
+  settings?: CreateSettingsInput;
 }

@@ -20,34 +20,17 @@ export type EventModel =
 
 export type AggregateEvent = {
   _count: EventCountAggregateOutputType | null;
-  _avg: EventAvgAggregateOutputType | null;
-  _sum: EventSumAggregateOutputType | null;
   _min: EventMinAggregateOutputType | null;
   _max: EventMaxAggregateOutputType | null;
-};
-
-export type EventAvgAggregateOutputType = {
-  rotateSeconds: number | null;
-  maxSeats: number | null;
-};
-
-export type EventSumAggregateOutputType = {
-  rotateSeconds: number | null;
-  maxSeats: number | null;
 };
 
 export type EventMinAggregateOutputType = {
   id: string | null;
   name: string | null;
+  owner: string | null;
+  parentId: string | null;
   startsAt: Date | null;
   endsAt: Date | null;
-  allowReEntry: boolean | null;
-  rotateSeconds: number | null;
-  maxSeats: number | null;
-  owner: string | null;
-  isActive: boolean | null;
-  dressCode: string | null;
-  description: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 };
@@ -55,15 +38,10 @@ export type EventMinAggregateOutputType = {
 export type EventMaxAggregateOutputType = {
   id: string | null;
   name: string | null;
+  owner: string | null;
+  parentId: string | null;
   startsAt: Date | null;
   endsAt: Date | null;
-  allowReEntry: boolean | null;
-  rotateSeconds: number | null;
-  maxSeats: number | null;
-  owner: string | null;
-  isActive: boolean | null;
-  dressCode: string | null;
-  description: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
 };
@@ -71,42 +49,22 @@ export type EventMaxAggregateOutputType = {
 export type EventCountAggregateOutputType = {
   id: number;
   name: number;
+  owner: number;
+  parentId: number;
   startsAt: number;
   endsAt: number;
-  allowReEntry: number;
-  rotateSeconds: number;
-  maxSeats: number;
-  owner: number;
-  isActive: number;
-  dressCode: number;
-  description: number;
   createdAt: number;
   updatedAt: number;
   _all: number;
 };
 
-export type EventAvgAggregateInputType = {
-  rotateSeconds?: true;
-  maxSeats?: true;
-};
-
-export type EventSumAggregateInputType = {
-  rotateSeconds?: true;
-  maxSeats?: true;
-};
-
 export type EventMinAggregateInputType = {
   id?: true;
   name?: true;
+  owner?: true;
+  parentId?: true;
   startsAt?: true;
   endsAt?: true;
-  allowReEntry?: true;
-  rotateSeconds?: true;
-  maxSeats?: true;
-  owner?: true;
-  isActive?: true;
-  dressCode?: true;
-  description?: true;
   createdAt?: true;
   updatedAt?: true;
 };
@@ -114,15 +72,10 @@ export type EventMinAggregateInputType = {
 export type EventMaxAggregateInputType = {
   id?: true;
   name?: true;
+  owner?: true;
+  parentId?: true;
   startsAt?: true;
   endsAt?: true;
-  allowReEntry?: true;
-  rotateSeconds?: true;
-  maxSeats?: true;
-  owner?: true;
-  isActive?: true;
-  dressCode?: true;
-  description?: true;
   createdAt?: true;
   updatedAt?: true;
 };
@@ -130,15 +83,10 @@ export type EventMaxAggregateInputType = {
 export type EventCountAggregateInputType = {
   id?: true;
   name?: true;
+  owner?: true;
+  parentId?: true;
   startsAt?: true;
   endsAt?: true;
-  allowReEntry?: true;
-  rotateSeconds?: true;
-  maxSeats?: true;
-  owner?: true;
-  isActive?: true;
-  dressCode?: true;
-  description?: true;
   createdAt?: true;
   updatedAt?: true;
   _all?: true;
@@ -187,18 +135,6 @@ export type EventAggregateArgs<
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
-   * Select which fields to average
-   **/
-  _avg?: EventAvgAggregateInputType;
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   *
-   * Select which fields to sum
-   **/
-  _sum?: EventSumAggregateInputType;
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   *
    * Select which fields to find the minimum value
    **/
   _min?: EventMinAggregateInputType;
@@ -231,8 +167,6 @@ export type EventGroupByArgs<
   take?: number;
   skip?: number;
   _count?: EventCountAggregateInputType | true;
-  _avg?: EventAvgAggregateInputType;
-  _sum?: EventSumAggregateInputType;
   _min?: EventMinAggregateInputType;
   _max?: EventMaxAggregateInputType;
 };
@@ -240,20 +174,13 @@ export type EventGroupByArgs<
 export type EventGroupByOutputType = {
   id: string;
   name: string;
+  owner: string;
+  parentId: string | null;
   startsAt: Date;
   endsAt: Date;
-  allowReEntry: boolean;
-  rotateSeconds: number;
-  maxSeats: number;
-  owner: string;
-  isActive: boolean;
-  dressCode: string | null;
-  description: string | null;
   createdAt: Date;
   updatedAt: Date;
   _count: EventCountAggregateOutputType | null;
-  _avg: EventAvgAggregateOutputType | null;
-  _sum: EventSumAggregateOutputType | null;
   _min: EventMinAggregateOutputType | null;
   _max: EventMaxAggregateOutputType | null;
 };
@@ -276,64 +203,44 @@ export type EventWhereInput = {
   NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[];
   id?: Prisma.StringFilter<'Event'> | string;
   name?: Prisma.StringFilter<'Event'> | string;
+  owner?: Prisma.StringFilter<'Event'> | string;
+  parentId?: Prisma.StringNullableFilter<'Event'> | string | null;
   startsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
   endsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
-  allowReEntry?: Prisma.BoolFilter<'Event'> | boolean;
-  rotateSeconds?: Prisma.IntFilter<'Event'> | number;
-  maxSeats?: Prisma.IntFilter<'Event'> | number;
-  owner?: Prisma.StringFilter<'Event'> | string;
-  isActive?: Prisma.BoolFilter<'Event'> | boolean;
-  dressCode?: Prisma.StringNullableFilter<'Event'> | string | null;
-  description?: Prisma.StringNullableFilter<'Event'> | string | null;
   createdAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
-  address?: Prisma.EventAddressListRelationFilter;
-  settings?: Prisma.XOR<
-    Prisma.EventSettingsNullableScalarRelationFilter,
-    Prisma.EventSettingsWhereInput
+  parent?: Prisma.XOR<
+    Prisma.EventNullableScalarRelationFilter,
+    Prisma.EventWhereInput
   > | null;
-  theme?: Prisma.XOR<
-    Prisma.EventThemeNullableScalarRelationFilter,
-    Prisma.EventThemeWhereInput
+  children?: Prisma.EventListRelationFilter;
+  settings?: Prisma.XOR<
+    Prisma.SettingsNullableScalarRelationFilter,
+    Prisma.SettingsWhereInput
   > | null;
   analytics?: Prisma.XOR<
-    Prisma.EventAnalyticsNullableScalarRelationFilter,
-    Prisma.EventAnalyticsWhereInput
+    Prisma.AnalyticsNullableScalarRelationFilter,
+    Prisma.AnalyticsWhereInput
   > | null;
-  media?: Prisma.EventMediaListRelationFilter;
-  fullDescription?: Prisma.EventDescriptionBlockListRelationFilter;
-  faqs?: Prisma.EventFAQListRelationFilter;
-  team?: Prisma.EventTeamMemberListRelationFilter;
-  auditLogs?: Prisma.EventAuditLogListRelationFilter;
-  timeline?: Prisma.EventTimelineListRelationFilter;
-  userRoles?: Prisma.UserEventRoleListRelationFilter;
+  timelines?: Prisma.TimelineListRelationFilter;
+  roles?: Prisma.RoleListRelationFilter;
 };
 
 export type EventOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
+  owner?: Prisma.SortOrder;
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder;
   startsAt?: Prisma.SortOrder;
   endsAt?: Prisma.SortOrder;
-  allowReEntry?: Prisma.SortOrder;
-  rotateSeconds?: Prisma.SortOrder;
-  maxSeats?: Prisma.SortOrder;
-  owner?: Prisma.SortOrder;
-  isActive?: Prisma.SortOrder;
-  dressCode?: Prisma.SortOrderInput | Prisma.SortOrder;
-  description?: Prisma.SortOrderInput | Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
-  address?: Prisma.EventAddressOrderByRelationAggregateInput;
-  settings?: Prisma.EventSettingsOrderByWithRelationInput;
-  theme?: Prisma.EventThemeOrderByWithRelationInput;
-  analytics?: Prisma.EventAnalyticsOrderByWithRelationInput;
-  media?: Prisma.EventMediaOrderByRelationAggregateInput;
-  fullDescription?: Prisma.EventDescriptionBlockOrderByRelationAggregateInput;
-  faqs?: Prisma.EventFAQOrderByRelationAggregateInput;
-  team?: Prisma.EventTeamMemberOrderByRelationAggregateInput;
-  auditLogs?: Prisma.EventAuditLogOrderByRelationAggregateInput;
-  timeline?: Prisma.EventTimelineOrderByRelationAggregateInput;
-  userRoles?: Prisma.UserEventRoleOrderByRelationAggregateInput;
+  parent?: Prisma.EventOrderByWithRelationInput;
+  children?: Prisma.EventOrderByRelationAggregateInput;
+  settings?: Prisma.SettingsOrderByWithRelationInput;
+  analytics?: Prisma.AnalyticsOrderByWithRelationInput;
+  timelines?: Prisma.TimelineOrderByRelationAggregateInput;
+  roles?: Prisma.RoleOrderByRelationAggregateInput;
 };
 
 export type EventWhereUniqueInput = Prisma.AtLeast<
@@ -343,37 +250,27 @@ export type EventWhereUniqueInput = Prisma.AtLeast<
     OR?: Prisma.EventWhereInput[];
     NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[];
     name?: Prisma.StringFilter<'Event'> | string;
+    owner?: Prisma.StringFilter<'Event'> | string;
+    parentId?: Prisma.StringNullableFilter<'Event'> | string | null;
     startsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
     endsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
-    allowReEntry?: Prisma.BoolFilter<'Event'> | boolean;
-    rotateSeconds?: Prisma.IntFilter<'Event'> | number;
-    maxSeats?: Prisma.IntFilter<'Event'> | number;
-    owner?: Prisma.StringFilter<'Event'> | string;
-    isActive?: Prisma.BoolFilter<'Event'> | boolean;
-    dressCode?: Prisma.StringNullableFilter<'Event'> | string | null;
-    description?: Prisma.StringNullableFilter<'Event'> | string | null;
     createdAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
-    address?: Prisma.EventAddressListRelationFilter;
-    settings?: Prisma.XOR<
-      Prisma.EventSettingsNullableScalarRelationFilter,
-      Prisma.EventSettingsWhereInput
+    parent?: Prisma.XOR<
+      Prisma.EventNullableScalarRelationFilter,
+      Prisma.EventWhereInput
     > | null;
-    theme?: Prisma.XOR<
-      Prisma.EventThemeNullableScalarRelationFilter,
-      Prisma.EventThemeWhereInput
+    children?: Prisma.EventListRelationFilter;
+    settings?: Prisma.XOR<
+      Prisma.SettingsNullableScalarRelationFilter,
+      Prisma.SettingsWhereInput
     > | null;
     analytics?: Prisma.XOR<
-      Prisma.EventAnalyticsNullableScalarRelationFilter,
-      Prisma.EventAnalyticsWhereInput
+      Prisma.AnalyticsNullableScalarRelationFilter,
+      Prisma.AnalyticsWhereInput
     > | null;
-    media?: Prisma.EventMediaListRelationFilter;
-    fullDescription?: Prisma.EventDescriptionBlockListRelationFilter;
-    faqs?: Prisma.EventFAQListRelationFilter;
-    team?: Prisma.EventTeamMemberListRelationFilter;
-    auditLogs?: Prisma.EventAuditLogListRelationFilter;
-    timeline?: Prisma.EventTimelineListRelationFilter;
-    userRoles?: Prisma.UserEventRoleListRelationFilter;
+    timelines?: Prisma.TimelineListRelationFilter;
+    roles?: Prisma.RoleListRelationFilter;
   },
   'id'
 >;
@@ -381,22 +278,15 @@ export type EventWhereUniqueInput = Prisma.AtLeast<
 export type EventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
+  owner?: Prisma.SortOrder;
+  parentId?: Prisma.SortOrderInput | Prisma.SortOrder;
   startsAt?: Prisma.SortOrder;
   endsAt?: Prisma.SortOrder;
-  allowReEntry?: Prisma.SortOrder;
-  rotateSeconds?: Prisma.SortOrder;
-  maxSeats?: Prisma.SortOrder;
-  owner?: Prisma.SortOrder;
-  isActive?: Prisma.SortOrder;
-  dressCode?: Prisma.SortOrderInput | Prisma.SortOrder;
-  description?: Prisma.SortOrderInput | Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
   _count?: Prisma.EventCountOrderByAggregateInput;
-  _avg?: Prisma.EventAvgOrderByAggregateInput;
   _max?: Prisma.EventMaxOrderByAggregateInput;
   _min?: Prisma.EventMinOrderByAggregateInput;
-  _sum?: Prisma.EventSumOrderByAggregateInput;
 };
 
 export type EventScalarWhereWithAggregatesInput = {
@@ -409,21 +299,10 @@ export type EventScalarWhereWithAggregatesInput = {
     | Prisma.EventScalarWhereWithAggregatesInput[];
   id?: Prisma.StringWithAggregatesFilter<'Event'> | string;
   name?: Prisma.StringWithAggregatesFilter<'Event'> | string;
+  owner?: Prisma.StringWithAggregatesFilter<'Event'> | string;
+  parentId?: Prisma.StringNullableWithAggregatesFilter<'Event'> | string | null;
   startsAt?: Prisma.DateTimeWithAggregatesFilter<'Event'> | Date | string;
   endsAt?: Prisma.DateTimeWithAggregatesFilter<'Event'> | Date | string;
-  allowReEntry?: Prisma.BoolWithAggregatesFilter<'Event'> | boolean;
-  rotateSeconds?: Prisma.IntWithAggregatesFilter<'Event'> | number;
-  maxSeats?: Prisma.IntWithAggregatesFilter<'Event'> | number;
-  owner?: Prisma.StringWithAggregatesFilter<'Event'> | string;
-  isActive?: Prisma.BoolWithAggregatesFilter<'Event'> | boolean;
-  dressCode?:
-    | Prisma.StringNullableWithAggregatesFilter<'Event'>
-    | string
-    | null;
-  description?:
-    | Prisma.StringNullableWithAggregatesFilter<'Event'>
-    | string
-    | null;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'Event'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'Event'> | Date | string;
 };
@@ -431,123 +310,74 @@ export type EventScalarWhereWithAggregatesInput = {
 export type EventCreateInput = {
   id?: string;
   name: string;
+  owner: string;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
+  parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
+  children?: Prisma.EventCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleCreateNestedManyWithoutEventInput;
 };
 
 export type EventUncheckedCreateInput = {
   id?: string;
   name: string;
+  owner: string;
+  parentId?: string | null;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
+  children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput;
 };
 
 export type EventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
+  parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
+  children?: Prisma.EventUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUpdateManyWithoutEventNestedInput;
 };
 
 export type EventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
+  children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput;
 };
 
 export type EventCreateManyInput = {
   id?: string;
   name: string;
+  owner: string;
+  parentId?: string | null;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
 };
@@ -555,15 +385,9 @@ export type EventCreateManyInput = {
 export type EventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -571,52 +395,47 @@ export type EventUpdateManyMutationInput = {
 export type EventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+};
+
+export type EventNullableScalarRelationFilter = {
+  is?: Prisma.EventWhereInput | null;
+  isNot?: Prisma.EventWhereInput | null;
+};
+
+export type EventListRelationFilter = {
+  every?: Prisma.EventWhereInput;
+  some?: Prisma.EventWhereInput;
+  none?: Prisma.EventWhereInput;
+};
+
+export type EventOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder;
 };
 
 export type EventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
+  owner?: Prisma.SortOrder;
+  parentId?: Prisma.SortOrder;
   startsAt?: Prisma.SortOrder;
   endsAt?: Prisma.SortOrder;
-  allowReEntry?: Prisma.SortOrder;
-  rotateSeconds?: Prisma.SortOrder;
-  maxSeats?: Prisma.SortOrder;
-  owner?: Prisma.SortOrder;
-  isActive?: Prisma.SortOrder;
-  dressCode?: Prisma.SortOrder;
-  description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
-};
-
-export type EventAvgOrderByAggregateInput = {
-  rotateSeconds?: Prisma.SortOrder;
-  maxSeats?: Prisma.SortOrder;
 };
 
 export type EventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
+  owner?: Prisma.SortOrder;
+  parentId?: Prisma.SortOrder;
   startsAt?: Prisma.SortOrder;
   endsAt?: Prisma.SortOrder;
-  allowReEntry?: Prisma.SortOrder;
-  rotateSeconds?: Prisma.SortOrder;
-  maxSeats?: Prisma.SortOrder;
-  owner?: Prisma.SortOrder;
-  isActive?: Prisma.SortOrder;
-  dressCode?: Prisma.SortOrder;
-  description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
 };
@@ -624,27 +443,56 @@ export type EventMaxOrderByAggregateInput = {
 export type EventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
+  owner?: Prisma.SortOrder;
+  parentId?: Prisma.SortOrder;
   startsAt?: Prisma.SortOrder;
   endsAt?: Prisma.SortOrder;
-  allowReEntry?: Prisma.SortOrder;
-  rotateSeconds?: Prisma.SortOrder;
-  maxSeats?: Prisma.SortOrder;
-  owner?: Prisma.SortOrder;
-  isActive?: Prisma.SortOrder;
-  dressCode?: Prisma.SortOrder;
-  description?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
-};
-
-export type EventSumOrderByAggregateInput = {
-  rotateSeconds?: Prisma.SortOrder;
-  maxSeats?: Prisma.SortOrder;
 };
 
 export type EventScalarRelationFilter = {
   is?: Prisma.EventWhereInput;
   isNot?: Prisma.EventWhereInput;
+};
+
+export type EventCreateNestedOneWithoutChildrenInput = {
+  create?: Prisma.XOR<
+    Prisma.EventCreateWithoutChildrenInput,
+    Prisma.EventUncheckedCreateWithoutChildrenInput
+  >;
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutChildrenInput;
+  connect?: Prisma.EventWhereUniqueInput;
+};
+
+export type EventCreateNestedManyWithoutParentInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.EventCreateWithoutParentInput,
+        Prisma.EventUncheckedCreateWithoutParentInput
+      >
+    | Prisma.EventCreateWithoutParentInput[]
+    | Prisma.EventUncheckedCreateWithoutParentInput[];
+  connectOrCreate?:
+    | Prisma.EventCreateOrConnectWithoutParentInput
+    | Prisma.EventCreateOrConnectWithoutParentInput[];
+  createMany?: Prisma.EventCreateManyParentInputEnvelope;
+  connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
+};
+
+export type EventUncheckedCreateNestedManyWithoutParentInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.EventCreateWithoutParentInput,
+        Prisma.EventUncheckedCreateWithoutParentInput
+      >
+    | Prisma.EventCreateWithoutParentInput[]
+    | Prisma.EventUncheckedCreateWithoutParentInput[];
+  connectOrCreate?:
+    | Prisma.EventCreateOrConnectWithoutParentInput
+    | Prisma.EventCreateOrConnectWithoutParentInput[];
+  createMany?: Prisma.EventCreateManyParentInputEnvelope;
+  connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
 };
 
 export type StringFieldUpdateOperationsInput = {
@@ -655,46 +503,83 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string;
 };
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean;
+export type EventUpdateOneWithoutChildrenNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.EventCreateWithoutChildrenInput,
+    Prisma.EventUncheckedCreateWithoutChildrenInput
+  >;
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutChildrenInput;
+  upsert?: Prisma.EventUpsertWithoutChildrenInput;
+  disconnect?: Prisma.EventWhereInput | boolean;
+  delete?: Prisma.EventWhereInput | boolean;
+  connect?: Prisma.EventWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.EventUpdateToOneWithWhereWithoutChildrenInput,
+      Prisma.EventUpdateWithoutChildrenInput
+    >,
+    Prisma.EventUncheckedUpdateWithoutChildrenInput
+  >;
 };
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number;
-  increment?: number;
-  decrement?: number;
-  multiply?: number;
-  divide?: number;
+export type EventUpdateManyWithoutParentNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.EventCreateWithoutParentInput,
+        Prisma.EventUncheckedCreateWithoutParentInput
+      >
+    | Prisma.EventCreateWithoutParentInput[]
+    | Prisma.EventUncheckedCreateWithoutParentInput[];
+  connectOrCreate?:
+    | Prisma.EventCreateOrConnectWithoutParentInput
+    | Prisma.EventCreateOrConnectWithoutParentInput[];
+  upsert?:
+    | Prisma.EventUpsertWithWhereUniqueWithoutParentInput
+    | Prisma.EventUpsertWithWhereUniqueWithoutParentInput[];
+  createMany?: Prisma.EventCreateManyParentInputEnvelope;
+  set?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
+  disconnect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
+  delete?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
+  connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
+  update?:
+    | Prisma.EventUpdateWithWhereUniqueWithoutParentInput
+    | Prisma.EventUpdateWithWhereUniqueWithoutParentInput[];
+  updateMany?:
+    | Prisma.EventUpdateManyWithWhereWithoutParentInput
+    | Prisma.EventUpdateManyWithWhereWithoutParentInput[];
+  deleteMany?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[];
 };
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null;
 };
 
-export type EventCreateNestedOneWithoutAddressInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutAddressInput,
-    Prisma.EventUncheckedCreateWithoutAddressInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutAddressInput;
-  connect?: Prisma.EventWhereUniqueInput;
-};
-
-export type EventUpdateOneRequiredWithoutAddressNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutAddressInput,
-    Prisma.EventUncheckedCreateWithoutAddressInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutAddressInput;
-  upsert?: Prisma.EventUpsertWithoutAddressInput;
-  connect?: Prisma.EventWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.EventUpdateToOneWithWhereWithoutAddressInput,
-      Prisma.EventUpdateWithoutAddressInput
-    >,
-    Prisma.EventUncheckedUpdateWithoutAddressInput
-  >;
+export type EventUncheckedUpdateManyWithoutParentNestedInput = {
+  create?:
+    | Prisma.XOR<
+        Prisma.EventCreateWithoutParentInput,
+        Prisma.EventUncheckedCreateWithoutParentInput
+      >
+    | Prisma.EventCreateWithoutParentInput[]
+    | Prisma.EventUncheckedCreateWithoutParentInput[];
+  connectOrCreate?:
+    | Prisma.EventCreateOrConnectWithoutParentInput
+    | Prisma.EventCreateOrConnectWithoutParentInput[];
+  upsert?:
+    | Prisma.EventUpsertWithWhereUniqueWithoutParentInput
+    | Prisma.EventUpsertWithWhereUniqueWithoutParentInput[];
+  createMany?: Prisma.EventCreateManyParentInputEnvelope;
+  set?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
+  disconnect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
+  delete?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
+  connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[];
+  update?:
+    | Prisma.EventUpdateWithWhereUniqueWithoutParentInput
+    | Prisma.EventUpdateWithWhereUniqueWithoutParentInput[];
+  updateMany?:
+    | Prisma.EventUpdateManyWithWhereWithoutParentInput
+    | Prisma.EventUpdateManyWithWhereWithoutParentInput[];
+  deleteMany?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[];
 };
 
 export type EventCreateNestedOneWithoutSettingsInput = {
@@ -706,13 +591,15 @@ export type EventCreateNestedOneWithoutSettingsInput = {
   connect?: Prisma.EventWhereUniqueInput;
 };
 
-export type EventUpdateOneRequiredWithoutSettingsNestedInput = {
+export type EventUpdateOneWithoutSettingsNestedInput = {
   create?: Prisma.XOR<
     Prisma.EventCreateWithoutSettingsInput,
     Prisma.EventUncheckedCreateWithoutSettingsInput
   >;
   connectOrCreate?: Prisma.EventCreateOrConnectWithoutSettingsInput;
   upsert?: Prisma.EventUpsertWithoutSettingsInput;
+  disconnect?: Prisma.EventWhereInput | boolean;
+  delete?: Prisma.EventWhereInput | boolean;
   connect?: Prisma.EventWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<
@@ -720,32 +607,6 @@ export type EventUpdateOneRequiredWithoutSettingsNestedInput = {
       Prisma.EventUpdateWithoutSettingsInput
     >,
     Prisma.EventUncheckedUpdateWithoutSettingsInput
-  >;
-};
-
-export type EventCreateNestedOneWithoutThemeInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutThemeInput,
-    Prisma.EventUncheckedCreateWithoutThemeInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutThemeInput;
-  connect?: Prisma.EventWhereUniqueInput;
-};
-
-export type EventUpdateOneRequiredWithoutThemeNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutThemeInput,
-    Prisma.EventUncheckedCreateWithoutThemeInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutThemeInput;
-  upsert?: Prisma.EventUpsertWithoutThemeInput;
-  connect?: Prisma.EventWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.EventUpdateToOneWithWhereWithoutThemeInput,
-      Prisma.EventUpdateWithoutThemeInput
-    >,
-    Prisma.EventUncheckedUpdateWithoutThemeInput
   >;
 };
 
@@ -775,370 +636,259 @@ export type EventUpdateOneRequiredWithoutAnalyticsNestedInput = {
   >;
 };
 
-export type EventCreateNestedOneWithoutMediaInput = {
+export type EventCreateNestedOneWithoutTimelinesInput = {
   create?: Prisma.XOR<
-    Prisma.EventCreateWithoutMediaInput,
-    Prisma.EventUncheckedCreateWithoutMediaInput
+    Prisma.EventCreateWithoutTimelinesInput,
+    Prisma.EventUncheckedCreateWithoutTimelinesInput
   >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutMediaInput;
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutTimelinesInput;
   connect?: Prisma.EventWhereUniqueInput;
 };
 
-export type EventUpdateOneRequiredWithoutMediaNestedInput = {
+export type EventUpdateOneRequiredWithoutTimelinesNestedInput = {
   create?: Prisma.XOR<
-    Prisma.EventCreateWithoutMediaInput,
-    Prisma.EventUncheckedCreateWithoutMediaInput
+    Prisma.EventCreateWithoutTimelinesInput,
+    Prisma.EventUncheckedCreateWithoutTimelinesInput
   >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutMediaInput;
-  upsert?: Prisma.EventUpsertWithoutMediaInput;
-  connect?: Prisma.EventWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.EventUpdateToOneWithWhereWithoutMediaInput,
-      Prisma.EventUpdateWithoutMediaInput
-    >,
-    Prisma.EventUncheckedUpdateWithoutMediaInput
-  >;
-};
-
-export type EventCreateNestedOneWithoutFullDescriptionInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutFullDescriptionInput,
-    Prisma.EventUncheckedCreateWithoutFullDescriptionInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutFullDescriptionInput;
-  connect?: Prisma.EventWhereUniqueInput;
-};
-
-export type EventUpdateOneRequiredWithoutFullDescriptionNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutFullDescriptionInput,
-    Prisma.EventUncheckedCreateWithoutFullDescriptionInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutFullDescriptionInput;
-  upsert?: Prisma.EventUpsertWithoutFullDescriptionInput;
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutTimelinesInput;
+  upsert?: Prisma.EventUpsertWithoutTimelinesInput;
   connect?: Prisma.EventWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<
-      Prisma.EventUpdateToOneWithWhereWithoutFullDescriptionInput,
-      Prisma.EventUpdateWithoutFullDescriptionInput
+      Prisma.EventUpdateToOneWithWhereWithoutTimelinesInput,
+      Prisma.EventUpdateWithoutTimelinesInput
     >,
-    Prisma.EventUncheckedUpdateWithoutFullDescriptionInput
+    Prisma.EventUncheckedUpdateWithoutTimelinesInput
   >;
 };
 
-export type EventCreateNestedOneWithoutFaqsInput = {
+export type EventCreateNestedOneWithoutRolesInput = {
   create?: Prisma.XOR<
-    Prisma.EventCreateWithoutFaqsInput,
-    Prisma.EventUncheckedCreateWithoutFaqsInput
+    Prisma.EventCreateWithoutRolesInput,
+    Prisma.EventUncheckedCreateWithoutRolesInput
   >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutFaqsInput;
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutRolesInput;
   connect?: Prisma.EventWhereUniqueInput;
 };
 
-export type EventUpdateOneRequiredWithoutFaqsNestedInput = {
+export type EventUpdateOneRequiredWithoutRolesNestedInput = {
   create?: Prisma.XOR<
-    Prisma.EventCreateWithoutFaqsInput,
-    Prisma.EventUncheckedCreateWithoutFaqsInput
+    Prisma.EventCreateWithoutRolesInput,
+    Prisma.EventUncheckedCreateWithoutRolesInput
   >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutFaqsInput;
-  upsert?: Prisma.EventUpsertWithoutFaqsInput;
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutRolesInput;
+  upsert?: Prisma.EventUpsertWithoutRolesInput;
   connect?: Prisma.EventWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<
-      Prisma.EventUpdateToOneWithWhereWithoutFaqsInput,
-      Prisma.EventUpdateWithoutFaqsInput
+      Prisma.EventUpdateToOneWithWhereWithoutRolesInput,
+      Prisma.EventUpdateWithoutRolesInput
     >,
-    Prisma.EventUncheckedUpdateWithoutFaqsInput
+    Prisma.EventUncheckedUpdateWithoutRolesInput
   >;
 };
 
-export type EventCreateNestedOneWithoutTeamInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutTeamInput,
-    Prisma.EventUncheckedCreateWithoutTeamInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutTeamInput;
-  connect?: Prisma.EventWhereUniqueInput;
-};
-
-export type EventUpdateOneRequiredWithoutTeamNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutTeamInput,
-    Prisma.EventUncheckedCreateWithoutTeamInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutTeamInput;
-  upsert?: Prisma.EventUpsertWithoutTeamInput;
-  connect?: Prisma.EventWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.EventUpdateToOneWithWhereWithoutTeamInput,
-      Prisma.EventUpdateWithoutTeamInput
-    >,
-    Prisma.EventUncheckedUpdateWithoutTeamInput
-  >;
-};
-
-export type EventCreateNestedOneWithoutAuditLogsInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutAuditLogsInput,
-    Prisma.EventUncheckedCreateWithoutAuditLogsInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutAuditLogsInput;
-  connect?: Prisma.EventWhereUniqueInput;
-};
-
-export type EventUpdateOneRequiredWithoutAuditLogsNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutAuditLogsInput,
-    Prisma.EventUncheckedCreateWithoutAuditLogsInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutAuditLogsInput;
-  upsert?: Prisma.EventUpsertWithoutAuditLogsInput;
-  connect?: Prisma.EventWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.EventUpdateToOneWithWhereWithoutAuditLogsInput,
-      Prisma.EventUpdateWithoutAuditLogsInput
-    >,
-    Prisma.EventUncheckedUpdateWithoutAuditLogsInput
-  >;
-};
-
-export type EventCreateNestedOneWithoutTimelineInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutTimelineInput,
-    Prisma.EventUncheckedCreateWithoutTimelineInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutTimelineInput;
-  connect?: Prisma.EventWhereUniqueInput;
-};
-
-export type EventUpdateOneRequiredWithoutTimelineNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutTimelineInput,
-    Prisma.EventUncheckedCreateWithoutTimelineInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutTimelineInput;
-  upsert?: Prisma.EventUpsertWithoutTimelineInput;
-  connect?: Prisma.EventWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.EventUpdateToOneWithWhereWithoutTimelineInput,
-      Prisma.EventUpdateWithoutTimelineInput
-    >,
-    Prisma.EventUncheckedUpdateWithoutTimelineInput
-  >;
-};
-
-export type EventCreateNestedOneWithoutUserRolesInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutUserRolesInput,
-    Prisma.EventUncheckedCreateWithoutUserRolesInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutUserRolesInput;
-  connect?: Prisma.EventWhereUniqueInput;
-};
-
-export type EventUpdateOneRequiredWithoutUserRolesNestedInput = {
-  create?: Prisma.XOR<
-    Prisma.EventCreateWithoutUserRolesInput,
-    Prisma.EventUncheckedCreateWithoutUserRolesInput
-  >;
-  connectOrCreate?: Prisma.EventCreateOrConnectWithoutUserRolesInput;
-  upsert?: Prisma.EventUpsertWithoutUserRolesInput;
-  connect?: Prisma.EventWhereUniqueInput;
-  update?: Prisma.XOR<
-    Prisma.XOR<
-      Prisma.EventUpdateToOneWithWhereWithoutUserRolesInput,
-      Prisma.EventUpdateWithoutUserRolesInput
-    >,
-    Prisma.EventUncheckedUpdateWithoutUserRolesInput
-  >;
-};
-
-export type EventCreateWithoutAddressInput = {
+export type EventCreateWithoutChildrenInput = {
   id?: string;
   name: string;
+  owner: string;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
+  parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
+  settings?: Prisma.SettingsCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleCreateNestedManyWithoutEventInput;
 };
 
-export type EventUncheckedCreateWithoutAddressInput = {
+export type EventUncheckedCreateWithoutChildrenInput = {
   id?: string;
   name: string;
+  owner: string;
+  parentId?: string | null;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
+  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput;
 };
 
-export type EventCreateOrConnectWithoutAddressInput = {
+export type EventCreateOrConnectWithoutChildrenInput = {
   where: Prisma.EventWhereUniqueInput;
   create: Prisma.XOR<
-    Prisma.EventCreateWithoutAddressInput,
-    Prisma.EventUncheckedCreateWithoutAddressInput
+    Prisma.EventCreateWithoutChildrenInput,
+    Prisma.EventUncheckedCreateWithoutChildrenInput
   >;
 };
 
-export type EventUpsertWithoutAddressInput = {
+export type EventCreateWithoutParentInput = {
+  id?: string;
+  name: string;
+  owner: string;
+  startsAt: Date | string;
+  endsAt: Date | string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  children?: Prisma.EventCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleCreateNestedManyWithoutEventInput;
+};
+
+export type EventUncheckedCreateWithoutParentInput = {
+  id?: string;
+  name: string;
+  owner: string;
+  startsAt: Date | string;
+  endsAt: Date | string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput;
+};
+
+export type EventCreateOrConnectWithoutParentInput = {
+  where: Prisma.EventWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.EventCreateWithoutParentInput,
+    Prisma.EventUncheckedCreateWithoutParentInput
+  >;
+};
+
+export type EventCreateManyParentInputEnvelope = {
+  data: Prisma.EventCreateManyParentInput | Prisma.EventCreateManyParentInput[];
+  skipDuplicates?: boolean;
+};
+
+export type EventUpsertWithoutChildrenInput = {
   update: Prisma.XOR<
-    Prisma.EventUpdateWithoutAddressInput,
-    Prisma.EventUncheckedUpdateWithoutAddressInput
+    Prisma.EventUpdateWithoutChildrenInput,
+    Prisma.EventUncheckedUpdateWithoutChildrenInput
   >;
   create: Prisma.XOR<
-    Prisma.EventCreateWithoutAddressInput,
-    Prisma.EventUncheckedCreateWithoutAddressInput
+    Prisma.EventCreateWithoutChildrenInput,
+    Prisma.EventUncheckedCreateWithoutChildrenInput
   >;
   where?: Prisma.EventWhereInput;
 };
 
-export type EventUpdateToOneWithWhereWithoutAddressInput = {
+export type EventUpdateToOneWithWhereWithoutChildrenInput = {
   where?: Prisma.EventWhereInput;
   data: Prisma.XOR<
-    Prisma.EventUpdateWithoutAddressInput,
-    Prisma.EventUncheckedUpdateWithoutAddressInput
+    Prisma.EventUpdateWithoutChildrenInput,
+    Prisma.EventUncheckedUpdateWithoutChildrenInput
   >;
 };
 
-export type EventUpdateWithoutAddressInput = {
+export type EventUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
+  parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
+  settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUpdateManyWithoutEventNestedInput;
 };
 
-export type EventUncheckedUpdateWithoutAddressInput = {
+export type EventUncheckedUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
+  settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput;
+};
+
+export type EventUpsertWithWhereUniqueWithoutParentInput = {
+  where: Prisma.EventWhereUniqueInput;
+  update: Prisma.XOR<
+    Prisma.EventUpdateWithoutParentInput,
+    Prisma.EventUncheckedUpdateWithoutParentInput
+  >;
+  create: Prisma.XOR<
+    Prisma.EventCreateWithoutParentInput,
+    Prisma.EventUncheckedCreateWithoutParentInput
+  >;
+};
+
+export type EventUpdateWithWhereUniqueWithoutParentInput = {
+  where: Prisma.EventWhereUniqueInput;
+  data: Prisma.XOR<
+    Prisma.EventUpdateWithoutParentInput,
+    Prisma.EventUncheckedUpdateWithoutParentInput
+  >;
+};
+
+export type EventUpdateManyWithWhereWithoutParentInput = {
+  where: Prisma.EventScalarWhereInput;
+  data: Prisma.XOR<
+    Prisma.EventUpdateManyMutationInput,
+    Prisma.EventUncheckedUpdateManyWithoutParentInput
+  >;
+};
+
+export type EventScalarWhereInput = {
+  AND?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[];
+  OR?: Prisma.EventScalarWhereInput[];
+  NOT?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[];
+  id?: Prisma.StringFilter<'Event'> | string;
+  name?: Prisma.StringFilter<'Event'> | string;
+  owner?: Prisma.StringFilter<'Event'> | string;
+  parentId?: Prisma.StringNullableFilter<'Event'> | string | null;
+  startsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
+  endsAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
+  createdAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
+  updatedAt?: Prisma.DateTimeFilter<'Event'> | Date | string;
 };
 
 export type EventCreateWithoutSettingsInput = {
   id?: string;
   name: string;
+  owner: string;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
+  parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
+  children?: Prisma.EventCreateNestedManyWithoutParentInput;
+  analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleCreateNestedManyWithoutEventInput;
 };
 
 export type EventUncheckedCreateWithoutSettingsInput = {
   id?: string;
   name: string;
+  owner: string;
+  parentId?: string | null;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
+  children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
+  analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput;
 };
 
 export type EventCreateOrConnectWithoutSettingsInput = {
@@ -1172,237 +922,61 @@ export type EventUpdateToOneWithWhereWithoutSettingsInput = {
 export type EventUpdateWithoutSettingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
+  parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
+  children?: Prisma.EventUpdateManyWithoutParentNestedInput;
+  analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUpdateManyWithoutEventNestedInput;
 };
 
 export type EventUncheckedUpdateWithoutSettingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
-};
-
-export type EventCreateWithoutThemeInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
-};
-
-export type EventUncheckedCreateWithoutThemeInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
-};
-
-export type EventCreateOrConnectWithoutThemeInput = {
-  where: Prisma.EventWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutThemeInput,
-    Prisma.EventUncheckedCreateWithoutThemeInput
-  >;
-};
-
-export type EventUpsertWithoutThemeInput = {
-  update: Prisma.XOR<
-    Prisma.EventUpdateWithoutThemeInput,
-    Prisma.EventUncheckedUpdateWithoutThemeInput
-  >;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutThemeInput,
-    Prisma.EventUncheckedCreateWithoutThemeInput
-  >;
-  where?: Prisma.EventWhereInput;
-};
-
-export type EventUpdateToOneWithWhereWithoutThemeInput = {
-  where?: Prisma.EventWhereInput;
-  data: Prisma.XOR<
-    Prisma.EventUpdateWithoutThemeInput,
-    Prisma.EventUncheckedUpdateWithoutThemeInput
-  >;
-};
-
-export type EventUpdateWithoutThemeInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
-};
-
-export type EventUncheckedUpdateWithoutThemeInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
+  children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
+  analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput;
 };
 
 export type EventCreateWithoutAnalyticsInput = {
   id?: string;
   name: string;
+  owner: string;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
+  parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
+  children?: Prisma.EventCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleCreateNestedManyWithoutEventInput;
 };
 
 export type EventUncheckedCreateWithoutAnalyticsInput = {
   id?: string;
   name: string;
+  owner: string;
+  parentId?: string | null;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
+  children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput;
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput;
 };
 
 export type EventCreateOrConnectWithoutAnalyticsInput = {
@@ -1436,977 +1010,257 @@ export type EventUpdateToOneWithWhereWithoutAnalyticsInput = {
 export type EventUpdateWithoutAnalyticsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
+  parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
+  children?: Prisma.EventUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUpdateManyWithoutEventNestedInput;
 };
 
 export type EventUncheckedUpdateWithoutAnalyticsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
+  children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput;
 };
 
-export type EventCreateWithoutMediaInput = {
+export type EventCreateWithoutTimelinesInput = {
   id?: string;
   name: string;
+  owner: string;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
+  parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
+  children?: Prisma.EventCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput;
+  roles?: Prisma.RoleCreateNestedManyWithoutEventInput;
 };
 
-export type EventUncheckedCreateWithoutMediaInput = {
+export type EventUncheckedCreateWithoutTimelinesInput = {
   id?: string;
   name: string;
+  owner: string;
+  parentId?: string | null;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
+  children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput;
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput;
 };
 
-export type EventCreateOrConnectWithoutMediaInput = {
+export type EventCreateOrConnectWithoutTimelinesInput = {
   where: Prisma.EventWhereUniqueInput;
   create: Prisma.XOR<
-    Prisma.EventCreateWithoutMediaInput,
-    Prisma.EventUncheckedCreateWithoutMediaInput
+    Prisma.EventCreateWithoutTimelinesInput,
+    Prisma.EventUncheckedCreateWithoutTimelinesInput
   >;
 };
 
-export type EventUpsertWithoutMediaInput = {
+export type EventUpsertWithoutTimelinesInput = {
   update: Prisma.XOR<
-    Prisma.EventUpdateWithoutMediaInput,
-    Prisma.EventUncheckedUpdateWithoutMediaInput
+    Prisma.EventUpdateWithoutTimelinesInput,
+    Prisma.EventUncheckedUpdateWithoutTimelinesInput
   >;
   create: Prisma.XOR<
-    Prisma.EventCreateWithoutMediaInput,
-    Prisma.EventUncheckedCreateWithoutMediaInput
+    Prisma.EventCreateWithoutTimelinesInput,
+    Prisma.EventUncheckedCreateWithoutTimelinesInput
   >;
   where?: Prisma.EventWhereInput;
 };
 
-export type EventUpdateToOneWithWhereWithoutMediaInput = {
+export type EventUpdateToOneWithWhereWithoutTimelinesInput = {
   where?: Prisma.EventWhereInput;
   data: Prisma.XOR<
-    Prisma.EventUpdateWithoutMediaInput,
-    Prisma.EventUncheckedUpdateWithoutMediaInput
+    Prisma.EventUpdateWithoutTimelinesInput,
+    Prisma.EventUncheckedUpdateWithoutTimelinesInput
   >;
 };
 
-export type EventUpdateWithoutMediaInput = {
+export type EventUpdateWithoutTimelinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
+  parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
+  children?: Prisma.EventUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput;
+  roles?: Prisma.RoleUpdateManyWithoutEventNestedInput;
 };
 
-export type EventUncheckedUpdateWithoutMediaInput = {
+export type EventUncheckedUpdateWithoutTimelinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
+  children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput;
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput;
 };
 
-export type EventCreateWithoutFullDescriptionInput = {
+export type EventCreateWithoutRolesInput = {
   id?: string;
   name: string;
+  owner: string;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
+  parent?: Prisma.EventCreateNestedOneWithoutChildrenInput;
+  children?: Prisma.EventCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput;
 };
 
-export type EventUncheckedCreateWithoutFullDescriptionInput = {
+export type EventUncheckedCreateWithoutRolesInput = {
   id?: string;
   name: string;
+  owner: string;
+  parentId?: string | null;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
+  children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput;
+  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput;
+  analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput;
+  timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput;
 };
 
-export type EventCreateOrConnectWithoutFullDescriptionInput = {
+export type EventCreateOrConnectWithoutRolesInput = {
   where: Prisma.EventWhereUniqueInput;
   create: Prisma.XOR<
-    Prisma.EventCreateWithoutFullDescriptionInput,
-    Prisma.EventUncheckedCreateWithoutFullDescriptionInput
+    Prisma.EventCreateWithoutRolesInput,
+    Prisma.EventUncheckedCreateWithoutRolesInput
   >;
 };
 
-export type EventUpsertWithoutFullDescriptionInput = {
+export type EventUpsertWithoutRolesInput = {
   update: Prisma.XOR<
-    Prisma.EventUpdateWithoutFullDescriptionInput,
-    Prisma.EventUncheckedUpdateWithoutFullDescriptionInput
+    Prisma.EventUpdateWithoutRolesInput,
+    Prisma.EventUncheckedUpdateWithoutRolesInput
   >;
   create: Prisma.XOR<
-    Prisma.EventCreateWithoutFullDescriptionInput,
-    Prisma.EventUncheckedCreateWithoutFullDescriptionInput
+    Prisma.EventCreateWithoutRolesInput,
+    Prisma.EventUncheckedCreateWithoutRolesInput
   >;
   where?: Prisma.EventWhereInput;
 };
 
-export type EventUpdateToOneWithWhereWithoutFullDescriptionInput = {
+export type EventUpdateToOneWithWhereWithoutRolesInput = {
   where?: Prisma.EventWhereInput;
   data: Prisma.XOR<
-    Prisma.EventUpdateWithoutFullDescriptionInput,
-    Prisma.EventUncheckedUpdateWithoutFullDescriptionInput
+    Prisma.EventUpdateWithoutRolesInput,
+    Prisma.EventUncheckedUpdateWithoutRolesInput
   >;
 };
 
-export type EventUpdateWithoutFullDescriptionInput = {
+export type EventUpdateWithoutRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
+  parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput;
+  children?: Prisma.EventUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput;
 };
 
-export type EventUncheckedUpdateWithoutFullDescriptionInput = {
+export type EventUncheckedUpdateWithoutRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
+  children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput;
 };
 
-export type EventCreateWithoutFaqsInput = {
+export type EventCreateManyParentInput = {
   id?: string;
   name: string;
+  owner: string;
   startsAt: Date | string;
   endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
   createdAt?: Date | string;
   updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
 };
 
-export type EventUncheckedCreateWithoutFaqsInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
-};
-
-export type EventCreateOrConnectWithoutFaqsInput = {
-  where: Prisma.EventWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutFaqsInput,
-    Prisma.EventUncheckedCreateWithoutFaqsInput
-  >;
-};
-
-export type EventUpsertWithoutFaqsInput = {
-  update: Prisma.XOR<
-    Prisma.EventUpdateWithoutFaqsInput,
-    Prisma.EventUncheckedUpdateWithoutFaqsInput
-  >;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutFaqsInput,
-    Prisma.EventUncheckedCreateWithoutFaqsInput
-  >;
-  where?: Prisma.EventWhereInput;
-};
-
-export type EventUpdateToOneWithWhereWithoutFaqsInput = {
-  where?: Prisma.EventWhereInput;
-  data: Prisma.XOR<
-    Prisma.EventUpdateWithoutFaqsInput,
-    Prisma.EventUncheckedUpdateWithoutFaqsInput
-  >;
-};
-
-export type EventUpdateWithoutFaqsInput = {
+export type EventUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
+  children?: Prisma.EventUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUpdateManyWithoutEventNestedInput;
 };
 
-export type EventUncheckedUpdateWithoutFaqsInput = {
+export type EventUncheckedUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
+  children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput;
+  settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput;
+  analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput;
+  timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput;
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput;
 };
 
-export type EventCreateWithoutTeamInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
-};
-
-export type EventUncheckedCreateWithoutTeamInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
-};
-
-export type EventCreateOrConnectWithoutTeamInput = {
-  where: Prisma.EventWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutTeamInput,
-    Prisma.EventUncheckedCreateWithoutTeamInput
-  >;
-};
-
-export type EventUpsertWithoutTeamInput = {
-  update: Prisma.XOR<
-    Prisma.EventUpdateWithoutTeamInput,
-    Prisma.EventUncheckedUpdateWithoutTeamInput
-  >;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutTeamInput,
-    Prisma.EventUncheckedCreateWithoutTeamInput
-  >;
-  where?: Prisma.EventWhereInput;
-};
-
-export type EventUpdateToOneWithWhereWithoutTeamInput = {
-  where?: Prisma.EventWhereInput;
-  data: Prisma.XOR<
-    Prisma.EventUpdateWithoutTeamInput,
-    Prisma.EventUncheckedUpdateWithoutTeamInput
-  >;
-};
-
-export type EventUpdateWithoutTeamInput = {
+export type EventUncheckedUpdateManyWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.StringFieldUpdateOperationsInput | string;
+  owner?: Prisma.StringFieldUpdateOperationsInput | string;
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
-};
-
-export type EventUncheckedUpdateWithoutTeamInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
-};
-
-export type EventCreateWithoutAuditLogsInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
-};
-
-export type EventUncheckedCreateWithoutAuditLogsInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
-};
-
-export type EventCreateOrConnectWithoutAuditLogsInput = {
-  where: Prisma.EventWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutAuditLogsInput,
-    Prisma.EventUncheckedCreateWithoutAuditLogsInput
-  >;
-};
-
-export type EventUpsertWithoutAuditLogsInput = {
-  update: Prisma.XOR<
-    Prisma.EventUpdateWithoutAuditLogsInput,
-    Prisma.EventUncheckedUpdateWithoutAuditLogsInput
-  >;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutAuditLogsInput,
-    Prisma.EventUncheckedCreateWithoutAuditLogsInput
-  >;
-  where?: Prisma.EventWhereInput;
-};
-
-export type EventUpdateToOneWithWhereWithoutAuditLogsInput = {
-  where?: Prisma.EventWhereInput;
-  data: Prisma.XOR<
-    Prisma.EventUpdateWithoutAuditLogsInput,
-    Prisma.EventUncheckedUpdateWithoutAuditLogsInput
-  >;
-};
-
-export type EventUpdateWithoutAuditLogsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
-};
-
-export type EventUncheckedUpdateWithoutAuditLogsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
-};
-
-export type EventCreateWithoutTimelineInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleCreateNestedManyWithoutEventInput;
-};
-
-export type EventUncheckedCreateWithoutTimelineInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  userRoles?: Prisma.UserEventRoleUncheckedCreateNestedManyWithoutEventInput;
-};
-
-export type EventCreateOrConnectWithoutTimelineInput = {
-  where: Prisma.EventWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutTimelineInput,
-    Prisma.EventUncheckedCreateWithoutTimelineInput
-  >;
-};
-
-export type EventUpsertWithoutTimelineInput = {
-  update: Prisma.XOR<
-    Prisma.EventUpdateWithoutTimelineInput,
-    Prisma.EventUncheckedUpdateWithoutTimelineInput
-  >;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutTimelineInput,
-    Prisma.EventUncheckedCreateWithoutTimelineInput
-  >;
-  where?: Prisma.EventWhereInput;
-};
-
-export type EventUpdateToOneWithWhereWithoutTimelineInput = {
-  where?: Prisma.EventWhereInput;
-  data: Prisma.XOR<
-    Prisma.EventUpdateWithoutTimelineInput,
-    Prisma.EventUncheckedUpdateWithoutTimelineInput
-  >;
-};
-
-export type EventUpdateWithoutTimelineInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUpdateManyWithoutEventNestedInput;
-};
-
-export type EventUncheckedUpdateWithoutTimelineInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  userRoles?: Prisma.UserEventRoleUncheckedUpdateManyWithoutEventNestedInput;
-};
-
-export type EventCreateWithoutUserRolesInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineCreateNestedManyWithoutEventInput;
-};
-
-export type EventUncheckedCreateWithoutUserRolesInput = {
-  id?: string;
-  name: string;
-  startsAt: Date | string;
-  endsAt: Date | string;
-  allowReEntry?: boolean;
-  rotateSeconds?: number;
-  maxSeats?: number;
-  owner: string;
-  isActive?: boolean;
-  dressCode?: string | null;
-  description?: string | null;
-  createdAt?: Date | string;
-  updatedAt?: Date | string;
-  address?: Prisma.EventAddressUncheckedCreateNestedManyWithoutEventInput;
-  settings?: Prisma.EventSettingsUncheckedCreateNestedOneWithoutEventInput;
-  theme?: Prisma.EventThemeUncheckedCreateNestedOneWithoutEventInput;
-  analytics?: Prisma.EventAnalyticsUncheckedCreateNestedOneWithoutEventInput;
-  media?: Prisma.EventMediaUncheckedCreateNestedManyWithoutEventInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedCreateNestedManyWithoutEventInput;
-  faqs?: Prisma.EventFAQUncheckedCreateNestedManyWithoutEventInput;
-  team?: Prisma.EventTeamMemberUncheckedCreateNestedManyWithoutEventInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedCreateNestedManyWithoutEventInput;
-  timeline?: Prisma.EventTimelineUncheckedCreateNestedManyWithoutEventInput;
-};
-
-export type EventCreateOrConnectWithoutUserRolesInput = {
-  where: Prisma.EventWhereUniqueInput;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutUserRolesInput,
-    Prisma.EventUncheckedCreateWithoutUserRolesInput
-  >;
-};
-
-export type EventUpsertWithoutUserRolesInput = {
-  update: Prisma.XOR<
-    Prisma.EventUpdateWithoutUserRolesInput,
-    Prisma.EventUncheckedUpdateWithoutUserRolesInput
-  >;
-  create: Prisma.XOR<
-    Prisma.EventCreateWithoutUserRolesInput,
-    Prisma.EventUncheckedCreateWithoutUserRolesInput
-  >;
-  where?: Prisma.EventWhereInput;
-};
-
-export type EventUpdateToOneWithWhereWithoutUserRolesInput = {
-  where?: Prisma.EventWhereInput;
-  data: Prisma.XOR<
-    Prisma.EventUpdateWithoutUserRolesInput,
-    Prisma.EventUncheckedUpdateWithoutUserRolesInput
-  >;
-};
-
-export type EventUpdateWithoutUserRolesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUpdateManyWithoutEventNestedInput;
-};
-
-export type EventUncheckedUpdateWithoutUserRolesInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string;
-  name?: Prisma.StringFieldUpdateOperationsInput | string;
-  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number;
-  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number;
-  owner?: Prisma.StringFieldUpdateOperationsInput | string;
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean;
-  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
-  address?: Prisma.EventAddressUncheckedUpdateManyWithoutEventNestedInput;
-  settings?: Prisma.EventSettingsUncheckedUpdateOneWithoutEventNestedInput;
-  theme?: Prisma.EventThemeUncheckedUpdateOneWithoutEventNestedInput;
-  analytics?: Prisma.EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput;
-  media?: Prisma.EventMediaUncheckedUpdateManyWithoutEventNestedInput;
-  fullDescription?: Prisma.EventDescriptionBlockUncheckedUpdateManyWithoutEventNestedInput;
-  faqs?: Prisma.EventFAQUncheckedUpdateManyWithoutEventNestedInput;
-  team?: Prisma.EventTeamMemberUncheckedUpdateManyWithoutEventNestedInput;
-  auditLogs?: Prisma.EventAuditLogUncheckedUpdateManyWithoutEventNestedInput;
-  timeline?: Prisma.EventTimelineUncheckedUpdateManyWithoutEventNestedInput;
 };
 
 /**
@@ -2414,28 +1268,18 @@ export type EventUncheckedUpdateWithoutUserRolesInput = {
  */
 
 export type EventCountOutputType = {
-  address: number;
-  media: number;
-  fullDescription: number;
-  faqs: number;
-  team: number;
-  auditLogs: number;
-  timeline: number;
-  userRoles: number;
+  children: number;
+  timelines: number;
+  roles: number;
 };
 
 export type EventCountOutputTypeSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  address?: boolean | EventCountOutputTypeCountAddressArgs;
-  media?: boolean | EventCountOutputTypeCountMediaArgs;
-  fullDescription?: boolean | EventCountOutputTypeCountFullDescriptionArgs;
-  faqs?: boolean | EventCountOutputTypeCountFaqsArgs;
-  team?: boolean | EventCountOutputTypeCountTeamArgs;
-  auditLogs?: boolean | EventCountOutputTypeCountAuditLogsArgs;
-  timeline?: boolean | EventCountOutputTypeCountTimelineArgs;
-  userRoles?: boolean | EventCountOutputTypeCountUserRolesArgs;
+  children?: boolean | EventCountOutputTypeCountChildrenArgs;
+  timelines?: boolean | EventCountOutputTypeCountTimelinesArgs;
+  roles?: boolean | EventCountOutputTypeCountRolesArgs;
 };
 
 /**
@@ -2454,81 +1298,31 @@ export type EventCountOutputTypeDefaultArgs<
 /**
  * EventCountOutputType without action
  */
-export type EventCountOutputTypeCountAddressArgs<
+export type EventCountOutputTypeCountChildrenArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  where?: Prisma.EventAddressWhereInput;
+  where?: Prisma.EventWhereInput;
 };
 
 /**
  * EventCountOutputType without action
  */
-export type EventCountOutputTypeCountMediaArgs<
+export type EventCountOutputTypeCountTimelinesArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  where?: Prisma.EventMediaWhereInput;
+  where?: Prisma.TimelineWhereInput;
 };
 
 /**
  * EventCountOutputType without action
  */
-export type EventCountOutputTypeCountFullDescriptionArgs<
+export type EventCountOutputTypeCountRolesArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  where?: Prisma.EventDescriptionBlockWhereInput;
-};
-
-/**
- * EventCountOutputType without action
- */
-export type EventCountOutputTypeCountFaqsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.EventFAQWhereInput;
-};
-
-/**
- * EventCountOutputType without action
- */
-export type EventCountOutputTypeCountTeamArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.EventTeamMemberWhereInput;
-};
-
-/**
- * EventCountOutputType without action
- */
-export type EventCountOutputTypeCountAuditLogsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.EventAuditLogWhereInput;
-};
-
-/**
- * EventCountOutputType without action
- */
-export type EventCountOutputTypeCountTimelineArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.EventTimelineWhereInput;
-};
-
-/**
- * EventCountOutputType without action
- */
-export type EventCountOutputTypeCountUserRolesArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  where?: Prisma.UserEventRoleWhereInput;
+  where?: Prisma.RoleWhereInput;
 };
 
 export type EventSelect<
@@ -2538,28 +1332,18 @@ export type EventSelect<
   {
     id?: boolean;
     name?: boolean;
+    owner?: boolean;
+    parentId?: boolean;
     startsAt?: boolean;
     endsAt?: boolean;
-    allowReEntry?: boolean;
-    rotateSeconds?: boolean;
-    maxSeats?: boolean;
-    owner?: boolean;
-    isActive?: boolean;
-    dressCode?: boolean;
-    description?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
-    address?: boolean | Prisma.Event$addressArgs<ExtArgs>;
+    parent?: boolean | Prisma.Event$parentArgs<ExtArgs>;
+    children?: boolean | Prisma.Event$childrenArgs<ExtArgs>;
     settings?: boolean | Prisma.Event$settingsArgs<ExtArgs>;
-    theme?: boolean | Prisma.Event$themeArgs<ExtArgs>;
     analytics?: boolean | Prisma.Event$analyticsArgs<ExtArgs>;
-    media?: boolean | Prisma.Event$mediaArgs<ExtArgs>;
-    fullDescription?: boolean | Prisma.Event$fullDescriptionArgs<ExtArgs>;
-    faqs?: boolean | Prisma.Event$faqsArgs<ExtArgs>;
-    team?: boolean | Prisma.Event$teamArgs<ExtArgs>;
-    auditLogs?: boolean | Prisma.Event$auditLogsArgs<ExtArgs>;
-    timeline?: boolean | Prisma.Event$timelineArgs<ExtArgs>;
-    userRoles?: boolean | Prisma.Event$userRolesArgs<ExtArgs>;
+    timelines?: boolean | Prisma.Event$timelinesArgs<ExtArgs>;
+    roles?: boolean | Prisma.Event$rolesArgs<ExtArgs>;
     _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['event']
@@ -2572,17 +1356,13 @@ export type EventSelectCreateManyAndReturn<
   {
     id?: boolean;
     name?: boolean;
+    owner?: boolean;
+    parentId?: boolean;
     startsAt?: boolean;
     endsAt?: boolean;
-    allowReEntry?: boolean;
-    rotateSeconds?: boolean;
-    maxSeats?: boolean;
-    owner?: boolean;
-    isActive?: boolean;
-    dressCode?: boolean;
-    description?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    parent?: boolean | Prisma.Event$parentArgs<ExtArgs>;
   },
   ExtArgs['result']['event']
 >;
@@ -2594,17 +1374,13 @@ export type EventSelectUpdateManyAndReturn<
   {
     id?: boolean;
     name?: boolean;
+    owner?: boolean;
+    parentId?: boolean;
     startsAt?: boolean;
     endsAt?: boolean;
-    allowReEntry?: boolean;
-    rotateSeconds?: boolean;
-    maxSeats?: boolean;
-    owner?: boolean;
-    isActive?: boolean;
-    dressCode?: boolean;
-    description?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    parent?: boolean | Prisma.Event$parentArgs<ExtArgs>;
   },
   ExtArgs['result']['event']
 >;
@@ -2612,15 +1388,10 @@ export type EventSelectUpdateManyAndReturn<
 export type EventSelectScalar = {
   id?: boolean;
   name?: boolean;
+  owner?: boolean;
+  parentId?: boolean;
   startsAt?: boolean;
   endsAt?: boolean;
-  allowReEntry?: boolean;
-  rotateSeconds?: boolean;
-  maxSeats?: boolean;
-  owner?: boolean;
-  isActive?: boolean;
-  dressCode?: boolean;
-  description?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
 };
@@ -2631,15 +1402,10 @@ export type EventOmit<
 > = runtime.Types.Extensions.GetOmit<
   | 'id'
   | 'name'
+  | 'owner'
+  | 'parentId'
   | 'startsAt'
   | 'endsAt'
-  | 'allowReEntry'
-  | 'rotateSeconds'
-  | 'maxSeats'
-  | 'owner'
-  | 'isActive'
-  | 'dressCode'
-  | 'description'
   | 'createdAt'
   | 'updatedAt',
   ExtArgs['result']['event']
@@ -2648,27 +1414,26 @@ export type EventInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  address?: boolean | Prisma.Event$addressArgs<ExtArgs>;
+  parent?: boolean | Prisma.Event$parentArgs<ExtArgs>;
+  children?: boolean | Prisma.Event$childrenArgs<ExtArgs>;
   settings?: boolean | Prisma.Event$settingsArgs<ExtArgs>;
-  theme?: boolean | Prisma.Event$themeArgs<ExtArgs>;
   analytics?: boolean | Prisma.Event$analyticsArgs<ExtArgs>;
-  media?: boolean | Prisma.Event$mediaArgs<ExtArgs>;
-  fullDescription?: boolean | Prisma.Event$fullDescriptionArgs<ExtArgs>;
-  faqs?: boolean | Prisma.Event$faqsArgs<ExtArgs>;
-  team?: boolean | Prisma.Event$teamArgs<ExtArgs>;
-  auditLogs?: boolean | Prisma.Event$auditLogsArgs<ExtArgs>;
-  timeline?: boolean | Prisma.Event$timelineArgs<ExtArgs>;
-  userRoles?: boolean | Prisma.Event$userRolesArgs<ExtArgs>;
+  timelines?: boolean | Prisma.Event$timelinesArgs<ExtArgs>;
+  roles?: boolean | Prisma.Event$rolesArgs<ExtArgs>;
   _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type EventIncludeCreateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
-> = {};
+> = {
+  parent?: boolean | Prisma.Event$parentArgs<ExtArgs>;
+};
 export type EventIncludeUpdateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
-> = {};
+> = {
+  parent?: boolean | Prisma.Event$parentArgs<ExtArgs>;
+};
 
 export type $EventPayload<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
@@ -2676,31 +1441,21 @@ export type $EventPayload<
 > = {
   name: 'Event';
   objects: {
-    address: Prisma.$EventAddressPayload<ExtArgs>[];
-    settings: Prisma.$EventSettingsPayload<ExtArgs> | null;
-    theme: Prisma.$EventThemePayload<ExtArgs> | null;
-    analytics: Prisma.$EventAnalyticsPayload<ExtArgs> | null;
-    media: Prisma.$EventMediaPayload<ExtArgs>[];
-    fullDescription: Prisma.$EventDescriptionBlockPayload<ExtArgs>[];
-    faqs: Prisma.$EventFAQPayload<ExtArgs>[];
-    team: Prisma.$EventTeamMemberPayload<ExtArgs>[];
-    auditLogs: Prisma.$EventAuditLogPayload<ExtArgs>[];
-    timeline: Prisma.$EventTimelinePayload<ExtArgs>[];
-    userRoles: Prisma.$UserEventRolePayload<ExtArgs>[];
+    parent: Prisma.$EventPayload<ExtArgs> | null;
+    children: Prisma.$EventPayload<ExtArgs>[];
+    settings: Prisma.$SettingsPayload<ExtArgs> | null;
+    analytics: Prisma.$AnalyticsPayload<ExtArgs> | null;
+    timelines: Prisma.$TimelinePayload<ExtArgs>[];
+    roles: Prisma.$RolePayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
       id: string;
       name: string;
+      owner: string;
+      parentId: string | null;
       startsAt: Date;
       endsAt: Date;
-      allowReEntry: boolean;
-      rotateSeconds: number;
-      maxSeats: number;
-      owner: string;
-      isActive: boolean;
-      dressCode: string | null;
-      description: string | null;
       createdAt: Date;
       updatedAt: Date;
     },
@@ -3253,22 +2008,11 @@ export interface Prisma__EventClient<
   GlobalOmitOptions = {},
 > extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: 'PrismaPromise';
-  address<T extends Prisma.Event$addressArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$addressArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$EventAddressPayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
-  settings<T extends Prisma.Event$settingsArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$settingsArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventSettingsClient<
+  parent<T extends Prisma.Event$parentArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Event$parentArgs<ExtArgs>>,
+  ): Prisma.Prisma__EventClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventSettingsPayload<ExtArgs>,
+      Prisma.$EventPayload<ExtArgs>,
       T,
       'findUniqueOrThrow',
       GlobalOmitOptions
@@ -3277,11 +2021,22 @@ export interface Prisma__EventClient<
     ExtArgs,
     GlobalOmitOptions
   >;
-  theme<T extends Prisma.Event$themeArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$themeArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventThemeClient<
+  children<T extends Prisma.Event$childrenArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Event$childrenArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$EventPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  settings<T extends Prisma.Event$settingsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Event$settingsArgs<ExtArgs>>,
+  ): Prisma.Prisma__SettingsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventThemePayload<ExtArgs>,
+      Prisma.$SettingsPayload<ExtArgs>,
       T,
       'findUniqueOrThrow',
       GlobalOmitOptions
@@ -3292,9 +2047,9 @@ export interface Prisma__EventClient<
   >;
   analytics<T extends Prisma.Event$analyticsArgs<ExtArgs> = {}>(
     args?: Prisma.Subset<T, Prisma.Event$analyticsArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventAnalyticsClient<
+  ): Prisma.Prisma__AnalyticsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'findUniqueOrThrow',
       GlobalOmitOptions
@@ -3303,77 +2058,22 @@ export interface Prisma__EventClient<
     ExtArgs,
     GlobalOmitOptions
   >;
-  media<T extends Prisma.Event$mediaArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$mediaArgs<ExtArgs>>,
+  timelines<T extends Prisma.Event$timelinesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Event$timelinesArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
-        Prisma.$EventMediaPayload<ExtArgs>,
+        Prisma.$TimelinePayload<ExtArgs>,
         T,
         'findMany',
         GlobalOmitOptions
       >
     | Null
   >;
-  fullDescription<T extends Prisma.Event$fullDescriptionArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$fullDescriptionArgs<ExtArgs>>,
+  roles<T extends Prisma.Event$rolesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.Event$rolesArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
-        Prisma.$EventDescriptionBlockPayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
-  faqs<T extends Prisma.Event$faqsArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$faqsArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$EventFAQPayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
-  team<T extends Prisma.Event$teamArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$teamArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$EventTeamMemberPayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
-  auditLogs<T extends Prisma.Event$auditLogsArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$auditLogsArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$EventAuditLogPayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
-  timeline<T extends Prisma.Event$timelineArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$timelineArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$EventTimelinePayload<ExtArgs>,
-        T,
-        'findMany',
-        GlobalOmitOptions
-      >
-    | Null
-  >;
-  userRoles<T extends Prisma.Event$userRolesArgs<ExtArgs> = {}>(
-    args?: Prisma.Subset<T, Prisma.Event$userRolesArgs<ExtArgs>>,
-  ): Prisma.PrismaPromise<
-    | runtime.Types.Result.GetResult<
-        Prisma.$UserEventRolePayload<ExtArgs>,
+        Prisma.$RolePayload<ExtArgs>,
         T,
         'findMany',
         GlobalOmitOptions
@@ -3424,15 +2124,10 @@ export interface Prisma__EventClient<
 export interface EventFieldRefs {
   readonly id: Prisma.FieldRef<'Event', 'String'>;
   readonly name: Prisma.FieldRef<'Event', 'String'>;
+  readonly owner: Prisma.FieldRef<'Event', 'String'>;
+  readonly parentId: Prisma.FieldRef<'Event', 'String'>;
   readonly startsAt: Prisma.FieldRef<'Event', 'DateTime'>;
   readonly endsAt: Prisma.FieldRef<'Event', 'DateTime'>;
-  readonly allowReEntry: Prisma.FieldRef<'Event', 'Boolean'>;
-  readonly rotateSeconds: Prisma.FieldRef<'Event', 'Int'>;
-  readonly maxSeats: Prisma.FieldRef<'Event', 'Int'>;
-  readonly owner: Prisma.FieldRef<'Event', 'String'>;
-  readonly isActive: Prisma.FieldRef<'Event', 'Boolean'>;
-  readonly dressCode: Prisma.FieldRef<'Event', 'String'>;
-  readonly description: Prisma.FieldRef<'Event', 'String'>;
   readonly createdAt: Prisma.FieldRef<'Event', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'Event', 'DateTime'>;
 }
@@ -3651,6 +2346,11 @@ export type EventFindManyArgs<
    * Skip the first `n` Events.
    */
   skip?: number;
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   *
+   * Filter by unique combinations of Events.
+   */
   distinct?: Prisma.EventScalarFieldEnum | Prisma.EventScalarFieldEnum[];
 };
 
@@ -3713,6 +2413,10 @@ export type EventCreateManyAndReturnArgs<
    */
   data: Prisma.EventCreateManyInput | Prisma.EventCreateManyInput[];
   skipDuplicates?: boolean;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventIncludeCreateManyAndReturn<ExtArgs> | null;
 };
 
 /**
@@ -3798,6 +2502,10 @@ export type EventUpdateManyAndReturnArgs<
    * Limit how many Events to update.
    */
   limit?: number;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventIncludeUpdateManyAndReturn<ExtArgs> | null;
 };
 
 /**
@@ -3876,34 +2584,54 @@ export type EventDeleteManyArgs<
 };
 
 /**
- * Event.address
+ * Event.parent
  */
-export type Event$addressArgs<
+export type Event$parentArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAddress
+   * Select specific fields to fetch from the Event
    */
-  select?: Prisma.EventAddressSelect<ExtArgs> | null;
+  select?: Prisma.EventSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAddress
+   * Omit specific fields from the Event
    */
-  omit?: Prisma.EventAddressOmit<ExtArgs> | null;
+  omit?: Prisma.EventOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAddressInclude<ExtArgs> | null;
-  where?: Prisma.EventAddressWhereInput;
+  include?: Prisma.EventInclude<ExtArgs> | null;
+  where?: Prisma.EventWhereInput;
+};
+
+/**
+ * Event.children
+ */
+export type Event$childrenArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs =
+    runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the Event
+   */
+  select?: Prisma.EventSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the Event
+   */
+  omit?: Prisma.EventOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventInclude<ExtArgs> | null;
+  where?: Prisma.EventWhereInput;
   orderBy?:
-    | Prisma.EventAddressOrderByWithRelationInput
-    | Prisma.EventAddressOrderByWithRelationInput[];
-  cursor?: Prisma.EventAddressWhereUniqueInput;
+    | Prisma.EventOrderByWithRelationInput
+    | Prisma.EventOrderByWithRelationInput[];
+  cursor?: Prisma.EventWhereUniqueInput;
   take?: number;
   skip?: number;
-  distinct?:
-    | Prisma.EventAddressScalarFieldEnum
-    | Prisma.EventAddressScalarFieldEnum[];
+  distinct?: Prisma.EventScalarFieldEnum | Prisma.EventScalarFieldEnum[];
 };
 
 /**
@@ -3914,40 +2642,18 @@ export type Event$settingsArgs<
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventSettings
+   * Select specific fields to fetch from the Settings
    */
-  select?: Prisma.EventSettingsSelect<ExtArgs> | null;
+  select?: Prisma.SettingsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventSettings
+   * Omit specific fields from the Settings
    */
-  omit?: Prisma.EventSettingsOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.EventSettingsInclude<ExtArgs> | null;
-  where?: Prisma.EventSettingsWhereInput;
-};
-
-/**
- * Event.theme
- */
-export type Event$themeArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the EventTheme
-   */
-  select?: Prisma.EventThemeSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the EventTheme
-   */
-  omit?: Prisma.EventThemeOmit<ExtArgs> | null;
+  omit?: Prisma.SettingsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventThemeInclude<ExtArgs> | null;
-  where?: Prisma.EventThemeWhereInput;
+  include?: Prisma.SettingsInclude<ExtArgs> | null;
+  where?: Prisma.SettingsWhereInput;
 };
 
 /**
@@ -3958,233 +2664,76 @@ export type Event$analyticsArgs<
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
-  where?: Prisma.EventAnalyticsWhereInput;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
+  where?: Prisma.AnalyticsWhereInput;
 };
 
 /**
- * Event.media
+ * Event.timelines
  */
-export type Event$mediaArgs<
+export type Event$timelinesArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventMedia
+   * Select specific fields to fetch from the Timeline
    */
-  select?: Prisma.EventMediaSelect<ExtArgs> | null;
+  select?: Prisma.TimelineSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventMedia
+   * Omit specific fields from the Timeline
    */
-  omit?: Prisma.EventMediaOmit<ExtArgs> | null;
+  omit?: Prisma.TimelineOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventMediaInclude<ExtArgs> | null;
-  where?: Prisma.EventMediaWhereInput;
+  include?: Prisma.TimelineInclude<ExtArgs> | null;
+  where?: Prisma.TimelineWhereInput;
   orderBy?:
-    | Prisma.EventMediaOrderByWithRelationInput
-    | Prisma.EventMediaOrderByWithRelationInput[];
-  cursor?: Prisma.EventMediaWhereUniqueInput;
+    | Prisma.TimelineOrderByWithRelationInput
+    | Prisma.TimelineOrderByWithRelationInput[];
+  cursor?: Prisma.TimelineWhereUniqueInput;
   take?: number;
   skip?: number;
-  distinct?:
-    | Prisma.EventMediaScalarFieldEnum
-    | Prisma.EventMediaScalarFieldEnum[];
+  distinct?: Prisma.TimelineScalarFieldEnum | Prisma.TimelineScalarFieldEnum[];
 };
 
 /**
- * Event.fullDescription
+ * Event.roles
  */
-export type Event$fullDescriptionArgs<
+export type Event$rolesArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventDescriptionBlock
+   * Select specific fields to fetch from the Role
    */
-  select?: Prisma.EventDescriptionBlockSelect<ExtArgs> | null;
+  select?: Prisma.RoleSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventDescriptionBlock
+   * Omit specific fields from the Role
    */
-  omit?: Prisma.EventDescriptionBlockOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.EventDescriptionBlockInclude<ExtArgs> | null;
-  where?: Prisma.EventDescriptionBlockWhereInput;
-  orderBy?:
-    | Prisma.EventDescriptionBlockOrderByWithRelationInput
-    | Prisma.EventDescriptionBlockOrderByWithRelationInput[];
-  cursor?: Prisma.EventDescriptionBlockWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?:
-    | Prisma.EventDescriptionBlockScalarFieldEnum
-    | Prisma.EventDescriptionBlockScalarFieldEnum[];
-};
-
-/**
- * Event.faqs
- */
-export type Event$faqsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the EventFAQ
-   */
-  select?: Prisma.EventFAQSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the EventFAQ
-   */
-  omit?: Prisma.EventFAQOmit<ExtArgs> | null;
+  omit?: Prisma.RoleOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventFAQInclude<ExtArgs> | null;
-  where?: Prisma.EventFAQWhereInput;
+  include?: Prisma.RoleInclude<ExtArgs> | null;
+  where?: Prisma.RoleWhereInput;
   orderBy?:
-    | Prisma.EventFAQOrderByWithRelationInput
-    | Prisma.EventFAQOrderByWithRelationInput[];
-  cursor?: Prisma.EventFAQWhereUniqueInput;
+    | Prisma.RoleOrderByWithRelationInput
+    | Prisma.RoleOrderByWithRelationInput[];
+  cursor?: Prisma.RoleWhereUniqueInput;
   take?: number;
   skip?: number;
-  distinct?: Prisma.EventFAQScalarFieldEnum | Prisma.EventFAQScalarFieldEnum[];
-};
-
-/**
- * Event.team
- */
-export type Event$teamArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the EventTeamMember
-   */
-  select?: Prisma.EventTeamMemberSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the EventTeamMember
-   */
-  omit?: Prisma.EventTeamMemberOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.EventTeamMemberInclude<ExtArgs> | null;
-  where?: Prisma.EventTeamMemberWhereInput;
-  orderBy?:
-    | Prisma.EventTeamMemberOrderByWithRelationInput
-    | Prisma.EventTeamMemberOrderByWithRelationInput[];
-  cursor?: Prisma.EventTeamMemberWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?:
-    | Prisma.EventTeamMemberScalarFieldEnum
-    | Prisma.EventTeamMemberScalarFieldEnum[];
-};
-
-/**
- * Event.auditLogs
- */
-export type Event$auditLogsArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the EventAuditLog
-   */
-  select?: Prisma.EventAuditLogSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the EventAuditLog
-   */
-  omit?: Prisma.EventAuditLogOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.EventAuditLogInclude<ExtArgs> | null;
-  where?: Prisma.EventAuditLogWhereInput;
-  orderBy?:
-    | Prisma.EventAuditLogOrderByWithRelationInput
-    | Prisma.EventAuditLogOrderByWithRelationInput[];
-  cursor?: Prisma.EventAuditLogWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?:
-    | Prisma.EventAuditLogScalarFieldEnum
-    | Prisma.EventAuditLogScalarFieldEnum[];
-};
-
-/**
- * Event.timeline
- */
-export type Event$timelineArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the EventTimeline
-   */
-  select?: Prisma.EventTimelineSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the EventTimeline
-   */
-  omit?: Prisma.EventTimelineOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.EventTimelineInclude<ExtArgs> | null;
-  where?: Prisma.EventTimelineWhereInput;
-  orderBy?:
-    | Prisma.EventTimelineOrderByWithRelationInput
-    | Prisma.EventTimelineOrderByWithRelationInput[];
-  cursor?: Prisma.EventTimelineWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?:
-    | Prisma.EventTimelineScalarFieldEnum
-    | Prisma.EventTimelineScalarFieldEnum[];
-};
-
-/**
- * Event.userRoles
- */
-export type Event$userRolesArgs<
-  ExtArgs extends runtime.Types.Extensions.InternalArgs =
-    runtime.Types.Extensions.DefaultArgs,
-> = {
-  /**
-   * Select specific fields to fetch from the UserEventRole
-   */
-  select?: Prisma.UserEventRoleSelect<ExtArgs> | null;
-  /**
-   * Omit specific fields from the UserEventRole
-   */
-  omit?: Prisma.UserEventRoleOmit<ExtArgs> | null;
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserEventRoleInclude<ExtArgs> | null;
-  where?: Prisma.UserEventRoleWhereInput;
-  orderBy?:
-    | Prisma.UserEventRoleOrderByWithRelationInput
-    | Prisma.UserEventRoleOrderByWithRelationInput[];
-  cursor?: Prisma.UserEventRoleWhereUniqueInput;
-  take?: number;
-  skip?: number;
-  distinct?:
-    | Prisma.UserEventRoleScalarFieldEnum
-    | Prisma.UserEventRoleScalarFieldEnum[];
+  distinct?: Prisma.RoleScalarFieldEnum | Prisma.RoleScalarFieldEnum[];
 };
 
 /**

@@ -1,5 +1,4 @@
 import type { UserEventRole } from '../../../prisma/generated/client.js';
-import type { UserRole } from '../enums/user-role.enum.js';
 import type { UserEventRolePayload } from '../payloads/user-role.entity.js';
 
 export class UserEventRoleMapper {
@@ -8,7 +7,7 @@ export class UserEventRoleMapper {
       id: entity.id,
       userId: entity.userId,
       eventId: entity.eventId,
-      role: entity.role as UserRole,
+      role: entity.role,
     };
   }
 

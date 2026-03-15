@@ -22,57 +22,22 @@ export * from './enums.js';
  */
 export type Event = Prisma.EventModel;
 /**
- * Model EventAddress
+ * Model Settings
  *
  */
-export type EventAddress = Prisma.EventAddressModel;
+export type Settings = Prisma.SettingsModel;
 /**
- * Model EventSettings
+ * Model Analytics
  *
  */
-export type EventSettings = Prisma.EventSettingsModel;
+export type Analytics = Prisma.AnalyticsModel;
 /**
- * Model EventTheme
+ * Model Timeline
  *
  */
-export type EventTheme = Prisma.EventThemeModel;
+export type Timeline = Prisma.TimelineModel;
 /**
- * Model EventAnalytics
+ * Model Role
  *
  */
-export type EventAnalytics = Prisma.EventAnalyticsModel;
-/**
- * Model EventMedia
- *
- */
-export type EventMedia = Prisma.EventMediaModel;
-/**
- * Model EventDescriptionBlock
- *
- */
-export type EventDescriptionBlock = Prisma.EventDescriptionBlockModel;
-/**
- * Model EventFAQ
- *
- */
-export type EventFAQ = Prisma.EventFAQModel;
-/**
- * Model EventTeamMember
- *
- */
-export type EventTeamMember = Prisma.EventTeamMemberModel;
-/**
- * Model EventAuditLog
- *
- */
-export type EventAuditLog = Prisma.EventAuditLogModel;
-/**
- * Model EventTimeline
- *
- */
-export type EventTimeline = Prisma.EventTimelineModel;
-/**
- * Model UserEventRole
- *
- */
-export type UserEventRole = Prisma.UserEventRoleModel;
+export type Role = Prisma.RoleModel;

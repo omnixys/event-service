@@ -3,7 +3,7 @@
 // biome-ignore-all lint: generated file
 // @ts-nocheck
 /*
- * This file exports the `EventAnalytics` model and its related types.
+ * This file exports the `Analytics` model and its related types.
  *
  * 🟢 You can import this file directly.
  */
@@ -12,21 +12,21 @@ import type * as Prisma from '../internal/prismaNamespace.js';
 import type * as runtime from '@prisma/client/runtime/client';
 
 /**
- * Model EventAnalytics
+ * Model Analytics
  *
  */
-export type EventAnalyticsModel =
-  runtime.Types.Result.DefaultSelection<Prisma.$EventAnalyticsPayload>;
+export type AnalyticsModel =
+  runtime.Types.Result.DefaultSelection<Prisma.$AnalyticsPayload>;
 
-export type AggregateEventAnalytics = {
-  _count: EventAnalyticsCountAggregateOutputType | null;
-  _avg: EventAnalyticsAvgAggregateOutputType | null;
-  _sum: EventAnalyticsSumAggregateOutputType | null;
-  _min: EventAnalyticsMinAggregateOutputType | null;
-  _max: EventAnalyticsMaxAggregateOutputType | null;
+export type AggregateAnalytics = {
+  _count: AnalyticsCountAggregateOutputType | null;
+  _avg: AnalyticsAvgAggregateOutputType | null;
+  _sum: AnalyticsSumAggregateOutputType | null;
+  _min: AnalyticsMinAggregateOutputType | null;
+  _max: AnalyticsMaxAggregateOutputType | null;
 };
 
-export type EventAnalyticsAvgAggregateOutputType = {
+export type AnalyticsAvgAggregateOutputType = {
   totalInvites: number | null;
   accepted: number | null;
   declined: number | null;
@@ -35,7 +35,7 @@ export type EventAnalyticsAvgAggregateOutputType = {
   outside: number | null;
 };
 
-export type EventAnalyticsSumAggregateOutputType = {
+export type AnalyticsSumAggregateOutputType = {
   totalInvites: number | null;
   accepted: number | null;
   declined: number | null;
@@ -44,7 +44,7 @@ export type EventAnalyticsSumAggregateOutputType = {
   outside: number | null;
 };
 
-export type EventAnalyticsMinAggregateOutputType = {
+export type AnalyticsMinAggregateOutputType = {
   id: string | null;
   eventId: string | null;
   totalInvites: number | null;
@@ -56,7 +56,7 @@ export type EventAnalyticsMinAggregateOutputType = {
   lastUpdate: Date | null;
 };
 
-export type EventAnalyticsMaxAggregateOutputType = {
+export type AnalyticsMaxAggregateOutputType = {
   id: string | null;
   eventId: string | null;
   totalInvites: number | null;
@@ -68,7 +68,7 @@ export type EventAnalyticsMaxAggregateOutputType = {
   lastUpdate: Date | null;
 };
 
-export type EventAnalyticsCountAggregateOutputType = {
+export type AnalyticsCountAggregateOutputType = {
   id: number;
   eventId: number;
   totalInvites: number;
@@ -81,7 +81,7 @@ export type EventAnalyticsCountAggregateOutputType = {
   _all: number;
 };
 
-export type EventAnalyticsAvgAggregateInputType = {
+export type AnalyticsAvgAggregateInputType = {
   totalInvites?: true;
   accepted?: true;
   declined?: true;
@@ -90,7 +90,7 @@ export type EventAnalyticsAvgAggregateInputType = {
   outside?: true;
 };
 
-export type EventAnalyticsSumAggregateInputType = {
+export type AnalyticsSumAggregateInputType = {
   totalInvites?: true;
   accepted?: true;
   declined?: true;
@@ -99,7 +99,7 @@ export type EventAnalyticsSumAggregateInputType = {
   outside?: true;
 };
 
-export type EventAnalyticsMinAggregateInputType = {
+export type AnalyticsMinAggregateInputType = {
   id?: true;
   eventId?: true;
   totalInvites?: true;
@@ -111,7 +111,7 @@ export type EventAnalyticsMinAggregateInputType = {
   lastUpdate?: true;
 };
 
-export type EventAnalyticsMaxAggregateInputType = {
+export type AnalyticsMaxAggregateInputType = {
   id?: true;
   eventId?: true;
   totalInvites?: true;
@@ -123,7 +123,7 @@ export type EventAnalyticsMaxAggregateInputType = {
   lastUpdate?: true;
 };
 
-export type EventAnalyticsCountAggregateInputType = {
+export type AnalyticsCountAggregateInputType = {
   id?: true;
   eventId?: true;
   totalInvites?: true;
@@ -136,104 +136,100 @@ export type EventAnalyticsCountAggregateInputType = {
   _all?: true;
 };
 
-export type EventAnalyticsAggregateArgs<
+export type AnalyticsAggregateArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Filter which EventAnalytics to aggregate.
+   * Filter which Analytics to aggregate.
    */
-  where?: Prisma.EventAnalyticsWhereInput;
+  where?: Prisma.AnalyticsWhereInput;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
-   * Determine the order of EventAnalytics to fetch.
+   * Determine the order of Analytics to fetch.
    */
   orderBy?:
-    | Prisma.EventAnalyticsOrderByWithRelationInput
-    | Prisma.EventAnalyticsOrderByWithRelationInput[];
+    | Prisma.AnalyticsOrderByWithRelationInput
+    | Prisma.AnalyticsOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
    * Sets the start position
    */
-  cursor?: Prisma.EventAnalyticsWhereUniqueInput;
+  cursor?: Prisma.AnalyticsWhereUniqueInput;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` EventAnalytics from the position of the cursor.
+   * Take `±n` Analytics from the position of the cursor.
    */
   take?: number;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Skip the first `n` EventAnalytics.
+   * Skip the first `n` Analytics.
    */
   skip?: number;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
-   * Count returned EventAnalytics
+   * Count returned Analytics
    **/
-  _count?: true | EventAnalyticsCountAggregateInputType;
+  _count?: true | AnalyticsCountAggregateInputType;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to average
    **/
-  _avg?: EventAnalyticsAvgAggregateInputType;
+  _avg?: AnalyticsAvgAggregateInputType;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to sum
    **/
-  _sum?: EventAnalyticsSumAggregateInputType;
+  _sum?: AnalyticsSumAggregateInputType;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to find the minimum value
    **/
-  _min?: EventAnalyticsMinAggregateInputType;
+  _min?: AnalyticsMinAggregateInputType;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    *
    * Select which fields to find the maximum value
    **/
-  _max?: EventAnalyticsMaxAggregateInputType;
+  _max?: AnalyticsMaxAggregateInputType;
 };
 
-export type GetEventAnalyticsAggregateType<
-  T extends EventAnalyticsAggregateArgs,
-> = {
-  [P in keyof T & keyof AggregateEventAnalytics]: P extends '_count' | 'count'
+export type GetAnalyticsAggregateType<T extends AnalyticsAggregateArgs> = {
+  [P in keyof T & keyof AggregateAnalytics]: P extends '_count' | 'count'
     ? T[P] extends true
       ? number
-      : Prisma.GetScalarType<T[P], AggregateEventAnalytics[P]>
-    : Prisma.GetScalarType<T[P], AggregateEventAnalytics[P]>;
+      : Prisma.GetScalarType<T[P], AggregateAnalytics[P]>
+    : Prisma.GetScalarType<T[P], AggregateAnalytics[P]>;
 };
 
-export type EventAnalyticsGroupByArgs<
+export type AnalyticsGroupByArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  where?: Prisma.EventAnalyticsWhereInput;
+  where?: Prisma.AnalyticsWhereInput;
   orderBy?:
-    | Prisma.EventAnalyticsOrderByWithAggregationInput
-    | Prisma.EventAnalyticsOrderByWithAggregationInput[];
-  by:
-    | Prisma.EventAnalyticsScalarFieldEnum[]
-    | Prisma.EventAnalyticsScalarFieldEnum;
-  having?: Prisma.EventAnalyticsScalarWhereWithAggregatesInput;
+    | Prisma.AnalyticsOrderByWithAggregationInput
+    | Prisma.AnalyticsOrderByWithAggregationInput[];
+  by: Prisma.AnalyticsScalarFieldEnum[] | Prisma.AnalyticsScalarFieldEnum;
+  having?: Prisma.AnalyticsScalarWhereWithAggregatesInput;
   take?: number;
   skip?: number;
-  _count?: EventAnalyticsCountAggregateInputType | true;
-  _avg?: EventAnalyticsAvgAggregateInputType;
-  _sum?: EventAnalyticsSumAggregateInputType;
-  _min?: EventAnalyticsMinAggregateInputType;
-  _max?: EventAnalyticsMaxAggregateInputType;
+  _count?: AnalyticsCountAggregateInputType | true;
+  _avg?: AnalyticsAvgAggregateInputType;
+  _sum?: AnalyticsSumAggregateInputType;
+  _min?: AnalyticsMinAggregateInputType;
+  _max?: AnalyticsMaxAggregateInputType;
 };
 
-export type EventAnalyticsGroupByOutputType = {
+export type AnalyticsGroupByOutputType = {
   id: string;
   eventId: string;
   totalInvites: number;
@@ -243,44 +239,43 @@ export type EventAnalyticsGroupByOutputType = {
   inside: number;
   outside: number;
   lastUpdate: Date;
-  _count: EventAnalyticsCountAggregateOutputType | null;
-  _avg: EventAnalyticsAvgAggregateOutputType | null;
-  _sum: EventAnalyticsSumAggregateOutputType | null;
-  _min: EventAnalyticsMinAggregateOutputType | null;
-  _max: EventAnalyticsMaxAggregateOutputType | null;
+  _count: AnalyticsCountAggregateOutputType | null;
+  _avg: AnalyticsAvgAggregateOutputType | null;
+  _sum: AnalyticsSumAggregateOutputType | null;
+  _min: AnalyticsMinAggregateOutputType | null;
+  _max: AnalyticsMaxAggregateOutputType | null;
 };
 
-type GetEventAnalyticsGroupByPayload<T extends EventAnalyticsGroupByArgs> =
+type GetAnalyticsGroupByPayload<T extends AnalyticsGroupByArgs> =
   Prisma.PrismaPromise<
     Array<
-      Prisma.PickEnumerable<EventAnalyticsGroupByOutputType, T['by']> & {
-        [P in keyof T &
-          keyof EventAnalyticsGroupByOutputType]: P extends '_count'
+      Prisma.PickEnumerable<AnalyticsGroupByOutputType, T['by']> & {
+        [P in keyof T & keyof AnalyticsGroupByOutputType]: P extends '_count'
           ? T[P] extends boolean
             ? number
-            : Prisma.GetScalarType<T[P], EventAnalyticsGroupByOutputType[P]>
-          : Prisma.GetScalarType<T[P], EventAnalyticsGroupByOutputType[P]>;
+            : Prisma.GetScalarType<T[P], AnalyticsGroupByOutputType[P]>
+          : Prisma.GetScalarType<T[P], AnalyticsGroupByOutputType[P]>;
       }
     >
   >;
 
-export type EventAnalyticsWhereInput = {
-  AND?: Prisma.EventAnalyticsWhereInput | Prisma.EventAnalyticsWhereInput[];
-  OR?: Prisma.EventAnalyticsWhereInput[];
-  NOT?: Prisma.EventAnalyticsWhereInput | Prisma.EventAnalyticsWhereInput[];
-  id?: Prisma.StringFilter<'EventAnalytics'> | string;
-  eventId?: Prisma.StringFilter<'EventAnalytics'> | string;
-  totalInvites?: Prisma.IntFilter<'EventAnalytics'> | number;
-  accepted?: Prisma.IntFilter<'EventAnalytics'> | number;
-  declined?: Prisma.IntFilter<'EventAnalytics'> | number;
-  checkedIn?: Prisma.IntFilter<'EventAnalytics'> | number;
-  inside?: Prisma.IntFilter<'EventAnalytics'> | number;
-  outside?: Prisma.IntFilter<'EventAnalytics'> | number;
-  lastUpdate?: Prisma.DateTimeFilter<'EventAnalytics'> | Date | string;
+export type AnalyticsWhereInput = {
+  AND?: Prisma.AnalyticsWhereInput | Prisma.AnalyticsWhereInput[];
+  OR?: Prisma.AnalyticsWhereInput[];
+  NOT?: Prisma.AnalyticsWhereInput | Prisma.AnalyticsWhereInput[];
+  id?: Prisma.StringFilter<'Analytics'> | string;
+  eventId?: Prisma.StringFilter<'Analytics'> | string;
+  totalInvites?: Prisma.IntFilter<'Analytics'> | number;
+  accepted?: Prisma.IntFilter<'Analytics'> | number;
+  declined?: Prisma.IntFilter<'Analytics'> | number;
+  checkedIn?: Prisma.IntFilter<'Analytics'> | number;
+  inside?: Prisma.IntFilter<'Analytics'> | number;
+  outside?: Prisma.IntFilter<'Analytics'> | number;
+  lastUpdate?: Prisma.DateTimeFilter<'Analytics'> | Date | string;
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>;
 };
 
-export type EventAnalyticsOrderByWithRelationInput = {
+export type AnalyticsOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   eventId?: Prisma.SortOrder;
   totalInvites?: Prisma.SortOrder;
@@ -293,20 +288,20 @@ export type EventAnalyticsOrderByWithRelationInput = {
   event?: Prisma.EventOrderByWithRelationInput;
 };
 
-export type EventAnalyticsWhereUniqueInput = Prisma.AtLeast<
+export type AnalyticsWhereUniqueInput = Prisma.AtLeast<
   {
     id?: string;
     eventId?: string;
-    AND?: Prisma.EventAnalyticsWhereInput | Prisma.EventAnalyticsWhereInput[];
-    OR?: Prisma.EventAnalyticsWhereInput[];
-    NOT?: Prisma.EventAnalyticsWhereInput | Prisma.EventAnalyticsWhereInput[];
-    totalInvites?: Prisma.IntFilter<'EventAnalytics'> | number;
-    accepted?: Prisma.IntFilter<'EventAnalytics'> | number;
-    declined?: Prisma.IntFilter<'EventAnalytics'> | number;
-    checkedIn?: Prisma.IntFilter<'EventAnalytics'> | number;
-    inside?: Prisma.IntFilter<'EventAnalytics'> | number;
-    outside?: Prisma.IntFilter<'EventAnalytics'> | number;
-    lastUpdate?: Prisma.DateTimeFilter<'EventAnalytics'> | Date | string;
+    AND?: Prisma.AnalyticsWhereInput | Prisma.AnalyticsWhereInput[];
+    OR?: Prisma.AnalyticsWhereInput[];
+    NOT?: Prisma.AnalyticsWhereInput | Prisma.AnalyticsWhereInput[];
+    totalInvites?: Prisma.IntFilter<'Analytics'> | number;
+    accepted?: Prisma.IntFilter<'Analytics'> | number;
+    declined?: Prisma.IntFilter<'Analytics'> | number;
+    checkedIn?: Prisma.IntFilter<'Analytics'> | number;
+    inside?: Prisma.IntFilter<'Analytics'> | number;
+    outside?: Prisma.IntFilter<'Analytics'> | number;
+    lastUpdate?: Prisma.DateTimeFilter<'Analytics'> | Date | string;
     event?: Prisma.XOR<
       Prisma.EventScalarRelationFilter,
       Prisma.EventWhereInput
@@ -315,7 +310,7 @@ export type EventAnalyticsWhereUniqueInput = Prisma.AtLeast<
   'id' | 'eventId'
 >;
 
-export type EventAnalyticsOrderByWithAggregationInput = {
+export type AnalyticsOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   eventId?: Prisma.SortOrder;
   totalInvites?: Prisma.SortOrder;
@@ -325,36 +320,33 @@ export type EventAnalyticsOrderByWithAggregationInput = {
   inside?: Prisma.SortOrder;
   outside?: Prisma.SortOrder;
   lastUpdate?: Prisma.SortOrder;
-  _count?: Prisma.EventAnalyticsCountOrderByAggregateInput;
-  _avg?: Prisma.EventAnalyticsAvgOrderByAggregateInput;
-  _max?: Prisma.EventAnalyticsMaxOrderByAggregateInput;
-  _min?: Prisma.EventAnalyticsMinOrderByAggregateInput;
-  _sum?: Prisma.EventAnalyticsSumOrderByAggregateInput;
+  _count?: Prisma.AnalyticsCountOrderByAggregateInput;
+  _avg?: Prisma.AnalyticsAvgOrderByAggregateInput;
+  _max?: Prisma.AnalyticsMaxOrderByAggregateInput;
+  _min?: Prisma.AnalyticsMinOrderByAggregateInput;
+  _sum?: Prisma.AnalyticsSumOrderByAggregateInput;
 };
 
-export type EventAnalyticsScalarWhereWithAggregatesInput = {
+export type AnalyticsScalarWhereWithAggregatesInput = {
   AND?:
-    | Prisma.EventAnalyticsScalarWhereWithAggregatesInput
-    | Prisma.EventAnalyticsScalarWhereWithAggregatesInput[];
-  OR?: Prisma.EventAnalyticsScalarWhereWithAggregatesInput[];
+    | Prisma.AnalyticsScalarWhereWithAggregatesInput
+    | Prisma.AnalyticsScalarWhereWithAggregatesInput[];
+  OR?: Prisma.AnalyticsScalarWhereWithAggregatesInput[];
   NOT?:
-    | Prisma.EventAnalyticsScalarWhereWithAggregatesInput
-    | Prisma.EventAnalyticsScalarWhereWithAggregatesInput[];
-  id?: Prisma.StringWithAggregatesFilter<'EventAnalytics'> | string;
-  eventId?: Prisma.StringWithAggregatesFilter<'EventAnalytics'> | string;
-  totalInvites?: Prisma.IntWithAggregatesFilter<'EventAnalytics'> | number;
-  accepted?: Prisma.IntWithAggregatesFilter<'EventAnalytics'> | number;
-  declined?: Prisma.IntWithAggregatesFilter<'EventAnalytics'> | number;
-  checkedIn?: Prisma.IntWithAggregatesFilter<'EventAnalytics'> | number;
-  inside?: Prisma.IntWithAggregatesFilter<'EventAnalytics'> | number;
-  outside?: Prisma.IntWithAggregatesFilter<'EventAnalytics'> | number;
-  lastUpdate?:
-    | Prisma.DateTimeWithAggregatesFilter<'EventAnalytics'>
-    | Date
-    | string;
+    | Prisma.AnalyticsScalarWhereWithAggregatesInput
+    | Prisma.AnalyticsScalarWhereWithAggregatesInput[];
+  id?: Prisma.StringWithAggregatesFilter<'Analytics'> | string;
+  eventId?: Prisma.StringWithAggregatesFilter<'Analytics'> | string;
+  totalInvites?: Prisma.IntWithAggregatesFilter<'Analytics'> | number;
+  accepted?: Prisma.IntWithAggregatesFilter<'Analytics'> | number;
+  declined?: Prisma.IntWithAggregatesFilter<'Analytics'> | number;
+  checkedIn?: Prisma.IntWithAggregatesFilter<'Analytics'> | number;
+  inside?: Prisma.IntWithAggregatesFilter<'Analytics'> | number;
+  outside?: Prisma.IntWithAggregatesFilter<'Analytics'> | number;
+  lastUpdate?: Prisma.DateTimeWithAggregatesFilter<'Analytics'> | Date | string;
 };
 
-export type EventAnalyticsCreateInput = {
+export type AnalyticsCreateInput = {
   id?: string;
   totalInvites?: number;
   accepted?: number;
@@ -366,7 +358,7 @@ export type EventAnalyticsCreateInput = {
   event: Prisma.EventCreateNestedOneWithoutAnalyticsInput;
 };
 
-export type EventAnalyticsUncheckedCreateInput = {
+export type AnalyticsUncheckedCreateInput = {
   id?: string;
   eventId: string;
   totalInvites?: number;
@@ -378,7 +370,7 @@ export type EventAnalyticsUncheckedCreateInput = {
   lastUpdate?: Date | string;
 };
 
-export type EventAnalyticsUpdateInput = {
+export type AnalyticsUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   totalInvites?: Prisma.IntFieldUpdateOperationsInput | number;
   accepted?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -390,7 +382,7 @@ export type EventAnalyticsUpdateInput = {
   event?: Prisma.EventUpdateOneRequiredWithoutAnalyticsNestedInput;
 };
 
-export type EventAnalyticsUncheckedUpdateInput = {
+export type AnalyticsUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   eventId?: Prisma.StringFieldUpdateOperationsInput | string;
   totalInvites?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -402,7 +394,7 @@ export type EventAnalyticsUncheckedUpdateInput = {
   lastUpdate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
-export type EventAnalyticsCreateManyInput = {
+export type AnalyticsCreateManyInput = {
   id?: string;
   eventId: string;
   totalInvites?: number;
@@ -414,7 +406,7 @@ export type EventAnalyticsCreateManyInput = {
   lastUpdate?: Date | string;
 };
 
-export type EventAnalyticsUpdateManyMutationInput = {
+export type AnalyticsUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   totalInvites?: Prisma.IntFieldUpdateOperationsInput | number;
   accepted?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -425,7 +417,7 @@ export type EventAnalyticsUpdateManyMutationInput = {
   lastUpdate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
-export type EventAnalyticsUncheckedUpdateManyInput = {
+export type AnalyticsUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   eventId?: Prisma.StringFieldUpdateOperationsInput | string;
   totalInvites?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -437,12 +429,12 @@ export type EventAnalyticsUncheckedUpdateManyInput = {
   lastUpdate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
-export type EventAnalyticsNullableScalarRelationFilter = {
-  is?: Prisma.EventAnalyticsWhereInput | null;
-  isNot?: Prisma.EventAnalyticsWhereInput | null;
+export type AnalyticsNullableScalarRelationFilter = {
+  is?: Prisma.AnalyticsWhereInput | null;
+  isNot?: Prisma.AnalyticsWhereInput | null;
 };
 
-export type EventAnalyticsCountOrderByAggregateInput = {
+export type AnalyticsCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   eventId?: Prisma.SortOrder;
   totalInvites?: Prisma.SortOrder;
@@ -454,7 +446,7 @@ export type EventAnalyticsCountOrderByAggregateInput = {
   lastUpdate?: Prisma.SortOrder;
 };
 
-export type EventAnalyticsAvgOrderByAggregateInput = {
+export type AnalyticsAvgOrderByAggregateInput = {
   totalInvites?: Prisma.SortOrder;
   accepted?: Prisma.SortOrder;
   declined?: Prisma.SortOrder;
@@ -463,7 +455,7 @@ export type EventAnalyticsAvgOrderByAggregateInput = {
   outside?: Prisma.SortOrder;
 };
 
-export type EventAnalyticsMaxOrderByAggregateInput = {
+export type AnalyticsMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   eventId?: Prisma.SortOrder;
   totalInvites?: Prisma.SortOrder;
@@ -475,7 +467,7 @@ export type EventAnalyticsMaxOrderByAggregateInput = {
   lastUpdate?: Prisma.SortOrder;
 };
 
-export type EventAnalyticsMinOrderByAggregateInput = {
+export type AnalyticsMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   eventId?: Prisma.SortOrder;
   totalInvites?: Prisma.SortOrder;
@@ -487,7 +479,7 @@ export type EventAnalyticsMinOrderByAggregateInput = {
   lastUpdate?: Prisma.SortOrder;
 };
 
-export type EventAnalyticsSumOrderByAggregateInput = {
+export type AnalyticsSumOrderByAggregateInput = {
   totalInvites?: Prisma.SortOrder;
   accepted?: Prisma.SortOrder;
   declined?: Prisma.SortOrder;
@@ -496,63 +488,63 @@ export type EventAnalyticsSumOrderByAggregateInput = {
   outside?: Prisma.SortOrder;
 };
 
-export type EventAnalyticsCreateNestedOneWithoutEventInput = {
+export type AnalyticsCreateNestedOneWithoutEventInput = {
   create?: Prisma.XOR<
-    Prisma.EventAnalyticsCreateWithoutEventInput,
-    Prisma.EventAnalyticsUncheckedCreateWithoutEventInput
+    Prisma.AnalyticsCreateWithoutEventInput,
+    Prisma.AnalyticsUncheckedCreateWithoutEventInput
   >;
-  connectOrCreate?: Prisma.EventAnalyticsCreateOrConnectWithoutEventInput;
-  connect?: Prisma.EventAnalyticsWhereUniqueInput;
+  connectOrCreate?: Prisma.AnalyticsCreateOrConnectWithoutEventInput;
+  connect?: Prisma.AnalyticsWhereUniqueInput;
 };
 
-export type EventAnalyticsUncheckedCreateNestedOneWithoutEventInput = {
+export type AnalyticsUncheckedCreateNestedOneWithoutEventInput = {
   create?: Prisma.XOR<
-    Prisma.EventAnalyticsCreateWithoutEventInput,
-    Prisma.EventAnalyticsUncheckedCreateWithoutEventInput
+    Prisma.AnalyticsCreateWithoutEventInput,
+    Prisma.AnalyticsUncheckedCreateWithoutEventInput
   >;
-  connectOrCreate?: Prisma.EventAnalyticsCreateOrConnectWithoutEventInput;
-  connect?: Prisma.EventAnalyticsWhereUniqueInput;
+  connectOrCreate?: Prisma.AnalyticsCreateOrConnectWithoutEventInput;
+  connect?: Prisma.AnalyticsWhereUniqueInput;
 };
 
-export type EventAnalyticsUpdateOneWithoutEventNestedInput = {
+export type AnalyticsUpdateOneWithoutEventNestedInput = {
   create?: Prisma.XOR<
-    Prisma.EventAnalyticsCreateWithoutEventInput,
-    Prisma.EventAnalyticsUncheckedCreateWithoutEventInput
+    Prisma.AnalyticsCreateWithoutEventInput,
+    Prisma.AnalyticsUncheckedCreateWithoutEventInput
   >;
-  connectOrCreate?: Prisma.EventAnalyticsCreateOrConnectWithoutEventInput;
-  upsert?: Prisma.EventAnalyticsUpsertWithoutEventInput;
-  disconnect?: Prisma.EventAnalyticsWhereInput | boolean;
-  delete?: Prisma.EventAnalyticsWhereInput | boolean;
-  connect?: Prisma.EventAnalyticsWhereUniqueInput;
+  connectOrCreate?: Prisma.AnalyticsCreateOrConnectWithoutEventInput;
+  upsert?: Prisma.AnalyticsUpsertWithoutEventInput;
+  disconnect?: Prisma.AnalyticsWhereInput | boolean;
+  delete?: Prisma.AnalyticsWhereInput | boolean;
+  connect?: Prisma.AnalyticsWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<
-      Prisma.EventAnalyticsUpdateToOneWithWhereWithoutEventInput,
-      Prisma.EventAnalyticsUpdateWithoutEventInput
+      Prisma.AnalyticsUpdateToOneWithWhereWithoutEventInput,
+      Prisma.AnalyticsUpdateWithoutEventInput
     >,
-    Prisma.EventAnalyticsUncheckedUpdateWithoutEventInput
+    Prisma.AnalyticsUncheckedUpdateWithoutEventInput
   >;
 };
 
-export type EventAnalyticsUncheckedUpdateOneWithoutEventNestedInput = {
+export type AnalyticsUncheckedUpdateOneWithoutEventNestedInput = {
   create?: Prisma.XOR<
-    Prisma.EventAnalyticsCreateWithoutEventInput,
-    Prisma.EventAnalyticsUncheckedCreateWithoutEventInput
+    Prisma.AnalyticsCreateWithoutEventInput,
+    Prisma.AnalyticsUncheckedCreateWithoutEventInput
   >;
-  connectOrCreate?: Prisma.EventAnalyticsCreateOrConnectWithoutEventInput;
-  upsert?: Prisma.EventAnalyticsUpsertWithoutEventInput;
-  disconnect?: Prisma.EventAnalyticsWhereInput | boolean;
-  delete?: Prisma.EventAnalyticsWhereInput | boolean;
-  connect?: Prisma.EventAnalyticsWhereUniqueInput;
+  connectOrCreate?: Prisma.AnalyticsCreateOrConnectWithoutEventInput;
+  upsert?: Prisma.AnalyticsUpsertWithoutEventInput;
+  disconnect?: Prisma.AnalyticsWhereInput | boolean;
+  delete?: Prisma.AnalyticsWhereInput | boolean;
+  connect?: Prisma.AnalyticsWhereUniqueInput;
   update?: Prisma.XOR<
     Prisma.XOR<
-      Prisma.EventAnalyticsUpdateToOneWithWhereWithoutEventInput,
-      Prisma.EventAnalyticsUpdateWithoutEventInput
+      Prisma.AnalyticsUpdateToOneWithWhereWithoutEventInput,
+      Prisma.AnalyticsUpdateWithoutEventInput
     >,
-    Prisma.EventAnalyticsUncheckedUpdateWithoutEventInput
+    Prisma.AnalyticsUncheckedUpdateWithoutEventInput
   >;
 };
 
-export type EventAnalyticsCreateWithoutEventInput = {
+export type AnalyticsCreateWithoutEventInput = {
   id?: string;
   totalInvites?: number;
   accepted?: number;
@@ -563,7 +555,7 @@ export type EventAnalyticsCreateWithoutEventInput = {
   lastUpdate?: Date | string;
 };
 
-export type EventAnalyticsUncheckedCreateWithoutEventInput = {
+export type AnalyticsUncheckedCreateWithoutEventInput = {
   id?: string;
   totalInvites?: number;
   accepted?: number;
@@ -574,35 +566,35 @@ export type EventAnalyticsUncheckedCreateWithoutEventInput = {
   lastUpdate?: Date | string;
 };
 
-export type EventAnalyticsCreateOrConnectWithoutEventInput = {
-  where: Prisma.EventAnalyticsWhereUniqueInput;
+export type AnalyticsCreateOrConnectWithoutEventInput = {
+  where: Prisma.AnalyticsWhereUniqueInput;
   create: Prisma.XOR<
-    Prisma.EventAnalyticsCreateWithoutEventInput,
-    Prisma.EventAnalyticsUncheckedCreateWithoutEventInput
+    Prisma.AnalyticsCreateWithoutEventInput,
+    Prisma.AnalyticsUncheckedCreateWithoutEventInput
   >;
 };
 
-export type EventAnalyticsUpsertWithoutEventInput = {
+export type AnalyticsUpsertWithoutEventInput = {
   update: Prisma.XOR<
-    Prisma.EventAnalyticsUpdateWithoutEventInput,
-    Prisma.EventAnalyticsUncheckedUpdateWithoutEventInput
+    Prisma.AnalyticsUpdateWithoutEventInput,
+    Prisma.AnalyticsUncheckedUpdateWithoutEventInput
   >;
   create: Prisma.XOR<
-    Prisma.EventAnalyticsCreateWithoutEventInput,
-    Prisma.EventAnalyticsUncheckedCreateWithoutEventInput
+    Prisma.AnalyticsCreateWithoutEventInput,
+    Prisma.AnalyticsUncheckedCreateWithoutEventInput
   >;
-  where?: Prisma.EventAnalyticsWhereInput;
+  where?: Prisma.AnalyticsWhereInput;
 };
 
-export type EventAnalyticsUpdateToOneWithWhereWithoutEventInput = {
-  where?: Prisma.EventAnalyticsWhereInput;
+export type AnalyticsUpdateToOneWithWhereWithoutEventInput = {
+  where?: Prisma.AnalyticsWhereInput;
   data: Prisma.XOR<
-    Prisma.EventAnalyticsUpdateWithoutEventInput,
-    Prisma.EventAnalyticsUncheckedUpdateWithoutEventInput
+    Prisma.AnalyticsUpdateWithoutEventInput,
+    Prisma.AnalyticsUncheckedUpdateWithoutEventInput
   >;
 };
 
-export type EventAnalyticsUpdateWithoutEventInput = {
+export type AnalyticsUpdateWithoutEventInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   totalInvites?: Prisma.IntFieldUpdateOperationsInput | number;
   accepted?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -613,7 +605,7 @@ export type EventAnalyticsUpdateWithoutEventInput = {
   lastUpdate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
-export type EventAnalyticsUncheckedUpdateWithoutEventInput = {
+export type AnalyticsUncheckedUpdateWithoutEventInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   totalInvites?: Prisma.IntFieldUpdateOperationsInput | number;
   accepted?: Prisma.IntFieldUpdateOperationsInput | number;
@@ -624,7 +616,7 @@ export type EventAnalyticsUncheckedUpdateWithoutEventInput = {
   lastUpdate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 
-export type EventAnalyticsSelect<
+export type AnalyticsSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -640,10 +632,10 @@ export type EventAnalyticsSelect<
     lastUpdate?: boolean;
     event?: boolean | Prisma.EventDefaultArgs<ExtArgs>;
   },
-  ExtArgs['result']['eventAnalytics']
+  ExtArgs['result']['analytics']
 >;
 
-export type EventAnalyticsSelectCreateManyAndReturn<
+export type AnalyticsSelectCreateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -659,10 +651,10 @@ export type EventAnalyticsSelectCreateManyAndReturn<
     lastUpdate?: boolean;
     event?: boolean | Prisma.EventDefaultArgs<ExtArgs>;
   },
-  ExtArgs['result']['eventAnalytics']
+  ExtArgs['result']['analytics']
 >;
 
-export type EventAnalyticsSelectUpdateManyAndReturn<
+export type AnalyticsSelectUpdateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -678,10 +670,10 @@ export type EventAnalyticsSelectUpdateManyAndReturn<
     lastUpdate?: boolean;
     event?: boolean | Prisma.EventDefaultArgs<ExtArgs>;
   },
-  ExtArgs['result']['eventAnalytics']
+  ExtArgs['result']['analytics']
 >;
 
-export type EventAnalyticsSelectScalar = {
+export type AnalyticsSelectScalar = {
   id?: boolean;
   eventId?: boolean;
   totalInvites?: boolean;
@@ -693,7 +685,7 @@ export type EventAnalyticsSelectScalar = {
   lastUpdate?: boolean;
 };
 
-export type EventAnalyticsOmit<
+export type AnalyticsOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
@@ -706,32 +698,32 @@ export type EventAnalyticsOmit<
   | 'inside'
   | 'outside'
   | 'lastUpdate',
-  ExtArgs['result']['eventAnalytics']
+  ExtArgs['result']['analytics']
 >;
-export type EventAnalyticsInclude<
+export type AnalyticsInclude<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>;
 };
-export type EventAnalyticsIncludeCreateManyAndReturn<
+export type AnalyticsIncludeCreateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>;
 };
-export type EventAnalyticsIncludeUpdateManyAndReturn<
+export type AnalyticsIncludeUpdateManyAndReturn<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>;
 };
 
-export type $EventAnalyticsPayload<
+export type $AnalyticsPayload<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
-  name: 'EventAnalytics';
+  name: 'Analytics';
   objects: {
     event: Prisma.$EventPayload<ExtArgs>;
   };
@@ -747,50 +739,47 @@ export type $EventAnalyticsPayload<
       outside: number;
       lastUpdate: Date;
     },
-    ExtArgs['result']['eventAnalytics']
+    ExtArgs['result']['analytics']
   >;
   composites: {};
 };
 
-export type EventAnalyticsGetPayload<
-  S extends boolean | null | undefined | EventAnalyticsDefaultArgs,
-> = runtime.Types.Result.GetResult<Prisma.$EventAnalyticsPayload, S>;
+export type AnalyticsGetPayload<
+  S extends boolean | null | undefined | AnalyticsDefaultArgs,
+> = runtime.Types.Result.GetResult<Prisma.$AnalyticsPayload, S>;
 
-export type EventAnalyticsCountArgs<
+export type AnalyticsCountArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
-> = Omit<
-  EventAnalyticsFindManyArgs,
-  'select' | 'include' | 'distinct' | 'omit'
-> & {
-  select?: EventAnalyticsCountAggregateInputType | true;
+> = Omit<AnalyticsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+  select?: AnalyticsCountAggregateInputType | true;
 };
 
-export interface EventAnalyticsDelegate<
+export interface AnalyticsDelegate<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
   GlobalOmitOptions = {},
 > {
   [K: symbol]: {
-    types: Prisma.TypeMap<ExtArgs>['model']['EventAnalytics'];
-    meta: { name: 'EventAnalytics' };
+    types: Prisma.TypeMap<ExtArgs>['model']['Analytics'];
+    meta: { name: 'Analytics' };
   };
   /**
-   * Find zero or one EventAnalytics that matches the filter.
-   * @param {EventAnalyticsFindUniqueArgs} args - Arguments to find a EventAnalytics
+   * Find zero or one Analytics that matches the filter.
+   * @param {AnalyticsFindUniqueArgs} args - Arguments to find a Analytics
    * @example
-   * // Get one EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.findUnique({
+   * // Get one Analytics
+   * const analytics = await prisma.analytics.findUnique({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    */
-  findUnique<T extends EventAnalyticsFindUniqueArgs>(
-    args: Prisma.SelectSubset<T, EventAnalyticsFindUniqueArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventAnalyticsClient<
+  findUnique<T extends AnalyticsFindUniqueArgs>(
+    args: Prisma.SelectSubset<T, AnalyticsFindUniqueArgs<ExtArgs>>,
+  ): Prisma.Prisma__AnalyticsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'findUnique',
       GlobalOmitOptions
@@ -801,22 +790,22 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Find one EventAnalytics that matches the filter or throw an error with `error.code='P2025'`
+   * Find one Analytics that matches the filter or throw an error with `error.code='P2025'`
    * if no matches were found.
-   * @param {EventAnalyticsFindUniqueOrThrowArgs} args - Arguments to find a EventAnalytics
+   * @param {AnalyticsFindUniqueOrThrowArgs} args - Arguments to find a Analytics
    * @example
-   * // Get one EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.findUniqueOrThrow({
+   * // Get one Analytics
+   * const analytics = await prisma.analytics.findUniqueOrThrow({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    */
-  findUniqueOrThrow<T extends EventAnalyticsFindUniqueOrThrowArgs>(
-    args: Prisma.SelectSubset<T, EventAnalyticsFindUniqueOrThrowArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventAnalyticsClient<
+  findUniqueOrThrow<T extends AnalyticsFindUniqueOrThrowArgs>(
+    args: Prisma.SelectSubset<T, AnalyticsFindUniqueOrThrowArgs<ExtArgs>>,
+  ): Prisma.Prisma__AnalyticsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'findUniqueOrThrow',
       GlobalOmitOptions
@@ -827,23 +816,23 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Find the first EventAnalytics that matches the filter.
+   * Find the first Analytics that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {EventAnalyticsFindFirstArgs} args - Arguments to find a EventAnalytics
+   * @param {AnalyticsFindFirstArgs} args - Arguments to find a Analytics
    * @example
-   * // Get one EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.findFirst({
+   * // Get one Analytics
+   * const analytics = await prisma.analytics.findFirst({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    */
-  findFirst<T extends EventAnalyticsFindFirstArgs>(
-    args?: Prisma.SelectSubset<T, EventAnalyticsFindFirstArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventAnalyticsClient<
+  findFirst<T extends AnalyticsFindFirstArgs>(
+    args?: Prisma.SelectSubset<T, AnalyticsFindFirstArgs<ExtArgs>>,
+  ): Prisma.Prisma__AnalyticsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'findFirst',
       GlobalOmitOptions
@@ -854,24 +843,24 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Find the first EventAnalytics that matches the filter or
+   * Find the first Analytics that matches the filter or
    * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {EventAnalyticsFindFirstOrThrowArgs} args - Arguments to find a EventAnalytics
+   * @param {AnalyticsFindFirstOrThrowArgs} args - Arguments to find a Analytics
    * @example
-   * // Get one EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.findFirstOrThrow({
+   * // Get one Analytics
+   * const analytics = await prisma.analytics.findFirstOrThrow({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    */
-  findFirstOrThrow<T extends EventAnalyticsFindFirstOrThrowArgs>(
-    args?: Prisma.SelectSubset<T, EventAnalyticsFindFirstOrThrowArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventAnalyticsClient<
+  findFirstOrThrow<T extends AnalyticsFindFirstOrThrowArgs>(
+    args?: Prisma.SelectSubset<T, AnalyticsFindFirstOrThrowArgs<ExtArgs>>,
+  ): Prisma.Prisma__AnalyticsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'findFirstOrThrow',
       GlobalOmitOptions
@@ -882,26 +871,26 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Find zero or more EventAnalytics that matches the filter.
+   * Find zero or more Analytics that matches the filter.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {EventAnalyticsFindManyArgs} args - Arguments to filter and select certain fields only.
+   * @param {AnalyticsFindManyArgs} args - Arguments to filter and select certain fields only.
    * @example
-   * // Get all EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.findMany()
+   * // Get all Analytics
+   * const analytics = await prisma.analytics.findMany()
    *
-   * // Get first 10 EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.findMany({ take: 10 })
+   * // Get first 10 Analytics
+   * const analytics = await prisma.analytics.findMany({ take: 10 })
    *
    * // Only select the `id`
-   * const eventAnalyticsWithIdOnly = await prisma.eventAnalytics.findMany({ select: { id: true } })
+   * const analyticsWithIdOnly = await prisma.analytics.findMany({ select: { id: true } })
    *
    */
-  findMany<T extends EventAnalyticsFindManyArgs>(
-    args?: Prisma.SelectSubset<T, EventAnalyticsFindManyArgs<ExtArgs>>,
+  findMany<T extends AnalyticsFindManyArgs>(
+    args?: Prisma.SelectSubset<T, AnalyticsFindManyArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'findMany',
       GlobalOmitOptions
@@ -909,22 +898,22 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Create a EventAnalytics.
-   * @param {EventAnalyticsCreateArgs} args - Arguments to create a EventAnalytics.
+   * Create a Analytics.
+   * @param {AnalyticsCreateArgs} args - Arguments to create a Analytics.
    * @example
-   * // Create one EventAnalytics
-   * const EventAnalytics = await prisma.eventAnalytics.create({
+   * // Create one Analytics
+   * const Analytics = await prisma.analytics.create({
    *   data: {
-   *     // ... data to create a EventAnalytics
+   *     // ... data to create a Analytics
    *   }
    * })
    *
    */
-  create<T extends EventAnalyticsCreateArgs>(
-    args: Prisma.SelectSubset<T, EventAnalyticsCreateArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventAnalyticsClient<
+  create<T extends AnalyticsCreateArgs>(
+    args: Prisma.SelectSubset<T, AnalyticsCreateArgs<ExtArgs>>,
+  ): Prisma.Prisma__AnalyticsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'create',
       GlobalOmitOptions
@@ -935,34 +924,34 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Create many EventAnalytics.
-   * @param {EventAnalyticsCreateManyArgs} args - Arguments to create many EventAnalytics.
+   * Create many Analytics.
+   * @param {AnalyticsCreateManyArgs} args - Arguments to create many Analytics.
    * @example
-   * // Create many EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.createMany({
+   * // Create many Analytics
+   * const analytics = await prisma.analytics.createMany({
    *   data: [
    *     // ... provide data here
    *   ]
    * })
    *
    */
-  createMany<T extends EventAnalyticsCreateManyArgs>(
-    args?: Prisma.SelectSubset<T, EventAnalyticsCreateManyArgs<ExtArgs>>,
+  createMany<T extends AnalyticsCreateManyArgs>(
+    args?: Prisma.SelectSubset<T, AnalyticsCreateManyArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
-   * Create many EventAnalytics and returns the data saved in the database.
-   * @param {EventAnalyticsCreateManyAndReturnArgs} args - Arguments to create many EventAnalytics.
+   * Create many Analytics and returns the data saved in the database.
+   * @param {AnalyticsCreateManyAndReturnArgs} args - Arguments to create many Analytics.
    * @example
-   * // Create many EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.createManyAndReturn({
+   * // Create many Analytics
+   * const analytics = await prisma.analytics.createManyAndReturn({
    *   data: [
    *     // ... provide data here
    *   ]
    * })
    *
-   * // Create many EventAnalytics and only return the `id`
-   * const eventAnalyticsWithIdOnly = await prisma.eventAnalytics.createManyAndReturn({
+   * // Create many Analytics and only return the `id`
+   * const analyticsWithIdOnly = await prisma.analytics.createManyAndReturn({
    *   select: { id: true },
    *   data: [
    *     // ... provide data here
@@ -972,14 +961,11 @@ export interface EventAnalyticsDelegate<
    * Read more here: https://pris.ly/d/null-undefined
    *
    */
-  createManyAndReturn<T extends EventAnalyticsCreateManyAndReturnArgs>(
-    args?: Prisma.SelectSubset<
-      T,
-      EventAnalyticsCreateManyAndReturnArgs<ExtArgs>
-    >,
+  createManyAndReturn<T extends AnalyticsCreateManyAndReturnArgs>(
+    args?: Prisma.SelectSubset<T, AnalyticsCreateManyAndReturnArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'createManyAndReturn',
       GlobalOmitOptions
@@ -987,22 +973,22 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Delete a EventAnalytics.
-   * @param {EventAnalyticsDeleteArgs} args - Arguments to delete one EventAnalytics.
+   * Delete a Analytics.
+   * @param {AnalyticsDeleteArgs} args - Arguments to delete one Analytics.
    * @example
-   * // Delete one EventAnalytics
-   * const EventAnalytics = await prisma.eventAnalytics.delete({
+   * // Delete one Analytics
+   * const Analytics = await prisma.analytics.delete({
    *   where: {
-   *     // ... filter to delete one EventAnalytics
+   *     // ... filter to delete one Analytics
    *   }
    * })
    *
    */
-  delete<T extends EventAnalyticsDeleteArgs>(
-    args: Prisma.SelectSubset<T, EventAnalyticsDeleteArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventAnalyticsClient<
+  delete<T extends AnalyticsDeleteArgs>(
+    args: Prisma.SelectSubset<T, AnalyticsDeleteArgs<ExtArgs>>,
+  ): Prisma.Prisma__AnalyticsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'delete',
       GlobalOmitOptions
@@ -1013,11 +999,11 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Update one EventAnalytics.
-   * @param {EventAnalyticsUpdateArgs} args - Arguments to update one EventAnalytics.
+   * Update one Analytics.
+   * @param {AnalyticsUpdateArgs} args - Arguments to update one Analytics.
    * @example
-   * // Update one EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.update({
+   * // Update one Analytics
+   * const analytics = await prisma.analytics.update({
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1027,11 +1013,11 @@ export interface EventAnalyticsDelegate<
    * })
    *
    */
-  update<T extends EventAnalyticsUpdateArgs>(
-    args: Prisma.SelectSubset<T, EventAnalyticsUpdateArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventAnalyticsClient<
+  update<T extends AnalyticsUpdateArgs>(
+    args: Prisma.SelectSubset<T, AnalyticsUpdateArgs<ExtArgs>>,
+  ): Prisma.Prisma__AnalyticsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'update',
       GlobalOmitOptions
@@ -1042,29 +1028,29 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Delete zero or more EventAnalytics.
-   * @param {EventAnalyticsDeleteManyArgs} args - Arguments to filter EventAnalytics to delete.
+   * Delete zero or more Analytics.
+   * @param {AnalyticsDeleteManyArgs} args - Arguments to filter Analytics to delete.
    * @example
-   * // Delete a few EventAnalytics
-   * const { count } = await prisma.eventAnalytics.deleteMany({
+   * // Delete a few Analytics
+   * const { count } = await prisma.analytics.deleteMany({
    *   where: {
    *     // ... provide filter here
    *   }
    * })
    *
    */
-  deleteMany<T extends EventAnalyticsDeleteManyArgs>(
-    args?: Prisma.SelectSubset<T, EventAnalyticsDeleteManyArgs<ExtArgs>>,
+  deleteMany<T extends AnalyticsDeleteManyArgs>(
+    args?: Prisma.SelectSubset<T, AnalyticsDeleteManyArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
-   * Update zero or more EventAnalytics.
+   * Update zero or more Analytics.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {EventAnalyticsUpdateManyArgs} args - Arguments to update one or more rows.
+   * @param {AnalyticsUpdateManyArgs} args - Arguments to update one or more rows.
    * @example
-   * // Update many EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.updateMany({
+   * // Update many Analytics
+   * const analytics = await prisma.analytics.updateMany({
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1074,16 +1060,16 @@ export interface EventAnalyticsDelegate<
    * })
    *
    */
-  updateMany<T extends EventAnalyticsUpdateManyArgs>(
-    args: Prisma.SelectSubset<T, EventAnalyticsUpdateManyArgs<ExtArgs>>,
+  updateMany<T extends AnalyticsUpdateManyArgs>(
+    args: Prisma.SelectSubset<T, AnalyticsUpdateManyArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<Prisma.BatchPayload>;
 
   /**
-   * Update zero or more EventAnalytics and returns the data updated in the database.
-   * @param {EventAnalyticsUpdateManyAndReturnArgs} args - Arguments to update many EventAnalytics.
+   * Update zero or more Analytics and returns the data updated in the database.
+   * @param {AnalyticsUpdateManyAndReturnArgs} args - Arguments to update many Analytics.
    * @example
-   * // Update many EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.updateManyAndReturn({
+   * // Update many Analytics
+   * const analytics = await prisma.analytics.updateManyAndReturn({
    *   where: {
    *     // ... provide filter here
    *   },
@@ -1092,8 +1078,8 @@ export interface EventAnalyticsDelegate<
    *   ]
    * })
    *
-   * // Update zero or more EventAnalytics and only return the `id`
-   * const eventAnalyticsWithIdOnly = await prisma.eventAnalytics.updateManyAndReturn({
+   * // Update zero or more Analytics and only return the `id`
+   * const analyticsWithIdOnly = await prisma.analytics.updateManyAndReturn({
    *   select: { id: true },
    *   where: {
    *     // ... provide filter here
@@ -1106,14 +1092,11 @@ export interface EventAnalyticsDelegate<
    * Read more here: https://pris.ly/d/null-undefined
    *
    */
-  updateManyAndReturn<T extends EventAnalyticsUpdateManyAndReturnArgs>(
-    args: Prisma.SelectSubset<
-      T,
-      EventAnalyticsUpdateManyAndReturnArgs<ExtArgs>
-    >,
+  updateManyAndReturn<T extends AnalyticsUpdateManyAndReturnArgs>(
+    args: Prisma.SelectSubset<T, AnalyticsUpdateManyAndReturnArgs<ExtArgs>>,
   ): Prisma.PrismaPromise<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'updateManyAndReturn',
       GlobalOmitOptions
@@ -1121,27 +1104,27 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Create or update one EventAnalytics.
-   * @param {EventAnalyticsUpsertArgs} args - Arguments to update or create a EventAnalytics.
+   * Create or update one Analytics.
+   * @param {AnalyticsUpsertArgs} args - Arguments to update or create a Analytics.
    * @example
-   * // Update or create a EventAnalytics
-   * const eventAnalytics = await prisma.eventAnalytics.upsert({
+   * // Update or create a Analytics
+   * const analytics = await prisma.analytics.upsert({
    *   create: {
-   *     // ... data to create a EventAnalytics
+   *     // ... data to create a Analytics
    *   },
    *   update: {
    *     // ... in case it already exists, update
    *   },
    *   where: {
-   *     // ... the filter for the EventAnalytics we want to update
+   *     // ... the filter for the Analytics we want to update
    *   }
    * })
    */
-  upsert<T extends EventAnalyticsUpsertArgs>(
-    args: Prisma.SelectSubset<T, EventAnalyticsUpsertArgs<ExtArgs>>,
-  ): Prisma.Prisma__EventAnalyticsClient<
+  upsert<T extends AnalyticsUpsertArgs>(
+    args: Prisma.SelectSubset<T, AnalyticsUpsertArgs<ExtArgs>>,
+  ): Prisma.Prisma__AnalyticsClient<
     runtime.Types.Result.GetResult<
-      Prisma.$EventAnalyticsPayload<ExtArgs>,
+      Prisma.$AnalyticsPayload<ExtArgs>,
       T,
       'upsert',
       GlobalOmitOptions
@@ -1152,36 +1135,33 @@ export interface EventAnalyticsDelegate<
   >;
 
   /**
-   * Count the number of EventAnalytics.
+   * Count the number of Analytics.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {EventAnalyticsCountArgs} args - Arguments to filter EventAnalytics to count.
+   * @param {AnalyticsCountArgs} args - Arguments to filter Analytics to count.
    * @example
-   * // Count the number of EventAnalytics
-   * const count = await prisma.eventAnalytics.count({
+   * // Count the number of Analytics
+   * const count = await prisma.analytics.count({
    *   where: {
-   *     // ... the filter for the EventAnalytics we want to count
+   *     // ... the filter for the Analytics we want to count
    *   }
    * })
    **/
-  count<T extends EventAnalyticsCountArgs>(
-    args?: Prisma.Subset<T, EventAnalyticsCountArgs>,
+  count<T extends AnalyticsCountArgs>(
+    args?: Prisma.Subset<T, AnalyticsCountArgs>,
   ): Prisma.PrismaPromise<
     T extends runtime.Types.Utils.Record<'select', any>
       ? T['select'] extends true
         ? number
-        : Prisma.GetScalarType<
-            T['select'],
-            EventAnalyticsCountAggregateOutputType
-          >
+        : Prisma.GetScalarType<T['select'], AnalyticsCountAggregateOutputType>
       : number
   >;
 
   /**
-   * Allows you to perform aggregations operations on a EventAnalytics.
+   * Allows you to perform aggregations operations on a Analytics.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {EventAnalyticsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+   * @param {AnalyticsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
    * @example
    * // Ordered by age ascending
    * // Where email contains prisma.io
@@ -1201,15 +1181,15 @@ export interface EventAnalyticsDelegate<
    *   take: 10,
    * })
    **/
-  aggregate<T extends EventAnalyticsAggregateArgs>(
-    args: Prisma.Subset<T, EventAnalyticsAggregateArgs>,
-  ): Prisma.PrismaPromise<GetEventAnalyticsAggregateType<T>>;
+  aggregate<T extends AnalyticsAggregateArgs>(
+    args: Prisma.Subset<T, AnalyticsAggregateArgs>,
+  ): Prisma.PrismaPromise<GetAnalyticsAggregateType<T>>;
 
   /**
-   * Group by EventAnalytics.
+   * Group by Analytics.
    * Note, that providing `undefined` is treated as the value not being there.
    * Read more here: https://pris.ly/d/null-undefined
-   * @param {EventAnalyticsGroupByArgs} args - Group by arguments.
+   * @param {AnalyticsGroupByArgs} args - Group by arguments.
    * @example
    * // Group by city, order by createdAt, get count
    * const result = await prisma.user.groupBy({
@@ -1224,14 +1204,14 @@ export interface EventAnalyticsDelegate<
    *
    **/
   groupBy<
-    T extends EventAnalyticsGroupByArgs,
+    T extends AnalyticsGroupByArgs,
     HasSelectOrTake extends Prisma.Or<
       Prisma.Extends<'skip', Prisma.Keys<T>>,
       Prisma.Extends<'take', Prisma.Keys<T>>
     >,
     OrderByArg extends Prisma.True extends HasSelectOrTake
-      ? { orderBy: EventAnalyticsGroupByArgs['orderBy'] }
-      : { orderBy?: EventAnalyticsGroupByArgs['orderBy'] },
+      ? { orderBy: AnalyticsGroupByArgs['orderBy'] }
+      : { orderBy?: AnalyticsGroupByArgs['orderBy'] },
     OrderFields extends Prisma.ExcludeUnderscoreKeys<
       Prisma.Keys<Prisma.MaybeTupleToUnion<T['orderBy']>>
     >,
@@ -1283,24 +1263,24 @@ export interface EventAnalyticsDelegate<
                     : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`;
                 }[OrderFields],
   >(
-    args: Prisma.SubsetIntersection<T, EventAnalyticsGroupByArgs, OrderByArg> &
+    args: Prisma.SubsetIntersection<T, AnalyticsGroupByArgs, OrderByArg> &
       InputErrors,
   ): {} extends InputErrors
-    ? GetEventAnalyticsGroupByPayload<T>
+    ? GetAnalyticsGroupByPayload<T>
     : Prisma.PrismaPromise<InputErrors>;
   /**
-   * Fields of the EventAnalytics model
+   * Fields of the Analytics model
    */
-  readonly fields: EventAnalyticsFieldRefs;
+  readonly fields: AnalyticsFieldRefs;
 }
 
 /**
- * The delegate class that acts as a "Promise-like" for EventAnalytics.
+ * The delegate class that acts as a "Promise-like" for Analytics.
  * Why is this prefixed with `Prisma__`?
  * Because we want to prevent naming conflicts as mentioned in
  * https://github.com/prisma/prisma-client-js/issues/707
  */
-export interface Prisma__EventAnalyticsClient<
+export interface Prisma__AnalyticsClient<
   T,
   Null = never,
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
@@ -1361,505 +1341,506 @@ export interface Prisma__EventAnalyticsClient<
 }
 
 /**
- * Fields of the EventAnalytics model
+ * Fields of the Analytics model
  */
-export interface EventAnalyticsFieldRefs {
-  readonly id: Prisma.FieldRef<'EventAnalytics', 'String'>;
-  readonly eventId: Prisma.FieldRef<'EventAnalytics', 'String'>;
-  readonly totalInvites: Prisma.FieldRef<'EventAnalytics', 'Int'>;
-  readonly accepted: Prisma.FieldRef<'EventAnalytics', 'Int'>;
-  readonly declined: Prisma.FieldRef<'EventAnalytics', 'Int'>;
-  readonly checkedIn: Prisma.FieldRef<'EventAnalytics', 'Int'>;
-  readonly inside: Prisma.FieldRef<'EventAnalytics', 'Int'>;
-  readonly outside: Prisma.FieldRef<'EventAnalytics', 'Int'>;
-  readonly lastUpdate: Prisma.FieldRef<'EventAnalytics', 'DateTime'>;
+export interface AnalyticsFieldRefs {
+  readonly id: Prisma.FieldRef<'Analytics', 'String'>;
+  readonly eventId: Prisma.FieldRef<'Analytics', 'String'>;
+  readonly totalInvites: Prisma.FieldRef<'Analytics', 'Int'>;
+  readonly accepted: Prisma.FieldRef<'Analytics', 'Int'>;
+  readonly declined: Prisma.FieldRef<'Analytics', 'Int'>;
+  readonly checkedIn: Prisma.FieldRef<'Analytics', 'Int'>;
+  readonly inside: Prisma.FieldRef<'Analytics', 'Int'>;
+  readonly outside: Prisma.FieldRef<'Analytics', 'Int'>;
+  readonly lastUpdate: Prisma.FieldRef<'Analytics', 'DateTime'>;
 }
 
 // Custom InputTypes
 /**
- * EventAnalytics findUnique
+ * Analytics findUnique
  */
-export type EventAnalyticsFindUniqueArgs<
+export type AnalyticsFindUniqueArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
   /**
-   * Filter, which EventAnalytics to fetch.
+   * Filter, which Analytics to fetch.
    */
-  where: Prisma.EventAnalyticsWhereUniqueInput;
+  where: Prisma.AnalyticsWhereUniqueInput;
 };
 
 /**
- * EventAnalytics findUniqueOrThrow
+ * Analytics findUniqueOrThrow
  */
-export type EventAnalyticsFindUniqueOrThrowArgs<
+export type AnalyticsFindUniqueOrThrowArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
   /**
-   * Filter, which EventAnalytics to fetch.
+   * Filter, which Analytics to fetch.
    */
-  where: Prisma.EventAnalyticsWhereUniqueInput;
+  where: Prisma.AnalyticsWhereUniqueInput;
 };
 
 /**
- * EventAnalytics findFirst
+ * Analytics findFirst
  */
-export type EventAnalyticsFindFirstArgs<
+export type AnalyticsFindFirstArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
   /**
-   * Filter, which EventAnalytics to fetch.
+   * Filter, which Analytics to fetch.
    */
-  where?: Prisma.EventAnalyticsWhereInput;
+  where?: Prisma.AnalyticsWhereInput;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
-   * Determine the order of EventAnalytics to fetch.
+   * Determine the order of Analytics to fetch.
    */
   orderBy?:
-    | Prisma.EventAnalyticsOrderByWithRelationInput
-    | Prisma.EventAnalyticsOrderByWithRelationInput[];
+    | Prisma.AnalyticsOrderByWithRelationInput
+    | Prisma.AnalyticsOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
-   * Sets the position for searching for EventAnalytics.
+   * Sets the position for searching for Analytics.
    */
-  cursor?: Prisma.EventAnalyticsWhereUniqueInput;
+  cursor?: Prisma.AnalyticsWhereUniqueInput;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` EventAnalytics from the position of the cursor.
+   * Take `±n` Analytics from the position of the cursor.
    */
   take?: number;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Skip the first `n` EventAnalytics.
+   * Skip the first `n` Analytics.
    */
   skip?: number;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    *
-   * Filter by unique combinations of EventAnalytics.
+   * Filter by unique combinations of Analytics.
    */
   distinct?:
-    | Prisma.EventAnalyticsScalarFieldEnum
-    | Prisma.EventAnalyticsScalarFieldEnum[];
+    | Prisma.AnalyticsScalarFieldEnum
+    | Prisma.AnalyticsScalarFieldEnum[];
 };
 
 /**
- * EventAnalytics findFirstOrThrow
+ * Analytics findFirstOrThrow
  */
-export type EventAnalyticsFindFirstOrThrowArgs<
+export type AnalyticsFindFirstOrThrowArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
   /**
-   * Filter, which EventAnalytics to fetch.
+   * Filter, which Analytics to fetch.
    */
-  where?: Prisma.EventAnalyticsWhereInput;
+  where?: Prisma.AnalyticsWhereInput;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
-   * Determine the order of EventAnalytics to fetch.
+   * Determine the order of Analytics to fetch.
    */
   orderBy?:
-    | Prisma.EventAnalyticsOrderByWithRelationInput
-    | Prisma.EventAnalyticsOrderByWithRelationInput[];
+    | Prisma.AnalyticsOrderByWithRelationInput
+    | Prisma.AnalyticsOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
-   * Sets the position for searching for EventAnalytics.
+   * Sets the position for searching for Analytics.
    */
-  cursor?: Prisma.EventAnalyticsWhereUniqueInput;
+  cursor?: Prisma.AnalyticsWhereUniqueInput;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` EventAnalytics from the position of the cursor.
+   * Take `±n` Analytics from the position of the cursor.
    */
   take?: number;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Skip the first `n` EventAnalytics.
+   * Skip the first `n` Analytics.
    */
   skip?: number;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
    *
-   * Filter by unique combinations of EventAnalytics.
+   * Filter by unique combinations of Analytics.
    */
   distinct?:
-    | Prisma.EventAnalyticsScalarFieldEnum
-    | Prisma.EventAnalyticsScalarFieldEnum[];
+    | Prisma.AnalyticsScalarFieldEnum
+    | Prisma.AnalyticsScalarFieldEnum[];
 };
 
 /**
- * EventAnalytics findMany
+ * Analytics findMany
  */
-export type EventAnalyticsFindManyArgs<
+export type AnalyticsFindManyArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
   /**
-   * Filter, which EventAnalytics to fetch.
+   * Filter, which Analytics to fetch.
    */
-  where?: Prisma.EventAnalyticsWhereInput;
+  where?: Prisma.AnalyticsWhereInput;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
    *
-   * Determine the order of EventAnalytics to fetch.
+   * Determine the order of Analytics to fetch.
    */
   orderBy?:
-    | Prisma.EventAnalyticsOrderByWithRelationInput
-    | Prisma.EventAnalyticsOrderByWithRelationInput[];
+    | Prisma.AnalyticsOrderByWithRelationInput
+    | Prisma.AnalyticsOrderByWithRelationInput[];
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
    *
-   * Sets the position for listing EventAnalytics.
+   * Sets the position for listing Analytics.
    */
-  cursor?: Prisma.EventAnalyticsWhereUniqueInput;
+  cursor?: Prisma.AnalyticsWhereUniqueInput;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Take `±n` EventAnalytics from the position of the cursor.
+   * Take `±n` Analytics from the position of the cursor.
    */
   take?: number;
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
    *
-   * Skip the first `n` EventAnalytics.
+   * Skip the first `n` Analytics.
    */
   skip?: number;
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+   *
+   * Filter by unique combinations of Analytics.
+   */
   distinct?:
-    | Prisma.EventAnalyticsScalarFieldEnum
-    | Prisma.EventAnalyticsScalarFieldEnum[];
+    | Prisma.AnalyticsScalarFieldEnum
+    | Prisma.AnalyticsScalarFieldEnum[];
 };
 
 /**
- * EventAnalytics create
+ * Analytics create
  */
-export type EventAnalyticsCreateArgs<
+export type AnalyticsCreateArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
   /**
-   * The data needed to create a EventAnalytics.
+   * The data needed to create a Analytics.
    */
   data: Prisma.XOR<
-    Prisma.EventAnalyticsCreateInput,
-    Prisma.EventAnalyticsUncheckedCreateInput
+    Prisma.AnalyticsCreateInput,
+    Prisma.AnalyticsUncheckedCreateInput
   >;
 };
 
 /**
- * EventAnalytics createMany
+ * Analytics createMany
  */
-export type EventAnalyticsCreateManyArgs<
+export type AnalyticsCreateManyArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * The data used to create many EventAnalytics.
+   * The data used to create many Analytics.
    */
-  data:
-    | Prisma.EventAnalyticsCreateManyInput
-    | Prisma.EventAnalyticsCreateManyInput[];
+  data: Prisma.AnalyticsCreateManyInput | Prisma.AnalyticsCreateManyInput[];
   skipDuplicates?: boolean;
 };
 
 /**
- * EventAnalytics createManyAndReturn
+ * Analytics createManyAndReturn
  */
-export type EventAnalyticsCreateManyAndReturnArgs<
+export type AnalyticsCreateManyAndReturnArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelectCreateManyAndReturn<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelectCreateManyAndReturn<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
-   * The data used to create many EventAnalytics.
+   * The data used to create many Analytics.
    */
-  data:
-    | Prisma.EventAnalyticsCreateManyInput
-    | Prisma.EventAnalyticsCreateManyInput[];
+  data: Prisma.AnalyticsCreateManyInput | Prisma.AnalyticsCreateManyInput[];
   skipDuplicates?: boolean;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsIncludeCreateManyAndReturn<ExtArgs> | null;
+  include?: Prisma.AnalyticsIncludeCreateManyAndReturn<ExtArgs> | null;
 };
 
 /**
- * EventAnalytics update
+ * Analytics update
  */
-export type EventAnalyticsUpdateArgs<
+export type AnalyticsUpdateArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
   /**
-   * The data needed to update a EventAnalytics.
+   * The data needed to update a Analytics.
    */
   data: Prisma.XOR<
-    Prisma.EventAnalyticsUpdateInput,
-    Prisma.EventAnalyticsUncheckedUpdateInput
+    Prisma.AnalyticsUpdateInput,
+    Prisma.AnalyticsUncheckedUpdateInput
   >;
   /**
-   * Choose, which EventAnalytics to update.
+   * Choose, which Analytics to update.
    */
-  where: Prisma.EventAnalyticsWhereUniqueInput;
+  where: Prisma.AnalyticsWhereUniqueInput;
 };
 
 /**
- * EventAnalytics updateMany
+ * Analytics updateMany
  */
-export type EventAnalyticsUpdateManyArgs<
+export type AnalyticsUpdateManyArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * The data used to update EventAnalytics.
+   * The data used to update Analytics.
    */
   data: Prisma.XOR<
-    Prisma.EventAnalyticsUpdateManyMutationInput,
-    Prisma.EventAnalyticsUncheckedUpdateManyInput
+    Prisma.AnalyticsUpdateManyMutationInput,
+    Prisma.AnalyticsUncheckedUpdateManyInput
   >;
   /**
-   * Filter which EventAnalytics to update
+   * Filter which Analytics to update
    */
-  where?: Prisma.EventAnalyticsWhereInput;
+  where?: Prisma.AnalyticsWhereInput;
   /**
-   * Limit how many EventAnalytics to update.
+   * Limit how many Analytics to update.
    */
   limit?: number;
 };
 
 /**
- * EventAnalytics updateManyAndReturn
+ * Analytics updateManyAndReturn
  */
-export type EventAnalyticsUpdateManyAndReturnArgs<
+export type AnalyticsUpdateManyAndReturnArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelectUpdateManyAndReturn<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelectUpdateManyAndReturn<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
-   * The data used to update EventAnalytics.
+   * The data used to update Analytics.
    */
   data: Prisma.XOR<
-    Prisma.EventAnalyticsUpdateManyMutationInput,
-    Prisma.EventAnalyticsUncheckedUpdateManyInput
+    Prisma.AnalyticsUpdateManyMutationInput,
+    Prisma.AnalyticsUncheckedUpdateManyInput
   >;
   /**
-   * Filter which EventAnalytics to update
+   * Filter which Analytics to update
    */
-  where?: Prisma.EventAnalyticsWhereInput;
+  where?: Prisma.AnalyticsWhereInput;
   /**
-   * Limit how many EventAnalytics to update.
+   * Limit how many Analytics to update.
    */
   limit?: number;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsIncludeUpdateManyAndReturn<ExtArgs> | null;
+  include?: Prisma.AnalyticsIncludeUpdateManyAndReturn<ExtArgs> | null;
 };
 
 /**
- * EventAnalytics upsert
+ * Analytics upsert
  */
-export type EventAnalyticsUpsertArgs<
+export type AnalyticsUpsertArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
   /**
-   * The filter to search for the EventAnalytics to update in case it exists.
+   * The filter to search for the Analytics to update in case it exists.
    */
-  where: Prisma.EventAnalyticsWhereUniqueInput;
+  where: Prisma.AnalyticsWhereUniqueInput;
   /**
-   * In case the EventAnalytics found by the `where` argument doesn't exist, create a new EventAnalytics with this data.
+   * In case the Analytics found by the `where` argument doesn't exist, create a new Analytics with this data.
    */
   create: Prisma.XOR<
-    Prisma.EventAnalyticsCreateInput,
-    Prisma.EventAnalyticsUncheckedCreateInput
+    Prisma.AnalyticsCreateInput,
+    Prisma.AnalyticsUncheckedCreateInput
   >;
   /**
-   * In case the EventAnalytics was found with the provided `where` argument, update it with this data.
+   * In case the Analytics was found with the provided `where` argument, update it with this data.
    */
   update: Prisma.XOR<
-    Prisma.EventAnalyticsUpdateInput,
-    Prisma.EventAnalyticsUncheckedUpdateInput
+    Prisma.AnalyticsUpdateInput,
+    Prisma.AnalyticsUncheckedUpdateInput
   >;
 };
 
 /**
- * EventAnalytics delete
+ * Analytics delete
  */
-export type EventAnalyticsDeleteArgs<
+export type AnalyticsDeleteArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
   /**
-   * Filter which EventAnalytics to delete.
+   * Filter which Analytics to delete.
    */
-  where: Prisma.EventAnalyticsWhereUniqueInput;
+  where: Prisma.AnalyticsWhereUniqueInput;
 };
 
 /**
- * EventAnalytics deleteMany
+ * Analytics deleteMany
  */
-export type EventAnalyticsDeleteManyArgs<
+export type AnalyticsDeleteManyArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Filter which EventAnalytics to delete
+   * Filter which Analytics to delete
    */
-  where?: Prisma.EventAnalyticsWhereInput;
+  where?: Prisma.AnalyticsWhereInput;
   /**
-   * Limit how many EventAnalytics to delete.
+   * Limit how many Analytics to delete.
    */
   limit?: number;
 };
 
 /**
- * EventAnalytics without action
+ * Analytics without action
  */
-export type EventAnalyticsDefaultArgs<
+export type AnalyticsDefaultArgs<
   ExtArgs extends runtime.Types.Extensions.InternalArgs =
     runtime.Types.Extensions.DefaultArgs,
 > = {
   /**
-   * Select specific fields to fetch from the EventAnalytics
+   * Select specific fields to fetch from the Analytics
    */
-  select?: Prisma.EventAnalyticsSelect<ExtArgs> | null;
+  select?: Prisma.AnalyticsSelect<ExtArgs> | null;
   /**
-   * Omit specific fields from the EventAnalytics
+   * Omit specific fields from the Analytics
    */
-  omit?: Prisma.EventAnalyticsOmit<ExtArgs> | null;
+  omit?: Prisma.AnalyticsOmit<ExtArgs> | null;
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.EventAnalyticsInclude<ExtArgs> | null;
+  include?: Prisma.AnalyticsInclude<ExtArgs> | null;
 };

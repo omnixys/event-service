@@ -1,4 +1,3 @@
-import { AuthModule } from '../auth/auth.module.js';
 import { ScalarsModule } from '../core/scalars/scalar.module.js';
 import { PrismaModule } from '../prisma/prisma.module.js';
 import { EventFieldsResolver } from './resolvers/event-fields.resolver.js';
@@ -9,7 +8,7 @@ import { EventWriteService } from './services/event-write.service.js';
 import { Module } from '@nestjs/common';
 
 @Module({
-  imports: [PrismaModule, AuthModule, ScalarsModule],
+  imports: [PrismaModule, ScalarsModule],
   providers: [
     EventQueryResolver,
     EventMutationResolver,

@@ -8,15 +8,8 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Event.js';
-export type * from './models/EventAddress.js';
-export type * from './models/EventSettings.js';
-export type * from './models/EventTheme.js';
-export type * from './models/EventAnalytics.js';
-export type * from './models/EventMedia.js';
-export type * from './models/EventDescriptionBlock.js';
-export type * from './models/EventFAQ.js';
-export type * from './models/EventTeamMember.js';
-export type * from './models/EventAuditLog.js';
-export type * from './models/EventTimeline.js';
-export type * from './models/UserEventRole.js';
+export type * from './models/Settings.js';
+export type * from './models/Analytics.js';
+export type * from './models/Timeline.js';
+export type * from './models/Role.js';
 export type * from './commonInputTypes.js';

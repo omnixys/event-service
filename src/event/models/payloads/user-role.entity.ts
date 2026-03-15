@@ -1,4 +1,4 @@
-import { UserRole } from '../enums/user-role.enum.js';
+import { UserRoleType } from '../../../prisma/generated/client.js';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 
 @ObjectType()
@@ -12,6 +12,6 @@ export class UserEventRolePayload {
   @Field(() => String)
   userId!: string;
 
-  @Field(() => UserRole)
-  role!: UserRole;
+  @Field(() => UserRoleType)
+  role!: UserRoleType;
 }

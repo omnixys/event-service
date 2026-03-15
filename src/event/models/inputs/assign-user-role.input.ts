@@ -1,4 +1,4 @@
-import { UserRole } from '../enums/user-role.enum.js';
+import { UserRoleType } from '../../../prisma/generated/client.js';
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
@@ -9,8 +9,8 @@ export class AssignUserRoleInput {
   @Field()
   userId!: string;
 
-  @Field(() => UserRole)
-  eventRole!: UserRole;
+  @Field(() => UserRoleType)
+  eventRole!: UserRoleType;
 
   @Field({ nullable: true })
   actorId?: string;
