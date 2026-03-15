@@ -1,5 +1,6 @@
 import { ScalarsModule } from '../core/scalars/scalar.module.js';
 import { PrismaModule } from '../prisma/prisma.module.js';
+import './models/enums/enums.js';
 import { EventFieldsResolver } from './resolvers/event-fields.resolver.js';
 import { EventMutationResolver } from './resolvers/event-mutation.resolver.js';
 import { EventQueryResolver } from './resolvers/event-query.resolver.js';
