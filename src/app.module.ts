@@ -18,27 +18,29 @@
 import { AdminModule } from './admin/admin.module.js';
 import { env } from './config/env.js';
 import { EventModule } from './event/event.module.js';
-import { HandlerModule } from './handlers/handler.module.js';
 import { HealthModule } from './health/health.module.js';
-import { KafkaModule } from './kafka/kafka.module.js';
 import { LoggerModule } from './logger/logger.module.js';
 import { RequestLoggerMiddleware } from './logger/request-logger.middleware.js';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
-import { FastifyReply, FastifyRequest } from 'fastify';
+import { GqlFastifyContext } from '@omnixys/context';
+import { KafkaModule } from '@omnixys/kafka';
 
-const { SCHEMA_TARGET } = env;
+const { SCHEMA_TARGET, SERVICE, KAFKA_BROKER } = env;
 
 @Module({
   imports: [
+        KafkaModule.forRoot({
+            clientId: `${SERVICE}-service`,
+            brokers: [KAFKA_BROKER],
+            groupId: `${SERVICE}-sconsumer`,
+        }),
     AdminModule,
-    HandlerModule,
     EventModule,
     HealthModule,
     LoggerModule,
-    KafkaModule,
     ConfigModule.forRoot({ isGlobal: true }),
     GraphQLModule.forRootAsync<ApolloFederationDriverConfig>({
       driver: ApolloFederationDriver,
@@ -56,9 +58,9 @@ const { SCHEMA_TARGET } = env;
         csrfPrevention: false,
         introspection: true,
 
-        context: ({ req, res }: { req: FastifyRequest; res: FastifyReply }) => ({
+        context: ({ req, reply }: GqlFastifyContext) => ({
           req,
-          res,
+          reply,
         }),
       }),
     }),

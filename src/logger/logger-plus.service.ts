@@ -15,7 +15,7 @@
  * For more information, visit <https://www.gnu.org/licenses/>.
  */
 
-import type { KafkaProducerService } from '../kafka/kafka-producer.service.js'; // ✅ nur Typ, kein Runtime-Import
+import { KafkaProducerService } from '@omnixys/kafka';
 import { LoggerPlus } from './logger-plus.js';
 import { Injectable } from '@nestjs/common';
 
@@ -23,7 +23,9 @@ import { Injectable } from '@nestjs/common';
  * Globaler Schlüsselname für die Producer-Singleton-Instanz.
  * Wird streng typisiert als Symbol verwaltet, um „any“ zu vermeiden.
  */
-const KAFKA_PRODUCER_KEY: unique symbol = Symbol.for('__omnixysKafkaProducer__');
+const KAFKA_PRODUCER_KEY: unique symbol = Symbol.for(
+  '__omnixysKafkaProducer__',
+);
 
 /**
  * Typisierte Zugriffshilfe auf den globalen Kafka-Producer.
@@ -38,7 +40,8 @@ export function getGlobalKafkaProducer(): KafkaProducerService | undefined {
  * Registriert eine KafkaProducerService-Instanz global.
  */
 export function setGlobalKafkaProducer(producer: KafkaProducerService): void {
-  (globalThis as Record<symbol, KafkaProducerService>)[KAFKA_PRODUCER_KEY] = producer;
+  (globalThis as Record<symbol, KafkaProducerService>)[KAFKA_PRODUCER_KEY] =
+    producer;
 }
 
 /**

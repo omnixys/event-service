@@ -1,4 +1,3 @@
-// import { KafkaProducerService } from '../../kafka/kafka-producer.service.js';
 import { LoggerPlusService } from '../../logger/logger-plus.service.js';
 import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
@@ -10,6 +9,7 @@ import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { KafkaProducerService, KafkaTopics } from '@omnixys/kafka';
 import { trace, Tracer } from '@opentelemetry/api';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class EventWriteService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly loggerService: LoggerPlusService,
-    // private readonly kafkaProducerService: KafkaProducerService,
+    private readonly kafkaProducerService: KafkaProducerService,
   ) {
     this.logger = this.loggerService.getLogger(EventWriteService.name);
     this.tracer = trace.getTracer(EventWriteService.name);
@@ -31,8 +31,9 @@ export class EventWriteService {
   // ─────────────────────────────────────────────
 
   async createEvent(input: CreateEventInput, actorId: string): Promise<EventPayload> {
-    return withSpan(this.tracer, this.logger, 'event.write.create', async (_span) => {
+    return withSpan(this.tracer, this.logger, 'event.write.create', async (span) => {
       this.logger.info('Creating event %o', { actorId, name: input.name });
+      this.logger.debug('create input %o', input);
 
       const result = await this.prisma.$transaction(async (tx) => {
         const event = await tx.event.create({
@@ -89,32 +90,31 @@ export class EventWriteService {
         actorId,
       });
 
-      // const sc = span.spanContext();
+      const sc = span.spanContext();
 
-      // void this.kafkaProducerService.generateSeats(
-      //   {
-      //     eventId: result.id,
-      //     maxSeats: input.settings?.maxSeats ?? 50,
-      //     actorId,
-      //   },
-      //   'event.write-service',
-      //   { traceId: sc.traceId, spanId: sc.spanId },
-      // );
+      void this.kafkaProducerService.send<typeof KafkaTopics.seat.createSeats>(
+      KafkaTopics.seat.createSeats,
+        {
+           eventId: result.id,
+            maxSeats: input.settings?.maxSeats ?? 50,
+            actorId,
+          
+        },
+        'event-service',
+        { traceId: sc.traceId, spanId: sc.spanId },
+      );
 
-      // void this.kafkaProducerService.createAddress(
-      //   {
-      //     street: input.address?.street,
-      //     houseNumber: input.address?.houseNumber,
-      //     postalCodeId: input.address?.postalCode,
-      //     cityId: input.address?.city,
-      //     stateId: input.address?.street,
-      //     countryId: input.address?.country,
-      //     EventType: input.address?.street,
-      //     additionalInfo: input.address?.street,
-      //   },
-      //           'event.write-service',
-      //   { traceId: sc.traceId, spanId: sc.spanId },
-      // )
+      if (input.address) {
+        void this.kafkaProducerService.send<typeof KafkaTopics.address.createAddress>(
+          KafkaTopics.address.createAddress,
+          input.address,
+          'event-service',
+          {
+            traceId: sc.traceId,
+            spanId: sc.spanId,
+          },
+        );
+      }
 
       // 🔥 return mapped EventPayload
       return EventMapper.toPayload(result);
@@ -127,7 +127,7 @@ export class EventWriteService {
   async updateEvent(input: UpdateEventInput, actorId: string): Promise<boolean> {
     this.logger.info('Updating event %o', { actorId, eventId: input.eventId });
     const exists = await this.prisma.settings.findUnique({
-      where: { id: input.eventId },
+      where: { eventId: input.eventId },
     });
 
     if (!exists) {
@@ -170,34 +170,48 @@ export class EventWriteService {
   // DELETE EVENT
   // ─────────────────────────────────────────────
   async deleteEvent(id: string, actorId: string): Promise<boolean> {
-    this.logger.info('Delete Event %o', { actorId, id });
-    const event = await this.prisma.event.findUnique({
-      where: { id },
-      select: { owner: true },
-    });
+        return withSpan(this.tracer, this.logger, 'event.write.delete', async (span) => {
+          this.logger.info('Delete Event %o', { actorId, id });
+          const event = await this.prisma.event.findUnique({
+            where: { id },
+            select: { owner: true },
+          });
 
-    if (!event) {
-      throw new NotFoundException('Event not found');
-    }
+          if (!event) {
+            throw new NotFoundException('Event not found');
+          }
 
-    if (event.owner !== actorId) {
-      throw new Error('Only the owner can delete this event');
-    }
+          if (event.owner !== actorId) {
+            throw new Error('Only the owner can delete this event');
+          }
 
-    await this.prisma.$transaction([
-      this.prisma.event.delete({ where: { id } }),
-      // this.prisma.eventAuditLog.create({
-      //   data: {
-      //     eventId: id,
-      //     actorId,
-      //     action: 'EVENT_DELETED',
-      //   },
-      // }),
-    ]);
+          await this.prisma.$transaction([
+            this.prisma.event.delete({ where: { id } }),
+            // this.prisma.eventAuditLog.create({
+            //   data: {
+            //     eventId: id,
+            //     actorId,
+            //     action: 'EVENT_DELETED',
+            //   },
+            // }),
+          ]);
 
-    this.logger.warn('Event deleted', { eventId: id, actorId });
+                const sc = span.spanContext();
 
-    return true;
+           void this.kafkaProducerService.send<typeof KafkaTopics.seat.deleteSeats>(
+             KafkaTopics.seat.deleteSeats,
+             {
+               eventId: id,
+               actorId,
+             },
+             'event-service',
+             { traceId: sc.traceId, spanId: sc.spanId },
+           );
+          
+          this.logger.warn('Event deleted', { eventId: id, actorId });
+
+          return true;
+        });
   }
 
   /**

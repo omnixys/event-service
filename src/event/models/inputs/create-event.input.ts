@@ -1,6 +1,6 @@
 import { CreateSettingsInput } from './create-settings.input.js';
 import { Field, ID, InputType } from '@nestjs/graphql';
-import { UserAddressInput } from '@omnixys/graphql';
+import { EventAddressInput } from '@omnixys/graphql';
 import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
@@ -16,11 +16,6 @@ export class CreateEventInput {
   @IsOptional()
   parentId?: string;
 
-  @Field(() => ID)
-  @IsString()
-  @IsNotEmpty()
-  owner!: string;
-
   @Field()
   @IsString()
   @IsNotEmpty()
@@ -28,10 +23,10 @@ export class CreateEventInput {
 
   // Optional nested objects
   @ValidateNested()
-  @Field(() => UserAddressInput, { nullable: true })
-  @Type(() => UserAddressInput)
+  @Field(() => EventAddressInput, { nullable: true })
+  @Type(() => EventAddressInput)
   @IsOptional()
-  address?: UserAddressInput;
+  address?: EventAddressInput;
 
   @ValidateNested()
   @Field(() => CreateSettingsInput)

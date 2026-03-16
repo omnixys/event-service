@@ -7,7 +7,7 @@ import { RemoveUserFromEventInput } from '../models/inputs/remove-user-from-even
 import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventWriteService } from '../services/event-write.service.js';
-import { UseGuards } from '@nestjs/common';
+import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
 import { CookieAuthGuard, CurrentUser, CurrentUserData } from '@omnixys/auth';
 
@@ -21,14 +21,21 @@ export class EventMutationResolver {
     @Args('input') input: CreateEventInput,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload> {
+    if (!currentUser?.id) {
+      throw new UnauthorizedException('Not authenticated');
+    }
     return this.writeService.createEvent(input, currentUser.id);
   }
 
   @Mutation(() => Boolean)
+  @UseGuards(CookieAuthGuard)
   async updateEvent(
     @Args('input') input: UpdateEventInput,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<boolean> {
+    if (!currentUser?.id) {
+      throw new UnauthorizedException('Not authenticated');
+    }
     return this.writeService.updateEvent(input, currentUser.id);
   }
 
@@ -38,9 +45,13 @@ export class EventMutationResolver {
     @Args('id', { type: () => ID }) id: string,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<boolean> {
+    if (!currentUser?.id) {
+      throw new UnauthorizedException('Not authenticated');
+    }
     return this.writeService.deleteEvent(id, currentUser.id);
   }
 
+  @UseGuards(CookieAuthGuard)
   @Mutation(() => Boolean)
   async assignUserToEvent(
     @Args('input') input: AssignUserRoleInput,
