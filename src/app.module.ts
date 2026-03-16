@@ -35,7 +35,7 @@ const { SCHEMA_TARGET, SERVICE, KAFKA_BROKER } = env;
         KafkaModule.forRoot({
             clientId: `${SERVICE}-service`,
             brokers: [KAFKA_BROKER],
-            groupId: `${SERVICE}-sconsumer`,
+            groupId: `${SERVICE}-consumer`,
         }),
     AdminModule,
     EventModule,
