@@ -9,7 +9,11 @@ import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventWriteService } from '../services/event-write.service.js';
 import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Args, ID, Mutation, Resolver } from '@nestjs/graphql';
-import { CookieAuthGuard, CurrentUser, CurrentUserData } from '@omnixys/auth';
+import {
+  CookieAuthGuard,
+  CurrentUser,
+  CurrentUserData,
+} from '@omnixys/security';
 
 @Resolver(() => Event)
 export class EventMutationResolver {

@@ -1,11 +1,15 @@
 import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { Args, ID, Query, Resolver } from '@nestjs/graphql';
 
-import { CookieAuthGuard, CurrentUser, CurrentUserData } from '@omnixys/auth';
+import {
+  CookieAuthGuard,
+  CurrentUser,
+  CurrentUserData,
+} from '@omnixys/security';
 
-import { LoggerPlusService } from '../../logger/logger-plus.service.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventReadService } from '../services/event-read.service.js';
+import { OmnixysLogger } from '@omnixys/logger';
 
 @Resolver(() => EventPayload)
 export class EventQueryResolver {
@@ -13,9 +17,9 @@ export class EventQueryResolver {
 
   constructor(
     private readonly readService: EventReadService,
-    private readonly loggerService: LoggerPlusService,
+    private readonly omnixysLogger: OmnixysLogger,
   ) {
-    this.logger = this.loggerService.getLogger(EventQueryResolver.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name);
   }
 
   // ─────────────────────────────────────────────

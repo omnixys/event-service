@@ -15,61 +15,71 @@
  * For more information, visit <https://www.gnu.org/licenses/>.
  */
 
+import { LoggerModule } from '@omnixys/logger';
 import { AdminModule } from './admin/admin.module.js';
+import { BannerService } from './banner.service.js';
 import { env } from './config/env.js';
 import { EventModule } from './event/event.module.js';
 import { HealthModule } from './health/health.module.js';
-import { LoggerModule } from './logger/logger.module.js';
-import { RequestLoggerMiddleware } from './logger/request-logger.middleware.js';
-import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { GraphQLModule } from '@nestjs/graphql';
-import { GqlFastifyContext } from '@omnixys/context';
+import { Module } from '@nestjs/common';
+import { OmnixysGraphQLModule } from '@omnixys/graphql';
 import { KafkaModule } from '@omnixys/kafka';
+import { ObservabilityModule } from '@omnixys/observability';
 
-const { SCHEMA_TARGET, SERVICE, KAFKA_BROKER } = env;
+const { SCHEMA_TARGET, SERVICE, KAFKA_BROKER, TEMPO_URI} = env;
 
 @Module({
   imports: [
-        KafkaModule.forRoot({
-            clientId: `${SERVICE}-service`,
-            brokers: [KAFKA_BROKER],
-            groupId: `${SERVICE}-consumer`,
-        }),
+    OmnixysGraphQLModule.forRoot({
+      autoSchemaFile:
+        SCHEMA_TARGET === 'tmp'
+          ? { path: '/tmp/schema.gql', federation: 2 }
+          : SCHEMA_TARGET === 'false'
+            ? false
+            : { path: 'dist/schema.gql', federation: 2 },
+      sortSchema: true,
+    }),
+
+    KafkaModule.forRoot({
+      clientId: `${SERVICE}-service`,
+      brokers: [KAFKA_BROKER],
+      groupId: `${SERVICE}-consumer`,
+    }),
+    ObservabilityModule.forRoot({
+      serviceName: SERVICE,
+
+      otel: {
+        endpoint: TEMPO_URI,
+        transport: 'http',
+        samplingRatio: 1,
+      },
+
+      metrics: {
+        port: 9464,
+        enabled: true,
+      },
+    }),
+
+    LoggerModule.forRoot({
+      serviceName: SERVICE,
+
+      kafka: {
+        enabled: true,
+        topic: 'logstream.input',
+      },
+      batch: {
+        enabled: true,
+        maxSize: 50,
+        flushInterval: 2000,
+      },
+    }),
+
     AdminModule,
     EventModule,
     HealthModule,
-    LoggerModule,
-    ConfigModule.forRoot({ isGlobal: true }),
-    GraphQLModule.forRootAsync<ApolloFederationDriverConfig>({
-      driver: ApolloFederationDriver,
-
-      inject: [ConfigService],
-      useFactory: (cfg: ConfigService) => ({
-        autoSchemaFile:
-          SCHEMA_TARGET === 'tmp'
-            ? { path: '/tmp/schema.gql', federation: 2 }
-            : SCHEMA_TARGET === 'false'
-              ? false
-              : { path: 'dist/schema.gql', federation: 2 },
-        sortSchema: true,
-        playground: cfg.get('GRAPHQL_PLAYGROUND') === 'true',
-        csrfPrevention: false,
-        introspection: true,
-
-        context: ({ req, reply }: GqlFastifyContext) => ({
-          req,
-          reply,
-        }),
-      }),
-    }),
   ],
   controllers: [],
-  providers: [],
+  providers: [BannerService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(RequestLoggerMiddleware).forRoutes('*');
-  }
+export class AppModule {
 }

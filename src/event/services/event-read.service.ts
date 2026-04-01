@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import { LoggerPlusService } from '../../logger/logger-plus.service.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { EventTimelineMapper } from '../models/mapper/event-timeline.mapper.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
 import { UserEventRoleMapper } from '../models/mapper/user-event-role.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { OmnixysLogger } from '@omnixys/logger';
 
 @Injectable()
 export class EventReadService {
@@ -14,9 +14,9 @@ export class EventReadService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly loggerService: LoggerPlusService,
+    private readonly omnixysLogger: OmnixysLogger,
   ) {
-    this.logger = this.loggerService.getLogger(EventReadService.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name);
   }
 
   // ─────────────────────────────────────────────
@@ -40,7 +40,7 @@ export class EventReadService {
   }
 
   async getEventByIdAsAdmin(id: string) {
-    this.logger.debug('Fetching event as admin', { eventId: id });
+    this.logger.debug('Fetching event as admin event=%s', id);
 
     const event = await this.findEventOrThrow(id, '', true);
 
@@ -54,7 +54,7 @@ export class EventReadService {
       orderBy: { createdAt: 'desc' },
     });
 
-    this.logger.debug('Events fetched', { count: events.length });
+    this.logger.debug('Events fetched count: $s ', events.length);
 
     return EventMapper.toPayloadList(events);
   }
@@ -64,32 +64,26 @@ export class EventReadService {
   // ─────────────────────────────────────────────
 
   async getTimeline(eventId: string) {
-    this.logger.debug('Fetching event timeline', { eventId });
+    this.logger.debug('Fetching event timeline event=%s', eventId);
 
     const list = await this.prisma.timeline.findMany({
       where: { eventId },
       orderBy: { timestamp: 'asc' },
     });
 
-    this.logger.debug('Timeline entries fetched', {
-      eventId,
-      count: list.length,
-    });
+    this.logger.debug('Timeline entries fetched count: %s', list.length);
 
     return EventTimelineMapper.toPayloadList(list);
   }
 
   async getRoles(eventId: string) {
-    this.logger.debug('Fetching event user roles', { eventId });
+    this.logger.debug('Fetching event user roles [event=%s]', eventId);
 
     const list = await this.prisma.role.findMany({
       where: { eventId },
     });
 
-    this.logger.debug('Roles fetched', {
-      eventId,
-      count: list.length,
-    });
+    this.logger.debug('Roles fetched [count=%s]', list.length);
 
     return UserEventRoleMapper.toPayloadList(list);
   }
