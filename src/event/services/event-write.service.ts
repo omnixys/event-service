@@ -6,9 +6,10 @@ import { RemoveUserFromEventInput } from '../models/inputs/remove-user-from-even
 import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { KafkaProducerService, KafkaTopics } from '@omnixys/kafka';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { KafkaProducerService, KafkaTopics, type EventType } from '@omnixys/kafka';
 import { OmnixysLogger } from '@omnixys/logger';
+import { TraceRunner } from '@omnixys/observability';
 
 @Injectable()
 export class EventWriteService {
@@ -16,10 +17,10 @@ export class EventWriteService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly omnixysLogger: OmnixysLogger,
+    private readonly omnixyslog: OmnixysLogger,
     private readonly kafkaProducerService: KafkaProducerService,
   ) {
-    this.log = this.omnixysLogger.log(this.constructor.name);
+    this.log = this.omnixyslog.log(this.constructor.name);
   }
 
   // ─────────────────────────────────────────────
@@ -27,237 +28,438 @@ export class EventWriteService {
   // ─────────────────────────────────────────────
 
   async createEvent(input: CreateEventInput, actorId: string): Promise<EventPayload> {
-    this.log.info('Creating event [actor=%s, name=%s]', actorId, input.name);
-    this.log.debug('create input [%o]', input);
+    return TraceRunner.run('[SERVICE] createEvent', async () => {
+      this.log.info('Creating event [actor=%s, name=%s]', actorId, input.name);
 
-    const result = await this.prisma.$transaction(async (tx) => {
-      const event = await tx.event.create({
-        data: {
-          name: input.name,
-          owner: actorId,
-          parentId: input.parentId,
-        },
-      });
+      let parent = null;
+      let depth = 0;
+      let path: string = '';
 
-      this.log.debug('Event root created [eventId=%s]', event.id);
-
-      // Owner role
-      await tx.role.upsert({
-        where: { userId_eventId: { userId: actorId, eventId: event.id } },
-        create: { userId: actorId, eventId: event.id, role: UserRoleType.ADMIN },
-        update: { role: UserRoleType.ADMIN },
-      });
-
-      // Settings
-      if (input.settings) {
-        await tx.settings.create({
-          data: {
-            eventId: event.id,
-            ...input.settings,
-          },
+      if (input.parentId) {
+        parent = await this.prisma.event.findUnique({
+          where: { id: input.parentId },
         });
+
+        if (!parent) {
+          throw new NotFoundException('Parent event not found');
+        }
+
+        depth = parent.depth + 1;
       }
 
-      // Timeline: initial entry
-      await tx.timeline.create({
-        data: {
-          eventId: event.id,
-          type: 'event-created',
-          timestamp: new Date(),
-          label: 'Event created',
-        },
+      const result = await this.prisma.$transaction(async (tx) => {
+        const event = await tx.event.create({
+          data: {
+            name: input.name,
+            owner: actorId,
+            parentId: input.parentId,
+            depth,
+            path: '',
+          },
+        });
+
+        path = parent ? `${parent.path}.${event.id}` : event.id;
+
+        await tx.event.update({
+          where: { id: event.id },
+          data: { path },
+        });
+
+        await tx.role.upsert({
+          where: { userId_eventId: { userId: actorId, eventId: event.id } },
+          create: {
+            userId: actorId,
+            eventId: event.id,
+            role: UserRoleType.ADMIN,
+          },
+          update: { role: UserRoleType.ADMIN },
+        });
+
+        // Settings
+        if (input.settings) {
+          await tx.settings.create({
+            data: {
+              eventId: event.id,
+              ...input.settings,
+            },
+          });
+        }
+
+        // Timeline: initial entry
+        await tx.timeline.create({
+          data: {
+            eventId: event.id,
+            type: 'event-created',
+            timestamp: new Date(),
+            label: 'Event created',
+          },
+        });
+
+        // Audit log
+        // await tx.eventAuditLog.create({
+        //   data: {
+        //     eventId: event.id,
+        //     actorId,
+        //     action: 'EVENT_CREATED',
+        //   },
+        // });
+
+        return event;
       });
 
-      // Audit log
-      // await tx.eventAuditLog.create({
-      //   data: {
-      //     eventId: event.id,
-      //     actorId,
-      //     action: 'EVENT_CREATED',
-      //   },
-      // });
+      this.log.info('Event created [eventId=%s path=%s]', result.id, path);
 
-      return event;
-    });
-
-    this.log.info('Event successfully created [eventId=%s actor=%s]', result.id, actorId);
-
-    void this.kafkaProducerService.send({
-      topic: KafkaTopics.seat.create,
-      payload: {
-        eventId: result.id,
-        maxSeats: input.settings?.maxSeats ?? 50,
-        actorId,
-      },
-      meta: {
-    clazz: this.constructor.name,
-    type: 'EVENT',
-        service: 'event-service',
-        operation: 'Deleting Event Address',
-        version: '1',
-      },
-    });
-
-    if (input.address) {
       void this.kafkaProducerService.send({
-        topic: KafkaTopics.address.createEventAddress,
-        payload: input.address,
+        topic: KafkaTopics.seat.create,
+        payload: {
+          eventId: result.id,
+          maxSeats: input.settings?.maxSeats ?? 50,
+          actorId,
+        },
         meta: {
           clazz: this.constructor.name,
           type: 'EVENT',
           service: 'event-service',
-          operation: 'Create Event Address',
+          operation: 'Deleting Event Address',
           version: '1',
+          actorId,
+          tenantId: 'omnixys',
         },
       });
-    }
 
-    // 🔥 return mapped EventPayload
-    return EventMapper.toPayload(result);
+      if (input.address) {
+        void this.kafkaProducerService.send({
+          topic: KafkaTopics.address.createEventAddress,
+          payload: input.address,
+          meta: {
+            clazz: this.constructor.name,
+            type: 'EVENT',
+            service: 'event-service',
+            operation: 'Create Event Address',
+            version: '1',
+            actorId,
+            tenantId: 'omnixys',
+          },
+        });
+      }
+
+      return EventMapper.toPayload(result, UserRoleType.ADMIN);
+    });
   }
 
   // ─────────────────────────────────────────────
   // UPDATE EVENT
   // ─────────────────────────────────────────────
   async updateEvent(input: UpdateEventInput, actorId: string): Promise<boolean> {
-    this.log.info('Updating event %o', { actorId, eventId: input.eventId });
-    const exists = await this.prisma.settings.findUnique({
-      where: { eventId: input.eventId },
-    });
+    return TraceRunner.run('[SERVICE] updateEvent', async () => {
+      this.log.info('Updating event:  eventId=%s |actorId=%s', input.eventId, actorId);
 
-    if (!exists) {
-      throw new NotFoundException('Event does not exist');
-    }
-
-    if (input?.settings) {
-      const { startsAt, endsAt, allowReEntry, rotateSeconds, maxSeats, description, dressCode } =
-        input.settings;
-
-      const updated = await this.prisma.settings.update({
-        where: { eventId: input.eventId },
-        data: {
-          startsAt: startsAt ? new Date(startsAt) : undefined,
-          endsAt: endsAt ? new Date(endsAt) : undefined,
-          allowReEntry: allowReEntry ?? undefined,
-          rotateSeconds: rotateSeconds ?? undefined,
-          maxSeats: maxSeats ?? undefined,
-          dressCode: dressCode ?? undefined,
-          description: description ?? undefined,
-        },
+      const event = await this.prisma.event.findUnique({
+        where: { id: input.eventId },
       });
 
-      this.log.debug('Event Settings updated: settings= %o', updated);
-    }
-    // ───── Audit Log serialization Fix
-    // await this.prisma.eventAuditLog.create({
-    //   data: {
-    //     eventId: input.id,
-    //     actorId,
-    //     action: 'event-updated',
-    //     data: JSON.parse(JSON.stringify(input)), // → safe JSON
-    //   },
-    // });
+      if (!event) throw new NotFoundException('Event not found');
 
-    return true;
+      if (input.parentId) {
+        if (input.parentId === input.eventId) {
+          throw new BadRequestException('Event cannot be its own parent');
+        }
+
+        const parent = await this.prisma.event.findUnique({
+          where: { id: input.parentId },
+        });
+
+        if (!parent) throw new NotFoundException('Parent not found');
+
+        if (parent.path && event.path && parent.path.startsWith(event.path)) {
+          throw new BadRequestException('Cycle detected in hierarchy');
+        }
+
+        const newDepth = (parent.depth ?? 0) + 1;
+
+        const newPath = parent.path ? `${parent.path}.${event.id}` : event.id;
+
+        await this.prisma.event.update({
+          where: { id: input.eventId },
+          data: {
+            parentId: input.parentId,
+            depth: newDepth,
+            path: newPath,
+          },
+        });
+      }
+
+      const exists = await this.prisma.settings.findUnique({
+        where: { eventId: input.eventId },
+      });
+
+      if (!exists) {
+        throw new NotFoundException('Event does not exist');
+      }
+
+      if (input?.settings) {
+        const { startsAt, endsAt, allowReEntry, rotateSeconds, maxSeats, description, dressCode } =
+          input.settings;
+
+        const updated = await this.prisma.settings.update({
+          where: { eventId: input.eventId },
+          data: {
+            startsAt: startsAt ? new Date(startsAt) : undefined,
+            endsAt: endsAt ? new Date(endsAt) : undefined,
+            allowReEntry: allowReEntry ?? undefined,
+            rotateSeconds: rotateSeconds ?? undefined,
+            maxSeats: maxSeats ?? undefined,
+            dressCode: dressCode ?? undefined,
+            description: description ?? undefined,
+          },
+        });
+
+        this.log.debug('Event Settings updated: settings= %o', updated);
+      }
+      // ───── Audit Log serialization Fix
+      // await this.prisma.eventAuditLog.create({
+      //   data: {
+      //     eventId: input.id,
+      //     actorId,
+      //     action: 'event-updated',
+      //     data: JSON.parse(JSON.stringify(input)), // → safe JSON
+      //   },
+      // });
+
+      return true;
+    });
   }
 
-  // ─────────────────────────────────────────────
-  // DELETE EVENT
-  // ─────────────────────────────────────────────
-  async deleteEvent(id: string, actorId: string): Promise<boolean> {
-    this.log.info('Delete Event %o', { actorId, id });
-    const event = await this.prisma.event.findUnique({
-      where: { id },
-      select: { owner: true },
+  /**
+   * Deletes a SINGLE event (incl. children).
+   *
+   * Internally reuses bulk logic to guarantee consistency.
+   */
+  async deleteEvent(eventId: string, actorId: string): Promise<boolean> {
+    return TraceRunner.run('[SERVICE] deleteEvent', async () => {
+      this.log.warn('Delete single event=%s', eventId);
+
+      const event = await this.prisma.event.findUnique({
+        where: { id: eventId },
+        select: { id: true, owner: true },
+      });
+
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
+
+      if (event.owner !== actorId) {
+        throw new Error('Only the owner can delete this event');
+      }
+
+      const eventIds = await this.collectAllEventIds([eventId]);
+
+      /**
+       * Reuse same pipeline as bulk delete
+       */
+      await this.deleteEventsByIds(eventIds, actorId);
+      return true;
+    });
+  }
+
+  /**
+   * INTERNAL: shared deletion pipeline.
+   */
+  private async deleteEventsByIds(eventIds: string[], actorId: string): Promise<void> {
+    this.log.debug('deleteEventsByIds=%o', eventIds);
+
+    /**
+     * 1. Load roles once
+     */
+    const roles = await this.prisma.role.findMany({
+      where: { eventId: { in: eventIds } },
+      select: { userId: true, role: true },
     });
 
-    if (!event) {
-      throw new NotFoundException('Event not found');
-    }
+    /**
+     * 2. Deduplicate users
+     */
+    const admins = [
+      ...new Set(roles.filter((r) => r.role === UserRoleType.ADMIN).map((r) => r.userId)),
+    ];
 
-    if (event.owner !== actorId) {
-      throw new Error('Only the owner can delete this event');
-    }
+    const security = [
+      ...new Set(roles.filter((r) => r.role === UserRoleType.SECURITY).map((r) => r.userId)),
+    ];
 
-    await this.prisma.$transaction([
-      this.prisma.event.delete({ where: { id } }),
-      // this.prisma.eventAuditLog.create({
-      //   data: {
-      //     eventId: id,
-      //     actorId,
-      //     action: 'EVENT_DELETED',
-      //   },
-      // }),
+    const guests = [
+      ...new Set(roles.filter((r) => r.role === UserRoleType.GUEST).map((r) => r.userId)),
+    ];
+
+    /**
+     * 3. Kafka fan-out (critical for consistency)
+     */
+    await Promise.all([
+      this.kafkaProducerService.send({
+        topic: KafkaTopics.invitation.deleteEventInvitations,
+        payload: { eventIds },
+        meta: this.meta(actorId, 'delete invitations'),
+      }),
+      this.kafkaProducerService.send({
+        topic: KafkaTopics.ticket.deleteEventTickets,
+        payload: { eventIds },
+        meta: this.meta(actorId, 'delete tickets'),
+      }),
+      this.kafkaProducerService.send({
+        topic: KafkaTopics.seat.delete,
+        payload: { eventIds },
+        meta: this.meta(actorId, 'delete seats'),
+      }),
+      this.kafkaProducerService.send({
+        topic: KafkaTopics.notification.eventCancelled,
+        payload: { eventIds, admins, security, guests },
+        meta: this.meta(actorId, 'notify cancel'),
+      }),
+      void this.kafkaProducerService.send({
+        topic: KafkaTopics.address.deleteEventAddress,
+        payload: { eventIds },
+        meta: {
+          clazz: this.constructor.name,
+          type: 'EVENT',
+          service: 'event-service',
+          operation: 'Delete Event Address',
+          version: '1',
+          actorId,
+          tenantId: 'omnixys',
+        },
+      }),
     ]);
 
-    void this.kafkaProducerService.send<typeof KafkaTopics.seat.delete>({
-      topic: KafkaTopics.seat.delete,
-      payload: {
-        eventId: id,
-        actorId,
-      },
-      meta: {
-        clazz: this.constructor.name,
-        type: 'EVENT',
-        service: 'event-service',
-        operation: 'Deleting Seats',
-        version: '1',
-      },
+    /**
+     * 4. Delete from DB (cascade handles children relations)
+     */
+    await this.prisma.event.deleteMany({
+      where: { id: { in: eventIds } },
     });
 
-    void this.kafkaProducerService.send({
-      topic: KafkaTopics.address.deleteEventAddress,
-      payload: {
-        eventId: id,
-        actorId,
-      },
-      meta: {
-        clazz: this.constructor.name,
-        type: 'EVENT',
-        service: 'event-service',
-        operation: 'Delete Event Address',
-        version: '1',
-      },
+    this.log.debug('Events deleted events=%o. |actorId=%s', eventIds, actorId);
+
+    // this.log.warn('Bulk delete completed for owner=%s', ownerId);
+  }
+
+  /**
+   * Recursively resolves event hierarchy.
+   */
+  private async collectAllEventIds(rootIds: string[]): Promise<string[]> {
+    const all = new Set<string>(rootIds);
+
+    let queue = [...rootIds];
+
+    while (queue.length > 0) {
+      const children = await this.prisma.event.findMany({
+        where: {
+          parentId: { in: queue },
+        },
+        select: { id: true },
+      });
+
+      const ids = children.map((c) => c.id);
+
+      ids.forEach((id) => all.add(id));
+
+      queue = ids;
+    }
+
+    return Array.from(all);
+  }
+
+  /**
+   * Standard Kafka metadata builder.
+   */
+  private meta(actorId: string, operation: string) {
+    const type: EventType = 'EVENT';
+    return {
+      actorId,
+      tenantId: 'omnixys',
+      service: 'event-service',
+      operation,
+      version: '1',
+      type,
+    };
+  }
+  /**
+   * Deletes ALL events owned by a specific user.
+   *
+   * Includes:
+   * - root events
+   * - all children (hierarchy)
+   * - fan-out deletion events to other services
+   */
+  async deleteEvents(ownerId: string, actorId: string): Promise<void> {
+    return TraceRunner.run('[SERVICE] deleteEvents', async () => {
+      this.log.warn('Bulk delete events for owner=%s', ownerId);
+
+      /**
+       * SECURITY: only owner can bulk delete
+       */
+      // if (ownerId !== actorId) {
+      //   throw new Error('Only the owner can delete their events');
+      // }
+
+      /**
+       * 1. Fetch all root events of owner
+       */
+      const rootEvents = await this.prisma.event.findMany({
+        where: { owner: ownerId },
+        select: { id: true },
+      });
+
+      if (rootEvents.length === 0) {
+        this.log.warn('No events found for owner=%s', ownerId);
+        return;
+      }
+
+      /**
+       * 2. Resolve full hierarchy (root + children)
+       */
+      const eventIds = await this.collectAllEventIds(rootEvents.map((e) => e.id));
+
+      this.log.debug('Resolved events to delete: %o', eventIds);
+
+      await this.deleteEventsByIds(eventIds, actorId);
     });
-
-    this.log.warn('Event deleted', { eventId: id, actorId });
-
-    return true;
   }
 
   /**
    * Assigns a user to an event with the given role.
    * Uses UPSERT for atomic create/update logic.
    */
-  async assignUserToEvent(input: AssignUserRoleInput, actorId: string): Promise<void> {
-    this.log.info('Assign User to Event %o', { actorId, input });
-    const { userId, eventId, eventRole: role } = input;
+  async assignUserToEvent(input: AssignUserRoleInput): Promise<void> {
+    return TraceRunner.run('[SERVICE] assignUserToEvent', async () => {
+      this.log.info('Assign User to Event %o', { input });
+      const { userId, eventId, eventRole: role } = input;
 
-    // Ensure event exists (optional but recommended)
-    const eventExists = await this.prisma.event.findUnique({
-      where: { id: eventId },
-      select: { id: true },
+      // Ensure event exists (optional but recommended)
+      const eventExists = await this.prisma.event.findUnique({
+        where: { id: eventId },
+        select: { id: true },
+      });
+
+      if (!eventExists) {
+        throw new Error('Event not found');
+      }
+
+      await this.prisma.$transaction([
+        this.prisma.role.upsert({
+          where: { userId_eventId: { userId, eventId } },
+          create: { userId, eventId, role },
+          update: { role },
+        }),
+        // this.prisma.eventAuditLog.create({
+        //   data: {
+        //     eventId,
+        //     actorId,
+        //     action: 'USER_ROLE_ASSIGNED',
+        //     data: { targetUserId: userId, role },
+        //   },
+        // }),
+      ]);
     });
-
-    if (!eventExists) {
-      throw new Error('Event not found');
-    }
-
-    await this.prisma.$transaction([
-      this.prisma.role.upsert({
-        where: { userId_eventId: { userId, eventId } },
-        create: { userId, eventId, role },
-        update: { role },
-      }),
-      // this.prisma.eventAuditLog.create({
-      //   data: {
-      //     eventId,
-      //     actorId,
-      //     action: 'USER_ROLE_ASSIGNED',
-      //     data: { targetUserId: userId, role },
-      //   },
-      // }),
-    ]);
   }
 
   /**

@@ -19,6 +19,11 @@ export class EventMapper {
       id: event.id,
       name: event.name,
       owner: event.owner,
+
+      parentId: n2u(event.parentId),
+      path: n2u(event.path),
+      depth: event.depth,
+
       createdAt: event.createdAt,
       updatedAt: event.updatedAt,
 

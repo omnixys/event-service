@@ -15,21 +15,62 @@
  * For more information, visit <https://www.gnu.org/licenses/>.
  */
 
-import { LoggerModule } from '@omnixys/logger';
+import { ValkeyAdapterModule } from './adapter/valkey-adapter.module.js';
 import { AdminModule } from './admin/admin.module.js';
 import { BannerService } from './banner.service.js';
 import { env } from './config/env.js';
 import { EventModule } from './event/event.module.js';
+import { HandlerModule } from './handlers/handler.module.js';
 import { HealthModule } from './health/health.module.js';
 import { Module } from '@nestjs/common';
+import { ValkeyModule } from '@omnixys/cache';
 import { OmnixysGraphQLModule } from '@omnixys/graphql';
 import { KafkaModule } from '@omnixys/kafka';
+import { LoggerModule } from '@omnixys/logger';
 import { ObservabilityModule } from '@omnixys/observability';
+import { SecurityModule } from '@omnixys/security';
 
-const { SCHEMA_TARGET, SERVICE, KAFKA_BROKER, TEMPO_URI} = env;
+const {
+  SCHEMA_TARGET,
+  SERVICE,
+  KAFKA_BROKER,
+  TEMPO_URI,
+  ENCRYPTION_KEY,
+  KC_URL,
+  KC_REALM,
+  VALKEY_URL,
+  VALKEY_PASSWORD,
+} = env;
 
 @Module({
   imports: [
+    ValkeyModule.forRoot({
+      serviceName: SERVICE,
+      url: VALKEY_URL,
+      password: VALKEY_PASSWORD,
+
+      pubSub: { enabled: true },
+      streams: { enabled: true },
+    }),
+
+    SecurityModule.forRoot({
+      jwt: {
+        issuer: `${KC_URL}/realms/${KC_REALM}`,
+        jwksUri: `${KC_URL}/realms/${KC_REALM}/protocol/openid-connect/certs`,
+      },
+
+      rateLimit: {
+        enabled: true,
+        defaultLimit: 100,
+        defaultWindowMs: 60000,
+        imports: [ValkeyAdapterModule],
+      },
+
+      hash: {
+        encryptionKey: ENCRYPTION_KEY,
+      },
+    }),
+
     OmnixysGraphQLModule.forRoot({
       autoSchemaFile:
         SCHEMA_TARGET === 'tmp'
@@ -41,9 +82,10 @@ const { SCHEMA_TARGET, SERVICE, KAFKA_BROKER, TEMPO_URI} = env;
     }),
 
     KafkaModule.forRoot({
-      clientId: `${SERVICE}-service`,
+      clientId: SERVICE,
       brokers: [KAFKA_BROKER],
-      groupId: `${SERVICE}-consumer`,
+      groupId: SERVICE,
+      serviceName: SERVICE,
     }),
     ObservabilityModule.forRoot({
       serviceName: SERVICE,
@@ -77,9 +119,9 @@ const { SCHEMA_TARGET, SERVICE, KAFKA_BROKER, TEMPO_URI} = env;
     AdminModule,
     EventModule,
     HealthModule,
+    HandlerModule,
   ],
   controllers: [],
   providers: [BannerService],
 })
-export class AppModule {
-}
+export class AppModule {}

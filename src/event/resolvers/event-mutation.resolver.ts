@@ -61,7 +61,10 @@ export class EventMutationResolver {
     @Args('input') input: AssignUserRoleInput,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<boolean> {
-    await this.writeService.assignUserToEvent(input, currentUser.id);
+    await this.writeService.assignUserToEvent({
+      ...input,
+      actorId: currentUser.id,
+    });
     return true;
   }
 

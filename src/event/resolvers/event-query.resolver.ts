@@ -52,6 +52,21 @@ export class EventQueryResolver {
     return event;
   }
 
+  @Query(() => [EventPayload])
+  @UseGuards(CookieAuthGuard)
+  async eventChildren(@Args('eventId', { type: () => ID }) eventId: string) {
+    return this.readService.getChildren(eventId);
+  }
+
+  @Query(() => [EventPayload])
+  @UseGuards(CookieAuthGuard)
+  async eventTree(
+    @Args('eventId', { type: () => ID }) eventId: string,
+    @CurrentUser() user: CurrentUserData,
+  ) {
+    return this.readService.getTree(eventId, user.id);
+  }
+
   // ─────────────────────────────────────────────
   // MY EVENTS
   // ─────────────────────────────────────────────

@@ -5,11 +5,11 @@ import { EventAdminQueryResolver } from './resolvers/event-admin-query.resolver.
 import { EventFieldsResolver } from './resolvers/event-fields.resolver.js';
 import { EventMutationResolver } from './resolvers/event-mutation.resolver.js';
 import { EventQueryResolver } from './resolvers/event-query.resolver.js';
+import { EventAccessService } from './services/event-access.service.js';
 import { EventReadService } from './services/event-read.service.js';
 import { EventWriteService } from './services/event-write.service.js';
 import { Module } from '@nestjs/common';
 import { registerEnumType } from '@nestjs/graphql';
-import { AuthModule } from '@omnixys/security';
 
 registerEnumType(UserRoleType, {
   name: 'UserRoleType',
@@ -17,7 +17,7 @@ registerEnumType(UserRoleType, {
 });
 
 @Module({
-  imports: [PrismaModule, AuthModule, ScalarsModule],
+  imports: [PrismaModule, ScalarsModule],
   providers: [
     EventAdminQueryResolver,
     EventQueryResolver,
@@ -25,6 +25,7 @@ registerEnumType(UserRoleType, {
     EventFieldsResolver,
     EventWriteService,
     EventReadService,
+    EventAccessService,
   ],
   exports: [EventWriteService, EventReadService],
 })

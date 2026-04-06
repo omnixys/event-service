@@ -1,36 +1,38 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { EventAccessService } from '../services/event-access.service.js';
 import {
   CanActivate,
   ExecutionContext,
-  Injectable,
   ForbiddenException,
+  Injectable,
 } from '@nestjs/common';
 
 @Injectable()
 export class EventAdminGuard implements CanActivate {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly accessService: EventAccessService,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request =
       context.getArgByIndex(2).req ?? context.switchToHttp().getRequest();
+
     const user = request.user;
 
     if (!user?.id) {
       throw new ForbiddenException('Not authenticated');
     }
 
-    // Event ID is required, pass via decorator @EventId()
     const eventId =
       request.body?.variables?.eventId ??
       request.body?.variables?.input?.eventId;
 
     if (!eventId) {
-      throw new ForbiddenException('EventId missing for EventAdminGuard');
+      throw new ForbiddenException('EventId missing');
     }
 
-    // Load event
     const event = await this.prisma.event.findUnique({
       where: { id: eventId },
       select: { owner: true },
@@ -40,18 +42,15 @@ export class EventAdminGuard implements CanActivate {
       throw new ForbiddenException('Event not found');
     }
 
-    // Owner always allowed
+    // ✅ OWNER ALWAYS WINS
     if (event.owner === user.id) {
       return true;
     }
 
-    // Check if user has ADMIN role
-    const role = await this.prisma.role.findUnique({
-      where: { userId_eventId: { userId: user.id, eventId } },
-      select: { role: true },
-    });
+    // 🔥 HIERARCHY ROLE CHECK
+    const role = await this.accessService.resolveRole(eventId, user.id);
 
-    if (role?.role === 'ADMIN') {
+    if (role === UserRoleType.ADMIN) {
       return true;
     }
 
