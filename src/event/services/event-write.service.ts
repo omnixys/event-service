@@ -1,8 +1,10 @@
 import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { AssignUserRoleInput } from '../models/inputs/assign-user-role.input.js';
+import { SeatAllocationExceededError } from '../errors/seat-allocation-exceeded.error.js';
+import { AssignUserRoleDTO } from '../models/inputs/assign-user-role.input.js';
 import { CreateEventInput } from '../models/inputs/create-event.input.js';
 import { RemoveUserFromEventInput } from '../models/inputs/remove-user-from-event.input.js';
+import { CreateTimelineInput, RemoveTimelineInput, SetTimelineInput, TimelineUpsertInput, UpdateTimelineInput } from '../models/inputs/timeline.input.js';
 import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
@@ -10,6 +12,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { KafkaProducerService, KafkaTopics, type EventType } from '@omnixys/kafka';
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
+import { SettingsCreateMapper } from '../models/mapper/settings.mapper.js';
 
 @Injectable()
 export class EventWriteService {
@@ -38,6 +41,7 @@ export class EventWriteService {
       if (input.parentId) {
         parent = await this.prisma.event.findUnique({
           where: { id: input.parentId },
+          include: { settings: true },
         });
 
         if (!parent) {
@@ -48,6 +52,11 @@ export class EventWriteService {
       }
 
       const result = await this.prisma.$transaction(async (tx) => {
+        /**
+         * -------------------------------------------------------
+         * 1. CREATE ROOT EVENT
+         * -------------------------------------------------------
+         */
         const event = await tx.event.create({
           data: {
             name: input.name,
@@ -58,13 +67,18 @@ export class EventWriteService {
           },
         });
 
-        path = parent ? `${parent.path}.${event.id}` : event.id;
+        path = parent?.path ? `${parent.path}.${event.id}` : event.id;
 
         await tx.event.update({
           where: { id: event.id },
           data: { path },
         });
 
+        /**
+         * -------------------------------------------------------
+         * 2. ROLE
+         * -------------------------------------------------------
+         */
         await tx.role.upsert({
           where: { userId_eventId: { userId: actorId, eventId: event.id } },
           create: {
@@ -75,17 +89,124 @@ export class EventWriteService {
           update: { role: UserRoleType.ADMIN },
         });
 
-        // Settings
-        if (input.settings) {
-          await tx.settings.create({
-            data: {
-              eventId: event.id,
-              ...input.settings,
-            },
-          });
+        /**
+         * -------------------------------------------------------
+         * 3. SETTINGS (PARENT)
+         * -------------------------------------------------------
+         */
+        const parentSettings = input.settings
+          ? await tx.settings.create({
+              data: {
+                eventId: event.id,
+                ...input.settings,
+              },
+            })
+          : parent?.settings;
+
+        /**
+         * -------------------------------------------------------
+         * 4. CHILDREN HANDLING
+         * -------------------------------------------------------
+         */
+        if (input.children?.length) {
+          const children = input.children;
+
+          const parentMaxSeats = parentSettings?.maxSeats ?? 50;
+
+          const childrenWithSeats = children.filter((c) => c.settings?.maxSeats != null);
+
+          let seatDistribution: number[] = [];
+
+          /**
+           * CASE A: NO CHILD SEATS → DISTRIBUTE
+           */
+          if (childrenWithSeats.length === 0) {
+            const base = Math.floor(parentMaxSeats / children.length);
+            let remainder = parentMaxSeats % children.length;
+
+            seatDistribution = children.map(() => {
+              const seats = base + (remainder > 0 ? 1 : 0);
+              if (remainder > 0) remainder--;
+              return seats;
+            });
+          } else {
+            /**
+             * CASE B: CUSTOM SEATS
+             */
+            const total = children.reduce((sum, c) => {
+              return sum + (c.settings?.maxSeats ?? 0);
+            }, 0);
+
+            if (total > parentMaxSeats) {
+              throw new SeatAllocationExceededError(parentMaxSeats, total);
+            }
+
+            seatDistribution = children.map((c) => c.settings?.maxSeats ?? 0);
+          }
+
+          /**
+           * -------------------------------------------------------
+           * CREATE CHILDREN
+           * -------------------------------------------------------
+           */
+          if (children.length > 0) {
+            for (let i = 0; i < children.length; i++) {
+              const childInput = children[i];
+              const seats = seatDistribution[i];
+
+               if (childInput == undefined) continue;
+
+              const child = await tx.event.create({
+                data: {
+                  name: childInput.name,
+                  owner: actorId,
+                  parentId: event.id,
+                  depth: depth + 1,
+                  path: '',
+                },
+              });
+
+              const childPath = `${path}.${child.id}`;
+
+              await tx.event.update({
+                where: { id: child.id },
+                data: { path: childPath },
+              });
+
+              /**
+               * SETTINGS (inherit or override)
+               */
+await tx.settings.create({
+  data: SettingsCreateMapper.from({
+    dto: childInput.settings,
+    parent: parentSettings,
+    eventId: child.id,
+    override: {
+      maxSeats: seats,
+    },
+  }),
+});
+              /**
+               * ROLE (inherit admin)
+               */
+              await tx.role.upsert({
+                where: { userId_eventId: { userId: actorId, eventId: child.id } },
+                create: {
+                  userId: actorId,
+                  eventId: child.id,
+                  role: UserRoleType.ADMIN,
+                },
+                update: { role: UserRoleType.ADMIN },
+              });
+            }
+          }
         }
 
-        // Timeline: initial entry
+        /**
+         * -------------------------------------------------------
+         * TIMELINE
+         * -------------------------------------------------------
+         */
         await tx.timeline.create({
           data: {
             eventId: event.id,
@@ -95,20 +216,14 @@ export class EventWriteService {
           },
         });
 
-        // Audit log
-        // await tx.eventAuditLog.create({
-        //   data: {
-        //     eventId: event.id,
-        //     actorId,
-        //     action: 'EVENT_CREATED',
-        //   },
-        // });
-
         return event;
       });
 
-      this.log.info('Event created [eventId=%s path=%s]', result.id, path);
-
+      /**
+       * -------------------------------------------------------
+       * ASYNC EVENTS (Kafka)
+       * -------------------------------------------------------
+       */
       void this.kafkaProducerService.send({
         topic: KafkaTopics.seat.create,
         payload: {
@@ -120,7 +235,7 @@ export class EventWriteService {
           clazz: this.constructor.name,
           type: 'EVENT',
           service: 'event-service',
-          operation: 'Deleting Event Address',
+          operation: 'Create Event',
           version: '1',
           actorId,
           tenantId: 'omnixys',
@@ -130,7 +245,10 @@ export class EventWriteService {
       if (input.address) {
         void this.kafkaProducerService.send({
           topic: KafkaTopics.address.createEventAddress,
-          payload: input.address,
+          payload: {
+            ...input.address,
+            eventId: result.id,
+          },
           meta: {
             clazz: this.constructor.name,
             type: 'EVENT',
@@ -150,83 +268,133 @@ export class EventWriteService {
   // ─────────────────────────────────────────────
   // UPDATE EVENT
   // ─────────────────────────────────────────────
-  async updateEvent(input: UpdateEventInput, actorId: string): Promise<boolean> {
+  async updateEvent(input: UpdateEventInput, actorId: string): Promise<EventPayload> {
     return TraceRunner.run('[SERVICE] updateEvent', async () => {
-      this.log.info('Updating event:  eventId=%s |actorId=%s', input.eventId, actorId);
+      this.log.info('Updating event: eventId=%s | actorId=%s', input.eventId, actorId);
 
-      const event = await this.prisma.event.findUnique({
-        where: { id: input.eventId },
-      });
-
-      if (!event) throw new NotFoundException('Event not found');
-
-      if (input.parentId) {
-        if (input.parentId === input.eventId) {
-          throw new BadRequestException('Event cannot be its own parent');
-        }
-
-        const parent = await this.prisma.event.findUnique({
-          where: { id: input.parentId },
+      return this.prisma.$transaction(async (tx) => {
+        /**
+         * STEP 1: Load event
+         */
+        const event = await tx.event.findUnique({
+          where: { id: input.eventId },
         });
 
-        if (!parent) throw new NotFoundException('Parent not found');
-
-        if (parent.path && event.path && parent.path.startsWith(event.path)) {
-          throw new BadRequestException('Cycle detected in hierarchy');
+        if (!event) {
+          throw new NotFoundException('Event not found');
         }
 
-        const newDepth = (parent.depth ?? 0) + 1;
+        /**
+         * STEP 2: Parent handling
+         */
+        let parentData: Partial<typeof event> = {};
 
-        const newPath = parent.path ? `${parent.path}.${event.id}` : event.id;
+        if (input.parentId !== undefined) {
+          if (input.parentId === input.eventId) {
+            throw new BadRequestException('Event cannot be its own parent');
+          }
 
-        await this.prisma.event.update({
+          if (input.parentId) {
+            const parent = await tx.event.findUnique({
+              where: { id: input.parentId },
+            });
+
+            if (!parent) {
+              throw new NotFoundException('Parent not found');
+            }
+
+            if (parent.path && event.path && parent.path.startsWith(event.path)) {
+              throw new BadRequestException('Cycle detected in hierarchy');
+            }
+
+            parentData = {
+              parentId: input.parentId,
+              depth: (parent.depth ?? 0) + 1,
+              path: parent.path ? `${parent.path}.${event.id}` : event.id,
+            };
+          }
+        }
+
+        /**
+         * STEP 3: Update event
+         */
+        await tx.event.update({
           where: { id: input.eventId },
           data: {
-            parentId: input.parentId,
-            depth: newDepth,
-            path: newPath,
+            ...(input.name !== undefined && {
+              name: input.name,
+            }),
+            ...parentData,
           },
         });
-      }
 
-      const exists = await this.prisma.settings.findUnique({
-        where: { eventId: input.eventId },
+        /**
+         * STEP 4: Settings patch
+         */
+        if (input.settings) {
+          const s = input.settings;
+
+          await tx.settings.update({
+            where: { eventId: input.eventId },
+            data: {
+              ...(s.startsAt !== undefined && {
+                startsAt: s.startsAt ? new Date(s.startsAt) : undefined,
+              }),
+              ...(s.endsAt !== undefined && {
+                endsAt: s.endsAt ? new Date(s.endsAt) : undefined,
+              }),
+              ...(s.allowReEntry !== undefined && {
+                allowReEntry: s.allowReEntry,
+              }),
+              ...(s.rotateSeconds !== undefined && {
+                rotateSeconds: s.rotateSeconds,
+              }),
+              ...(s.maxSeats !== undefined && {
+                maxSeats: s.maxSeats,
+              }),
+              ...(s.dressCode !== undefined && {
+                dressCode: s.dressCode,
+              }),
+              ...(s.description !== undefined && {
+                description: s.description,
+              }),
+              ...(s.isActive !== undefined && {
+                isActive: s.isActive,
+              }),
+            },
+          });
+        }
+
+        /**
+         * STEP 5: Return FULL ENTITY (CRITICAL)
+         */
+        const updated = await tx.event.findUnique({
+          where: { id: input.eventId },
+          include: {
+            settings: true,
+            roles: true,
+            timelines: true,
+          },
+        });
+
+        if (!updated) {
+          throw new NotFoundException('Event disappeared after update');
+        }
+
+        /**
+         * STEP 6: Audit log
+         */
+        // await tx.eventAuditLog.create({
+        //   data: {
+        //     eventId: input.eventId,
+        //     actorId,
+        //     action: 'event.updated',
+        //     data: JSON.parse(JSON.stringify(input)),
+        //   },
+        // });
+
+        return EventMapper.toPayload(updated, UserRoleType.ADMIN);
       });
-
-      if (!exists) {
-        throw new NotFoundException('Event does not exist');
-      }
-
-      if (input?.settings) {
-        const { startsAt, endsAt, allowReEntry, rotateSeconds, maxSeats, description, dressCode } =
-          input.settings;
-
-        const updated = await this.prisma.settings.update({
-          where: { eventId: input.eventId },
-          data: {
-            startsAt: startsAt ? new Date(startsAt) : undefined,
-            endsAt: endsAt ? new Date(endsAt) : undefined,
-            allowReEntry: allowReEntry ?? undefined,
-            rotateSeconds: rotateSeconds ?? undefined,
-            maxSeats: maxSeats ?? undefined,
-            dressCode: dressCode ?? undefined,
-            description: description ?? undefined,
-          },
-        });
-
-        this.log.debug('Event Settings updated: settings= %o', updated);
-      }
-      // ───── Audit Log serialization Fix
-      // await this.prisma.eventAuditLog.create({
-      //   data: {
-      //     eventId: input.id,
-      //     actorId,
-      //     action: 'event-updated',
-      //     data: JSON.parse(JSON.stringify(input)), // → safe JSON
-      //   },
-      // });
-
-      return true;
     });
   }
 
@@ -429,7 +597,7 @@ export class EventWriteService {
    * Assigns a user to an event with the given role.
    * Uses UPSERT for atomic create/update logic.
    */
-  async assignUserToEvent(input: AssignUserRoleInput): Promise<void> {
+  async assignUserToEvent(input: AssignUserRoleDTO): Promise<void> {
     return TraceRunner.run('[SERVICE] assignUserToEvent', async () => {
       this.log.info('Assign User to Event %o', { input });
       const { userId, eventId, eventRole: role } = input;
@@ -642,5 +810,252 @@ export class EventWriteService {
     // });
 
     return true;
+  }
+
+  async addTimelines(
+    eventId: string,
+    inputs: CreateTimelineInput[],
+    actorId: string,
+  ): Promise<EventPayload> {
+    this.log.debug('addTimelines: inputs: %o | actor=%satisfies', inputs, actorId);
+
+    return TraceRunner.run('[SERVICE] addTimelines', async () => {
+      if (!inputs.length) {
+        throw new BadRequestException('No timelines provided');
+      }
+
+      await this.prisma.$transaction(async (tx) => {
+        await tx.timeline.createMany({
+          data: inputs.map((i) => ({
+            eventId,
+            type: i.type,
+            timestamp: new Date(i.timestamp),
+            label: i.label,
+          })),
+        });
+      });
+
+      const event = await this.prisma.event.findUnique({
+        where: { id: eventId },
+      });
+
+      if (!event) throw new NotFoundException('Event not found');
+
+      return EventMapper.toPayload(event, UserRoleType.ADMIN);
+    });
+  }
+
+  async updateTimelines(
+    eventId: string,
+    inputs: UpdateTimelineInput[],
+    actorId: string,
+  ): Promise<EventPayload> {
+    return TraceRunner.run('[SERVICE] updateTimelines', async () => {
+      this.log.debug('updateTimelines: inputs: %o | actor=%satisfies', inputs, actorId);
+      if (!inputs.length) {
+        throw new BadRequestException('No timelines provided');
+      }
+
+      const timelines = await this.prisma.timeline.findMany({
+        where: {
+          id: { in: inputs.map((i) => i.id) },
+        },
+      });
+
+      if (timelines.length !== inputs.length) {
+        throw new NotFoundException('Some timelines not found');
+      }
+
+      const eventIdFound = eventId === timelines[0]?.eventId ? eventId : undefined;
+
+      await this.prisma.$transaction(
+        inputs.map((i) =>
+          this.prisma.timeline.update({
+            where: { id: i.id },
+            data: {
+              type: i.type,
+              timestamp: new Date(i.timestamp),
+              label: i.label,
+            },
+          }),
+        ),
+      );
+
+      const event = await this.prisma.event.findUnique({
+        where: { id: eventIdFound },
+      });
+
+      if (!event) throw new NotFoundException('Event not found');
+
+      return EventMapper.toPayload(event, UserRoleType.ADMIN);
+    });
+  }
+
+  async removeTimelines(
+    eventId: string,
+    inputs: RemoveTimelineInput[],
+    actorId: string,
+  ): Promise<EventPayload> {
+    return TraceRunner.run('[SERVICE] removeTimelines', async () => {
+      this.log.debug('removeTimlines: inputs: %o | actor=%satisfies', inputs, actorId);
+      if (!inputs.length) {
+        throw new BadRequestException('No timeline IDs provided');
+      }
+
+      const timelines = await this.prisma.timeline.findMany({
+        where: {
+          id: { in: inputs.map((i) => i.id) },
+        },
+      });
+
+      if (!timelines.length) {
+        throw new NotFoundException('No timelines found');
+      }
+
+      const eventIdFound = eventId === timelines[0]?.eventId ? eventId : undefined;
+
+      await this.prisma.timeline.deleteMany({
+        where: {
+          id: { in: inputs.map((i) => i.id) },
+        },
+      });
+
+      const event = await this.prisma.event.findUnique({
+        where: { id: eventIdFound },
+      });
+
+      if (!event) throw new NotFoundException('Event not found');
+
+      return EventMapper.toPayload(event, UserRoleType.ADMIN);
+    });
+  }
+
+  async setTimelines(input: SetTimelineInput, actorId: string): Promise<EventPayload> {
+    return TraceRunner.run('[SERVICE] setTimelines', async () => {
+      this.log.debug('SetTimelineInput: inputs: %o | actor=%satisfies', input, actorId);
+
+      const { eventId, timelines } = input;
+
+      this.log.info('Set timelines eventId=%s count=%d', eventId, timelines.length);
+
+      // ─────────────────────────────────────────────
+      // 1. VALIDATION
+      // ─────────────────────────────────────────────
+
+      const event = await this.prisma.event.findUnique({
+        where: { id: eventId },
+      });
+
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
+
+      // ─────────────────────────────────────────────
+      // 2. LOAD CURRENT STATE
+      // ─────────────────────────────────────────────
+
+      const existing = await this.prisma.timeline.findMany({
+        where: { eventId },
+      });
+
+      const existingMap = new Map(existing.map((t) => [t.id, t]));
+
+      // ─────────────────────────────────────────────
+      // 3. DIFF LOGIC
+      // ─────────────────────────────────────────────
+
+      const toCreate: typeof timelines = [];
+      const toUpdate: TimelineUpsertInput[] = [];
+      const inputIds = new Set<string>();
+
+      for (const t of timelines) {
+        if (!t.id) {
+          toCreate.push(t);
+          continue;
+        }
+
+        inputIds.add(t.id);
+
+        const existingItem = existingMap.get(t.id);
+
+        if (!existingItem) {
+          throw new BadRequestException(`Timeline not found: ${t.id}`);
+        }
+
+        // Only update if changed (optional optimization)
+        const hasChanged =
+          existingItem.type !== t.type ||
+          existingItem.label !== t.label ||
+          existingItem.timestamp.getTime() !== new Date(t.timestamp).getTime();
+
+        if (hasChanged) {
+          toUpdate.push(t);
+        }
+      }
+
+      // DELETE = everything in DB not in input
+      const toDelete = existing.filter((t) => !inputIds.has(t.id)).map((t) => t.id);
+
+      this.log.debug('Diff result', {
+        create: toCreate.length,
+        update: toUpdate.length,
+        delete: toDelete.length,
+      });
+
+      // ─────────────────────────────────────────────
+      // 4. TRANSACTION (ATOMIC)
+      // ─────────────────────────────────────────────
+
+      await this.prisma.$transaction(async (tx) => {
+        // CREATE
+        if (toCreate.length) {
+          await tx.timeline.createMany({
+            data: toCreate.map((t) => ({
+              eventId,
+              type: t.type,
+              timestamp: new Date(t.timestamp),
+              label: t.label,
+            })),
+          });
+        }
+
+        // UPDATE
+        for (const t of toUpdate) {
+          await tx.timeline.update({
+            where: { id: t.id },
+            data: {
+              type: t.type,
+              timestamp: new Date(t.timestamp),
+              label: t.label,
+            },
+          });
+        }
+
+        // DELETE
+        if (toDelete.length) {
+          await tx.timeline.deleteMany({
+            where: { id: { in: toDelete } },
+          });
+        }
+      });
+
+      // ─────────────────────────────────────────────
+      // 5. (OPTIONAL) REALTIME / KAFKA
+      // ─────────────────────────────────────────────
+
+      // void this.kafkaProducerService.send({
+      //   topic: KafkaTopics.event.timelineUpdated,
+      //   payload: {
+      //     eventId,
+      //     actorId,
+      //     created: toCreate.length,
+      //     updated: toUpdate.length,
+      //     deleted: toDelete.length,
+      //   },
+      //   meta: this.meta(actorId, 'timeline replace'),
+      // });
+
+      return EventMapper.toPayload(event, UserRoleType.ADMIN);
+    });
   }
 }

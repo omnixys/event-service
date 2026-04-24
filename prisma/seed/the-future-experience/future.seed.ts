@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../../src/prisma/generated/client.js';
+import { PrismaClient, UserRoleType } from '../../../src/prisma/generated/client.js';
 import { users } from '../users.seed.js';
 
 export async function seedFutureExperience(prisma: PrismaClient) {
@@ -33,7 +33,23 @@ export async function seedFutureExperience(prisma: PrismaClient) {
   //   })),
   // });
 
-  for (const user of users) {
+  for (const user of [
+    {
+      id: 'dde8114c-2637-462a-90b9-413924fa3f55',
+      username: 'admin',
+      role: UserRoleType.ADMIN,
+    },
+    {
+      id: '694d2e8e-0932-4c8f-a1c4-e300dc235be4',
+      username: 'caleb',
+      role: UserRoleType.GUEST,
+    },
+    {
+      id: '20e7e44e-9bcd-4016-bebd-36f8d75357b6',
+      username: 'security',
+      role: UserRoleType.SECURITY,
+    },
+  ]) {
     await prisma.role.create({
       data: {
         eventId: event.id,

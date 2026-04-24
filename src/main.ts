@@ -15,6 +15,9 @@
  * For more information, visit <https://www.gnu.org/licenses/>.
  */
 
+import multipart from "@fastify/multipart";
+import fastifyStatic from "@fastify/static";
+import { join } from "path";
 import { AppModule } from './app.module.js';
 import { corsOptions } from './config/cors.js';
 import compress from '@fastify/compress';
@@ -140,6 +143,16 @@ async function bootstrap(): Promise<void> {
     secret: process.env.COOKIE_SECRET ?? 'omnixys-default-secret',
   });
 
+    await app.register(multipart, {
+      limits: {
+        fileSize: 5_000_000, // 5MB
+      },
+    });
+
+  await app.register(fastifyStatic, {
+    root: join(process.cwd(), 'public'),
+    prefix: '/',
+  });
   // ======================================================
   // ⚙️ CONFIGURATION
   // ======================================================

@@ -33,4 +33,9 @@ export class CreateEventInput {
   @Type(() => CreateSettingsInput)
   @IsOptional()
   settings?: CreateSettingsInput;
+
+  @Field(() => [CreateEventInput], { nullable: true })
+  children?: CreateEventInput[];
 }
+
+

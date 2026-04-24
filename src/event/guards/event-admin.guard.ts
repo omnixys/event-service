@@ -7,6 +7,7 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
+import { GqlExecutionContext } from '@nestjs/graphql';
 
 @Injectable()
 export class EventAdminGuard implements CanActivate {
@@ -16,22 +17,31 @@ export class EventAdminGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request =
-      context.getArgByIndex(2).req ?? context.switchToHttp().getRequest();
+    const gqlCtx = GqlExecutionContext.create(context);
 
+    const ctx = gqlCtx.getContext();
+    const args = gqlCtx.getArgs();
+
+    const request = ctx.req;
     const user = request.user;
 
     if (!user?.id) {
       throw new ForbiddenException('Not authenticated');
     }
 
-    const eventId =
-      request.body?.variables?.eventId ??
-      request.body?.variables?.input?.eventId;
+    // ─────────────────────────────────────────────
+    // 🔍 Extract eventId robustly
+    // ─────────────────────────────────────────────
+
+    const eventId = this.extractEventId(args);
 
     if (!eventId) {
       throw new ForbiddenException('EventId missing');
     }
+
+    // ─────────────────────────────────────────────
+    // 🔐 Authorization
+    // ─────────────────────────────────────────────
 
     const event = await this.prisma.event.findUnique({
       where: { id: eventId },
@@ -42,12 +52,11 @@ export class EventAdminGuard implements CanActivate {
       throw new ForbiddenException('Event not found');
     }
 
-    // ✅ OWNER ALWAYS WINS
+    // OWNER shortcut
     if (event.owner === user.id) {
       return true;
     }
 
-    // 🔥 HIERARCHY ROLE CHECK
     const role = await this.accessService.resolveRole(eventId, user.id);
 
     if (role === UserRoleType.ADMIN) {
@@ -55,5 +64,44 @@ export class EventAdminGuard implements CanActivate {
     }
 
     throw new ForbiddenException('Not authorized for this event.');
+  }
+
+  /**
+   * Extracts eventId from GraphQL args in a schema-agnostic way.
+   * Supports:
+   * - input.eventId
+   * - input[].eventId
+   * - eventId (root arg)
+   */
+  private extractEventId(args: any): string | null {
+    if (!args) return null;
+
+    // Case 1: direct
+    if (args.eventId) return args.eventId;
+
+    // Case 2: input object
+    if (args.input?.eventId) return args.input.eventId;
+
+    // Case 3: input array
+    if (Array.isArray(args.input)) {
+      const first = args.input[0];
+
+      if (!first?.eventId) return null;
+
+      // 🔥 Ensure all belong to same event (VERY IMPORTANT)
+      const allSame = args.input.every(
+        (item: any) => item.eventId === first.eventId,
+      );
+
+      if (!allSame) {
+        throw new ForbiddenException(
+          'All timelines must belong to the same event',
+        );
+      }
+
+      return first.eventId;
+    }
+
+    return null;
   }
 }

@@ -1,8 +1,8 @@
 import { Field, GraphQLISODateTime, InputType, Int } from '@nestjs/graphql';
 import {
   IsBoolean,
-  IsDate,
   IsInt,
+  IsISO8601,
   IsOptional,
   IsString,
   Max,
@@ -26,6 +26,42 @@ export class CreateSettingsInput {
   @Min(1)
   maxSeats!: number;
 
+  @Field(() => Boolean, { defaultValue: true })
+  @IsBoolean()
+  allowPublicRsvp!: boolean;
+
+  @Field(() => Boolean, { defaultValue: true })
+  @IsBoolean()
+  allowPublicPlusOne!: boolean;
+
+  @Field(() => Boolean, { defaultValue: false })
+  @IsBoolean()
+  allowPublicRsvpWebsite!: boolean;
+
+    @Field(() => String, {nullable: true})
+  @IsString()
+  @IsOptional()
+  publicRsvpWebsite?: string
+
+  @Field(() => Boolean, { defaultValue: true })
+  @IsBoolean()
+  isActive!: boolean;
+  
+  @Field(() => Boolean, { defaultValue: true })
+  @IsBoolean()
+  isPublic!: boolean;
+
+
+  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
+  coverImageUrl?: string
+
+  @Field(() => String, { nullable: true })
+  @IsString()
+  @IsOptional()
+  logoUrl?: string
+
   @Field(() => String, { nullable: true })
   @IsString()
   @IsOptional()
@@ -36,10 +72,10 @@ export class CreateSettingsInput {
   description!: string;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
-  @IsDate()
+  @IsISO8601()
   startsAt!: Date;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
-  @IsDate()
+  @IsISO8601()
   endsAt!: Date;
 }

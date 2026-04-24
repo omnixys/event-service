@@ -25,7 +25,7 @@ export class EventReadService {
   // ─────────────────────────────────────────────
   // EVENT
   // ─────────────────────────────────────────────
-
+  // TODO opzimieren!!!
   async getEventById(id: string, userId: string) {
     return TraceRunner.run('[SERVICE] getEventById', async () => {
       this.logger.debug('Fetching event for user', { eventId: id, userId });
@@ -41,42 +41,100 @@ export class EventReadService {
       return EventMapper.toPayload(event, role);
     });
   }
+  async getEventByIdRsvp(id: string) {
+    return TraceRunner.run('[SERVICE] getEventById', async () => {
+      this.logger.debug('Fetching event for public rsvp eventId=%s', id);
+
+      const event = await this.prisma.event.findUnique({
+        where: { id },
+      });
+
+      if (!event) {
+        this.logger.warn('Event not found', { eventId: id });
+        throw new NotFoundException(`Event "${id}" not found`);
+      }
+
+      return EventMapper.toPayload(event);
+    });
+  }
 
   async getChildren(eventId: string): Promise<EventPayload[]> {
     return TraceRunner.run('[SERVICE] getChildren', async () => {
-      const list = await this.prisma.event.findMany({
-        where: { parentId: eventId },
+      this.logger.debug('Fetching direct children only', { eventId });
+
+      /**
+       * Only direct children
+       * - No root
+       * - No subtree
+       */
+      const children = await this.prisma.event.findMany({
+        where: {
+          parentId: eventId,
+        },
         orderBy: { createdAt: 'asc' },
       });
 
-      return EventMapper.toPayloadList(list);
+      this.logger.debug('Children resolved', {
+        eventId,
+        count: children.length,
+      });
+
+      return EventMapper.toPayloadList(children);
     });
   }
 
   async getTree(eventId: string, userId: string): Promise<EventPayload[]> {
     return TraceRunner.run('[SERVICE] getTree', async () => {
+      this.logger.debug('Fetching full event tree', { eventId, userId });
+
+      /**
+       * 1. Load root
+       */
       const root = await this.prisma.event.findUnique({
         where: { id: eventId },
       });
 
-      if (!root) throw new NotFoundException();
-
-      if (!root.path) {
-        // fallback → treat as root only
-        return EventMapper.toPayloadList([root]);
+      if (!root) {
+        this.logger.warn('Root event not found', { eventId });
+        throw new NotFoundException(`Event "${eventId}" not found`);
       }
 
-      const children = await this.prisma.event.findMany({
+      /**
+       * 2. Normalize path
+       */
+      const rootPath = root.path?.trim() ? root.path : root.id;
+
+      /**
+       * 3. Fetch subtree (delimiter-safe)
+       */
+      const events = await this.prisma.event.findMany({
         where: {
-          path: {
-            startsWith: root.path,
-          },
+          OR: [
+            { id: root.id },
+            {
+              path: {
+                startsWith: `${rootPath}.`,
+              },
+            },
+          ],
         },
-        orderBy: { depth: 'asc' },
+        orderBy: [{ depth: 'asc' }, { createdAt: 'asc' }],
       });
 
-      const roles = await this.resolveRolesBatch(children, userId);
-      return children.map((event, index) => EventMapper.toPayload(event, roles[index]));
+      this.logger.debug('Tree resolved', {
+        rootId: root.id,
+        count: events.length,
+      });
+
+      /**
+       * 4. Resolve roles
+       */
+      const roles = await this.resolveRolesBatch(events, userId);
+
+      /**
+       * 5. Map payload
+       */
+      return events.map((event, index) => EventMapper.toPayload(event, roles[index]));
     });
   }
 
@@ -144,9 +202,11 @@ export class EventReadService {
 
   async findMyEvents(userId: string): Promise<EventPayload[]> {
     return TraceRunner.run('[SERVICE] findMyEvents', async () => {
-      this.logger.debug('Fetching user events (hierarchy)', { userId });
+      this.logger.debug('Fetching user events (entry points)', { userId });
 
-      // 1️⃣ Alle direkten Rollen holen
+      /**
+       * 1. Load direct roles
+       */
       const directRoles = await this.prisma.role.findMany({
         where: { userId },
         select: { eventId: true },
@@ -158,45 +218,56 @@ export class EventReadService {
 
       const eventIds = directRoles.map((r) => r.eventId);
 
-      // 2️⃣ Hole diese Events (für path)
-      const baseEvents = await this.prisma.event.findMany({
+      /**
+       * 2. Load ONLY those events (no expansion!)
+       */
+      const events = await this.prisma.event.findMany({
         where: {
           id: { in: eventIds },
         },
-        select: {
-          id: true,
-          path: true,
+        orderBy: { depth: 'asc' },
+        include: {
+          settings: true,
         },
       });
 
-      // 3️⃣ Alle relevanten Paths sammeln
-      const paths = baseEvents.map((e) => e.path).filter((p): p is string => !!p);
-
-      if (paths.length === 0) {
+      if (events.length === 0) {
         return [];
       }
 
-      // 4️⃣ 🔥 ALLE CHILDREN holen
-      const allEvents = await this.prisma.event.findMany({
-        where: {
-          OR: paths.map((p) => ({
-            path: {
-              startsWith: p,
-            },
-          })),
-        },
-        orderBy: { depth: 'asc' },
-      });
+      /**
+       * 3. Detect ROOT access
+       *
+       * depth === 0 → root node
+       */
+      const hasRootAccess = events.some((e) => e.depth === 0);
 
-      this.logger.debug('Expanded events via hierarchy', {
+      /**
+       * 4. Apply business rule
+       */
+      let filteredEvents = events;
+
+      if (hasRootAccess) {
+        /**
+         * If user has ANY root → only show roots
+         */
+        filteredEvents = events.filter((e) => e.depth === 0);
+      }
+
+      this.logger.debug('findMyEvents result=%o', {
         userId,
-        count: allEvents.length,
+        total: events.length,
+        returned: filteredEvents.length,
+        hasRootAccess,
       });
 
-      // 5️⃣ Rollen korrekt berechnen (Root Override!)
-      const roles = await this.resolveRolesBatch(allEvents, userId);
+      /**
+       * 5. Resolve roles ONLY for filtered set
+       */
+      const roles = await this.resolveRolesBatch(filteredEvents, userId);
+      console.log({ roles });
 
-      return allEvents.map((event, index) => EventMapper.toPayload(event, roles[index]));
+      return filteredEvents.map((event, index) => EventMapper.toPayload(event, roles[index]));
     });
   }
 
@@ -205,7 +276,7 @@ export class EventReadService {
       this.logger.debug('Fetching guests for event', { eventId });
 
       const rows = await this.prisma.role.findMany({
-        where: { eventId },
+        where: { eventId, role: 'GUEST' },
         select: { userId: true },
       });
 
@@ -255,7 +326,7 @@ export class EventReadService {
         throw new ForbiddenException('You are not part of this event');
       }
 
-      const pathIds = event.path?.split('.') ?? [event.id];
+      const pathIds = this.getPathIds(event);
 
       for (const id of pathIds) {
         const role = await this.prisma.role.findUnique({
@@ -308,12 +379,14 @@ export class EventReadService {
     });
   }
 
+  //TODO Optimieren!! unnötige redundanz
   async resolveRolesBatch(eventList: Event[], userId: string) {
     return TraceRunner.run('[SERVICE] resolveRolesBatch', async () => {
+      this.logger.debug('resolveRolesBatch: eventList=%o userId=%s', eventList, userId);
       const allEventIds = new Set<string>();
 
       for (const event of eventList) {
-        const ids = event.path?.split('.') ?? [event.id];
+        const ids = this.getPathIds(event);
         ids.forEach((id) => allEventIds.add(id));
       }
 
@@ -324,10 +397,12 @@ export class EventReadService {
         },
       });
 
+      console.log({ roles });
+
       const roleMap = new Map(roles.map((r) => [`${r.eventId}`, r.role]));
 
       return eventList.map((event) => {
-        const ids = event.path?.split('.') ?? [event.id];
+        const ids = this.getPathIds(event);
 
         for (const id of ids) {
           const role = roleMap.get(id);
@@ -337,5 +412,16 @@ export class EventReadService {
         return undefined;
       });
     });
+  }
+
+  private getPathIds(event: Event): string[] {
+    if (!event.path || !event.path.trim()) {
+      return [event.id];
+    }
+
+    return event.path
+      .split('.')
+      .map((p) => p.trim())
+      .filter((p) => p.length > 0);
   }
 }

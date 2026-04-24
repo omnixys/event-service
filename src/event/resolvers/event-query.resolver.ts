@@ -10,6 +10,7 @@ import {
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventReadService } from '../services/event-read.service.js';
 import { OmnixysLogger } from '@omnixys/logger';
+import { TraceRunner } from '@omnixys/observability';
 
 @Resolver(() => EventPayload)
 export class EventQueryResolver {
@@ -52,8 +53,23 @@ export class EventQueryResolver {
     return event;
   }
 
+  @Query(() => EventPayload, { nullable: true })
+  async eventRsvp(
+    @Args('id', { type: () => ID }) id: string,
+  ): Promise<EventPayload> {
+    return TraceRunner.run('[RESOLVER] eventRsvp', async () => {
+      this.logger.debug(
+        'Query event requested for public rsvp | eventId=%s',
+        id,
+      );
+
+      const event = await this.readService.getEventByIdRsvp(id);
+      return event;
+    });
+  }
+
+  // TODO optimieren!!!
   @Query(() => [EventPayload])
-  @UseGuards(CookieAuthGuard)
   async eventChildren(@Args('eventId', { type: () => ID }) eventId: string) {
     return this.readService.getChildren(eventId);
   }
@@ -87,7 +103,7 @@ export class EventQueryResolver {
 
     const events = await this.readService.findMyEvents(currentUser.id);
 
-    this.logger.debug('myEvents query resolved', {
+    this.logger.debug('myEvents query resolved %o', {
       userId: currentUser.id,
       count: events.length,
     });

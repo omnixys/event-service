@@ -1,0 +1,83 @@
+import { PrismaService } from '../../prisma/prisma.service.js';
+import { CreateMediaDto } from '../models/dto/media.dto.js';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { FILE_STORAGE, FileStorage } from '@omnixys/storage';
+
+@Injectable()
+export class MediaService {
+  constructor(
+    private readonly prisma: PrismaService,
+
+    /**
+     * WHY:
+     * Storage must be abstracted → no direct MinIO/S3 usage
+     */
+    @Inject(FILE_STORAGE)
+    private readonly storage: FileStorage,
+  ) {}
+
+  async create(dto: CreateMediaDto) {
+    return this.prisma.media.create({
+      data: {
+        key: dto.key,
+        url: dto.url,
+        filename: dto.filename,
+        mimetype: dto.mimetype,
+        size: dto.size,
+        eventId: dto.eventId,
+      },
+    });
+  }
+
+  async delete(id: string) {
+    const media = await this.prisma.media.findUnique({
+      where: { id },
+    });
+
+    if (!media) {
+      throw new NotFoundException('Media not found');
+    }
+
+    /**
+     * WHY:
+     * Always delete storage first to avoid orphan files
+     */
+    await this.storage.delete({ key: media.key });
+
+    await this.prisma.media.delete({
+      where: { id },
+    });
+
+    return { success: true };
+  }
+
+  async findByEvent(eventId: string) {
+    return this.prisma.media.findMany({
+      where: { eventId },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findById(id: string) {
+    return this.prisma.media.findUnique({
+      where: { id },
+    });
+  }
+
+  async findVariant(mediaId: string, width: number) {
+    const variant = await this.prisma.mediaVariant.findUnique({
+      where: {
+        mediaId_width: {
+          mediaId,
+          width,
+        },
+      },
+    });
+
+    if (!variant) {
+      throw new NotFoundException('Media variant not found');
+    }
+
+    return variant;
+  }
+}

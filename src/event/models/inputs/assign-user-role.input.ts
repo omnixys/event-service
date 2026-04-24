@@ -11,7 +11,12 @@ export class AssignUserRoleInput {
 
   @Field(() => UserRoleType)
   eventRole!: UserRoleType;
-
-  @Field({ nullable: true })
-  actorId?: string;
 }
+
+export interface AssignUserRoleDTO {
+  eventId: string;
+  userId: string;
+  eventRole: UserRoleType;
+  actorId: string
+}
+

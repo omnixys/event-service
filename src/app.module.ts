@@ -29,6 +29,7 @@ import { KafkaModule } from '@omnixys/kafka';
 import { LoggerModule } from '@omnixys/logger';
 import { ObservabilityModule } from '@omnixys/observability';
 import { SecurityModule } from '@omnixys/security';
+import { StorageModule } from '@omnixys/storage';
 
 const {
   SCHEMA_TARGET,
@@ -44,6 +45,16 @@ const {
 
 @Module({
   imports: [
+    StorageModule.forRoot({
+      region: 'eu-central-1',
+      endpoint: 'http://localhost:9000',
+      accessKeyId: 'admin',
+      secretAccessKey: 'password',
+      bucket: 'omnixys',
+      publicUrl: 'http://localhost:9000/omnixys',
+      forcePathStyle: true,
+    }),
+
     ValkeyModule.forRoot({
       serviceName: SERVICE,
       url: VALKEY_URL,

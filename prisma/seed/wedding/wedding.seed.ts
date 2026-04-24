@@ -9,6 +9,8 @@ export async function seedWedding(prisma: PrismaClient) {
       data: {
         name: 'Wedding C & R',
         owner: users[1].id,
+        path: '',
+        depth: 0,
       },
     });
   
@@ -28,6 +30,8 @@ export async function seedWedding(prisma: PrismaClient) {
         name: 'Wedding Ceremony',
         parentId: wedding.id,
         owner: wedding.owner,
+        path: wedding.owner,
+        depth: 1,
       },
     });
   
@@ -50,6 +54,8 @@ export async function seedWedding(prisma: PrismaClient) {
        name: 'Wedding Reception',
        parentId: wedding.id,
        owner: wedding.owner,
+       path: wedding.owner,
+       depth: 1,
      },
    });
   
@@ -82,23 +88,34 @@ export async function seedWedding(prisma: PrismaClient) {
   //   })),
   // });
 
+  // for (const user of users) {
+  //   await prisma.role.create({
+  //     data: {
+  //       eventId: ceremony.id,
+  //       userId: user.id,
+  //       role: user.role,
+  //     },
+  //   });
+
+  //   await prisma.role.create({
+  //     data: {
+  //       eventId: reception.id,
+  //       userId: user.id,
+  //       role: user.role,
+  //     },
+  //   });
+  // }
+
   for (const user of users) {
     await prisma.role.create({
       data: {
-        eventId: ceremony.id,
-        userId: user.id,
-        role: user.role,
-      },
-    });
-
-    await prisma.role.create({
-      data: {
-        eventId: reception.id,
+        eventId: wedding.id,
         userId: user.id,
         role: user.role,
       },
     });
   }
+
 
   console.log('✔ Wedding C&R seeded');
 }
