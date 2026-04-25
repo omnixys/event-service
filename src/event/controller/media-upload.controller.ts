@@ -10,16 +10,15 @@ import {
 import { randomUUID } from 'crypto';
 import { FastifyRequest } from 'fastify';
 
+import { MediaProcessingService } from '../services/media-processing.service.js';
 import { MediaService } from '../services/media.service.js';
+import { FILE_STORAGE, FileStorage } from '@omnixys/storage';
+
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
 import { CookieAuthGuard, CurrentUser, CurrentUserData } from '@omnixys/security';
-import { FILE_STORAGE, FileStorage } from '@omnixys/storage';
 
-/* ---------------------------------------------------------------------------
- * Config
- * ------------------------------------------------------------------------- */
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 const ALLOWED_MIME = new Set(['image/png', 'image/jpeg', 'image/webp']);
 
@@ -31,16 +30,12 @@ export class MediaUploadController {
     @Inject(FILE_STORAGE)
     private readonly storage: FileStorage,
     private readonly mediaService: MediaService,
+    private readonly processing: MediaProcessingService,
     private readonly loggerService: OmnixysLogger,
   ) {
     this.logger = this.loggerService.log(this.constructor.name);
   }
 
-  /**
-   * ------------------------------------------------------------------------
-   * SECURE MEDIA UPLOAD
-   * ------------------------------------------------------------------------
-   */
   @UseGuards(CookieAuthGuard)
   @Post('upload')
   async upload(
@@ -49,29 +44,14 @@ export class MediaUploadController {
     @CurrentUser() user: CurrentUserData,
   ) {
     return TraceRunner.run('[MEDIA] upload', async () => {
-      /**
-       * --------------------------------------------------------------------
-       * AUTH VALIDATION
-       * --------------------------------------------------------------------
-       */
       if (!user?.id) {
         throw new BadRequestException('Not authenticated');
       }
 
-      /**
-       * --------------------------------------------------------------------
-       * EVENT VALIDATION
-       * --------------------------------------------------------------------
-       */
       if (!eventId) {
         throw new BadRequestException('eventId is required');
       }
 
-      /**
-       * --------------------------------------------------------------------
-       * MULTIPART VALIDATION
-       * --------------------------------------------------------------------
-       */
       if (!req.isMultipart()) {
         throw new BadRequestException('Expected multipart/form-data');
       }
@@ -82,11 +62,6 @@ export class MediaUploadController {
         throw new BadRequestException('No file uploaded');
       }
 
-      /**
-       * --------------------------------------------------------------------
-       * MIME VALIDATION
-       * --------------------------------------------------------------------
-       */
       if (!ALLOWED_MIME.has(part.mimetype)) {
         this.logger.warn('Invalid MIME type', {
           mimetype: part.mimetype,
@@ -94,52 +69,23 @@ export class MediaUploadController {
           actorId: user.id,
         });
 
-        throw new BadRequestException('Only PNG, JPG, WEBP allowed');
+        throw new BadRequestException('Invalid file type');
       }
 
-      /**
-       * --------------------------------------------------------------------
-       * BUFFER
-       * --------------------------------------------------------------------
-       */
       const buffer = await part.toBuffer();
 
-      /**
-       * --------------------------------------------------------------------
-       * SIZE VALIDATION
-       * --------------------------------------------------------------------
-       */
       if (buffer.length > MAX_FILE_SIZE) {
-        throw new BadRequestException(`File too large (max ${MAX_FILE_SIZE / 1024 / 1024}MB)`);
+        throw new BadRequestException('File too large');
       }
 
-      /**
-       * --------------------------------------------------------------------
-       * KEY GENERATION
-       * --------------------------------------------------------------------
-       *
-       * WHY:
-       * - Namespaced per event
-       * - Prevents collisions
-       */
       const key = `event/${eventId}/${randomUUID()}-${part.filename}`;
 
-      /**
-       * --------------------------------------------------------------------
-       * STORAGE UPLOAD
-       * --------------------------------------------------------------------
-       */
       const url = await this.storage.upload({
         key,
         buffer,
         contentType: part.mimetype,
       });
 
-      /**
-       * --------------------------------------------------------------------
-       * DB PERSISTENCE
-       * --------------------------------------------------------------------
-       */
       const media = await this.mediaService.create({
         key,
         url,
@@ -149,17 +95,11 @@ export class MediaUploadController {
         eventId,
       });
 
-      this.logger.debug('Media uploaded', {
-        mediaId: media.id,
-        key,
-        actorId: user.id,
-      });
-
       /**
-       * --------------------------------------------------------------------
-       * RESPONSE
-       * --------------------------------------------------------------------
+       * 🔥 NEW: PROCESS VARIANTS
        */
+      await this.processing.processImage(media.id, buffer);
+
       return {
         id: media.id,
         key,

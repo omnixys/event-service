@@ -1,24 +1,33 @@
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { ImageService } from './image.service.js';
 import { Injectable, Inject } from '@nestjs/common';
+import { OmnixysLogger } from '@omnixys/logger';
 import { FILE_STORAGE, FileStorage } from '@omnixys/storage';
 
 @Injectable()
 export class MediaProcessingService {
+  private readonly logger;
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly image: ImageService,
+    private readonly loggerService: OmnixysLogger,
 
-    /**
-     * WHY:
-     * Use abstraction instead of direct S3
-     */
     @Inject(FILE_STORAGE)
     private readonly storage: FileStorage,
-  ) {}
+  ) {
+    this.logger = this.loggerService.log(this.constructor.name);
+  }
 
-  async processImage(mediaId: string, stream: NodeJS.ReadableStream) {
-    const variants = await this.image.generateVariants(stream);
+  /**
+   * ------------------------------------------------------------------------
+   * PROCESS IMAGE → GENERATE VARIANTS
+   * ------------------------------------------------------------------------
+   */
+  async processImage(mediaId: string, buffer: Buffer) {
+    this.logger.debug('Processing image variants', { mediaId });
+
+    const variants = await this.image.generateVariants(buffer);
 
     const uploads = await Promise.all(
       variants.map(async (variant) => {
@@ -31,6 +40,7 @@ export class MediaProcessingService {
         });
 
         return {
+          mediaId,
           key,
           url,
           width: variant.width,
@@ -41,10 +51,12 @@ export class MediaProcessingService {
     );
 
     await this.prisma.mediaVariant.createMany({
-      data: uploads.map((v) => ({
-        mediaId,
-        ...v,
-      })),
+      data: uploads,
+    });
+
+    this.logger.debug('Variants created', {
+      mediaId,
+      count: uploads.length,
     });
 
     return uploads;
