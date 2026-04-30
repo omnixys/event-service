@@ -4,12 +4,24 @@ import { EventOwnerGuard } from '../guards/event-owner.guard.js';
 import { AssignUserRoleInput } from '../models/inputs/assign-user-role.input.js';
 import { CreateEventInput } from '../models/inputs/create-event.input.js';
 import { RemoveUserFromEventInput } from '../models/inputs/remove-user-from-event.input.js';
-import { CreateTimelineInput, RemoveTimelineInput, SetTimelineInput, UpdateTimelineInput } from '../models/inputs/timeline.input.js';
+import {
+  CreateTimelineInput,
+  RemoveTimelineInput,
+  SetTimelineInput,
+  UpdateTimelineInput,
+} from '../models/inputs/timeline.input.js';
 import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventWriteService } from '../services/event-write.service.js';
 import { UnauthorizedException, UseGuards } from '@nestjs/common';
-import { Args, Field, ID, InputType, Mutation, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Field,
+  ID,
+  InputType,
+  Mutation,
+  Resolver,
+} from '@nestjs/graphql';
 import {
   CookieAuthGuard,
   CurrentUser,
@@ -162,4 +174,3 @@ export class EventMutationResolver {
     return this.writeService.setTimelines(input, user.id);
   }
 }
-

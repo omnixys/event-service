@@ -2,7 +2,13 @@ import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventReadService } from '../services/event-read.service.js';
 import { UseGuards } from '@nestjs/common';
 import { Args, ID, Query, Resolver } from '@nestjs/graphql';
-import { CookieAuthGuard, CurrentUser, CurrentUserData, RoleGuard, Roles } from '@omnixys/security';
+import {
+  CookieAuthGuard,
+  CurrentUser,
+  CurrentUserData,
+  RoleGuard,
+  Roles,
+} from '@omnixys/security';
 import { RealmRoleType } from '@omnixys/shared';
 
 @Resolver(() => EventPayload)

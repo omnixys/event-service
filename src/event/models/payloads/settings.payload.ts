@@ -1,3 +1,7 @@
+import {
+  EventCategory,
+  InvitationApprovalMode,
+} from '../../../prisma/generated/client.js';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 
 @ObjectType()
@@ -28,6 +32,45 @@ export class SettingsPayload {
 
   @Field()
   endsAt!: Date;
+
+  @Field()
+  allowPublicRsvp!: boolean;
+
+  @Field()
+  allowPublicPlusOne!: boolean;
+
+  @Field()
+  allowPublicRsvpWebsite!: boolean;
+
+  @Field()
+  allowPlusOneUpdate!: boolean;
+
+  @Field()
+  maxPlusOnes!: number;
+
+  @Field()
+  requireApprovalForPlusOnes!: boolean;
+
+  @Field({ nullable: true })
+  rsvpDeadline?: Date;
+
+  @Field(() => InvitationApprovalMode)
+  approvalMode!: InvitationApprovalMode;
+
+  @Field()
+  allowGuestSeatSelection!: boolean;
+
+  @Field()
+  allowSeatOverbooking!: boolean;
+
+  @Field()
+  isPublic!: boolean;
+
+  @Field({ nullable: true })
+  publicRsvpWebsite?: string;
+
+  @Field(() => EventCategory)
+  category!: EventCategory;
 
   @Field()
   createdAt!: Date;

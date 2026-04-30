@@ -29,17 +29,55 @@ export class EventMapper {
 
       myRole: n2u(myRole),
 
+      coverMediaId: n2u(event.coverMediaId),
+      logoMediaId: n2u(event.logoMediaId),
+
       settings: event.settings
         ? {
             id: event.settings.id,
+
+            // 🔧 Core
             allowReEntry: event.settings.allowReEntry,
             rotateSeconds: event.settings.rotateSeconds,
             maxSeats: event.settings.maxSeats,
+
+            // 🌐 RSVP
+            allowPublicRsvp: event.settings.allowPublicRsvp,
+            allowPublicPlusOne: event.settings.allowPublicPlusOne,
+            allowPublicRsvpWebsite: event.settings.allowPublicRsvpWebsite,
+            allowPlusOneUpdate: event.settings.allowPlusOneUpdate,
+
+            maxPlusOnes: event.settings.maxPlusOnes,
+            requireApprovalForPlusOnes:
+              event.settings.requireApprovalForPlusOnes,
+            rsvpDeadline: n2u(event.settings.rsvpDeadline),
+
+            // 🔥 Approval
+            approvalMode: event.settings.approvalMode,
+
+            // 🪑 Seating
+            allowGuestSeatSelection: event.settings.allowGuestSeatSelection,
+            allowSeatOverbooking: event.settings.allowSeatOverbooking,
+
+            // 🌍 Visibility
             isActive: event.settings.isActive,
+            isPublic: event.settings.isPublic,
+
+            // 🌐 Public
+            publicRsvpWebsite: n2u(event.settings.publicRsvpWebsite),
+
+            // 🎨 Content
             dressCode: n2u(event.settings.dressCode),
             description: n2u(event.settings.description),
+
+            // 📅 Time
             startsAt: event.settings.startsAt,
             endsAt: event.settings.endsAt,
+
+            // 📂 Category
+            category: event.settings.category,
+
+            // 🧾 Meta
             createdAt: event.settings.createdAt,
             updatedAt: event.settings.updatedAt,
           }

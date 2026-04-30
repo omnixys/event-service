@@ -4,15 +4,26 @@ import { SeatAllocationExceededError } from '../errors/seat-allocation-exceeded.
 import { AssignUserRoleDTO } from '../models/inputs/assign-user-role.input.js';
 import { CreateEventInput } from '../models/inputs/create-event.input.js';
 import { RemoveUserFromEventInput } from '../models/inputs/remove-user-from-event.input.js';
-import { CreateTimelineInput, RemoveTimelineInput, SetTimelineInput, TimelineUpsertInput, UpdateTimelineInput } from '../models/inputs/timeline.input.js';
+import {
+  CreateTimelineInput,
+  RemoveTimelineInput,
+  SetTimelineInput,
+  TimelineUpsertInput,
+  UpdateTimelineInput,
+} from '../models/inputs/timeline.input.js';
 import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
+import { SettingsCreateMapper } from '../models/mapper/settings.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
-import { KafkaProducerService, KafkaTopics, type EventType } from '@omnixys/kafka';
+import {
+  KafkaProducerService,
+  KafkaTopics,
+  type EventType,
+  type KafkaMetaInfo,
+} from '@omnixys/kafka';
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
-import { SettingsCreateMapper } from '../models/mapper/settings.mapper.js';
 
 @Injectable()
 export class EventWriteService {
@@ -115,7 +126,7 @@ export class EventWriteService {
 
           const childrenWithSeats = children.filter((c) => c.settings?.maxSeats != null);
 
-          let seatDistribution: number[] = [];
+          let seatDistribution: number[];
 
           /**
            * CASE A: NO CHILD SEATS → DISTRIBUTE
@@ -126,16 +137,16 @@ export class EventWriteService {
 
             seatDistribution = children.map(() => {
               const seats = base + (remainder > 0 ? 1 : 0);
-              if (remainder > 0) remainder--;
+              if (remainder > 0) {
+                remainder--;
+              }
               return seats;
             });
           } else {
             /**
              * CASE B: CUSTOM SEATS
              */
-            const total = children.reduce((sum, c) => {
-              return sum + (c.settings?.maxSeats ?? 0);
-            }, 0);
+            const total = children.reduce((sum, c) => sum + (c.settings?.maxSeats ?? 0), 0);
 
             if (total > parentMaxSeats) {
               throw new SeatAllocationExceededError(parentMaxSeats, total);
@@ -154,7 +165,9 @@ export class EventWriteService {
               const childInput = children[i];
               const seats = seatDistribution[i];
 
-               if (childInput == undefined) continue;
+              if (childInput === undefined) {
+                continue;
+              }
 
               const child = await tx.event.create({
                 data: {
@@ -176,16 +189,16 @@ export class EventWriteService {
               /**
                * SETTINGS (inherit or override)
                */
-await tx.settings.create({
-  data: SettingsCreateMapper.from({
-    dto: childInput.settings,
-    parent: parentSettings,
-    eventId: child.id,
-    override: {
-      maxSeats: seats,
-    },
-  }),
-});
+              await tx.settings.create({
+                data: SettingsCreateMapper.from({
+                  dto: childInput.settings,
+                  parent: parentSettings,
+                  eventId: child.id,
+                  override: {
+                    maxSeats: seats,
+                  },
+                }),
+              });
               /**
                * ROLE (inherit admin)
                */
@@ -483,7 +496,7 @@ await tx.settings.create({
         payload: { eventIds, admins, security, guests },
         meta: this.meta(actorId, 'notify cancel'),
       }),
-      void this.kafkaProducerService.send({
+      this.kafkaProducerService.send({
         topic: KafkaTopics.address.deleteEventAddress,
         payload: { eventIds },
         meta: {
@@ -539,7 +552,7 @@ await tx.settings.create({
   /**
    * Standard Kafka metadata builder.
    */
-  private meta(actorId: string, operation: string) {
+  private meta(actorId: string, operation: string): KafkaMetaInfo {
     const type: EventType = 'EVENT';
     return {
       actorId,
@@ -839,7 +852,9 @@ await tx.settings.create({
         where: { id: eventId },
       });
 
-      if (!event) throw new NotFoundException('Event not found');
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
 
       return EventMapper.toPayload(event, UserRoleType.ADMIN);
     });
@@ -885,7 +900,9 @@ await tx.settings.create({
         where: { id: eventIdFound },
       });
 
-      if (!event) throw new NotFoundException('Event not found');
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
 
       return EventMapper.toPayload(event, UserRoleType.ADMIN);
     });
@@ -924,7 +941,9 @@ await tx.settings.create({
         where: { id: eventIdFound },
       });
 
-      if (!event) throw new NotFoundException('Event not found');
+      if (!event) {
+        throw new NotFoundException('Event not found');
+      }
 
       return EventMapper.toPayload(event, UserRoleType.ADMIN);
     });

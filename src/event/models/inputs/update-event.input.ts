@@ -7,9 +7,6 @@ import { IsOptional } from 'class-validator';
 //   eventId!: string; // Must always be included
 // }
 
-
-
-
 @InputType()
 export class UpdateSettingsInput {
   @Field(() => Boolean, { nullable: true })

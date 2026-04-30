@@ -9,6 +9,18 @@ import {
 } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
+interface AuthenticatedUser {
+  id: string;
+}
+
+interface GraphQLRequest {
+  user?: AuthenticatedUser;
+}
+
+interface GraphQLContext {
+  req?: GraphQLRequest;
+}
+
 @Injectable()
 export class EventAdminGuard implements CanActivate {
   constructor(
@@ -19,11 +31,10 @@ export class EventAdminGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const gqlCtx = GqlExecutionContext.create(context);
 
-    const ctx = gqlCtx.getContext();
-    const args = gqlCtx.getArgs();
+    const ctx = gqlCtx.getContext<GraphQLContext>();
+    const args = gqlCtx.getArgs<unknown>();
 
-    const request = ctx.req;
-    const user = request.user;
+    const user = ctx.req?.user;
 
     if (!user?.id) {
       throw new ForbiddenException('Not authenticated');
@@ -73,24 +84,33 @@ export class EventAdminGuard implements CanActivate {
    * - input[].eventId
    * - eventId (root arg)
    */
-  private extractEventId(args: any): string | null {
-    if (!args) return null;
+  private extractEventId(args: unknown): string | null {
+    if (!this.isRecord(args)) {
+      return null;
+    }
 
     // Case 1: direct
-    if (args.eventId) return args.eventId;
+    if (typeof args.eventId === 'string') {
+      return args.eventId;
+    }
 
     // Case 2: input object
-    if (args.input?.eventId) return args.input.eventId;
+    if (this.isRecord(args.input) && typeof args.input.eventId === 'string') {
+      return args.input.eventId;
+    }
 
     // Case 3: input array
-    if (Array.isArray(args.input)) {
-      const first = args.input[0];
+    const input = args.input;
+    if (Array.isArray(input)) {
+      const first: unknown = input[0];
 
-      if (!first?.eventId) return null;
+      if (!this.isRecord(first) || typeof first.eventId !== 'string') {
+        return null;
+      }
 
       // 🔥 Ensure all belong to same event (VERY IMPORTANT)
-      const allSame = args.input.every(
-        (item: any) => item.eventId === first.eventId,
+      const allSame = input.every(
+        (item) => this.isRecord(item) && item.eventId === first.eventId,
       );
 
       if (!allSame) {
@@ -103,5 +123,9 @@ export class EventAdminGuard implements CanActivate {
     }
 
     return null;
+  }
+
+  private isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null;
   }
 }

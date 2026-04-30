@@ -1,4 +1,5 @@
-import { Field, InputType } from "@nestjs/graphql";
+import { MediaType } from '../../../prisma/generated/client.js';
+import { Field, InputType, registerEnumType } from '@nestjs/graphql';
 
 @InputType()
 export class CreateMediaDto {
@@ -18,8 +19,13 @@ export class CreateMediaDto {
   size?: number;
 
   @Field()
-  eventId?: string;
+  eventId!: string;
+
+  @Field(() => MediaType)
+  type!: MediaType;
 }
+
+registerEnumType(MediaType, { name: 'MediaType' });
 
 @InputType()
 export class DeleteMediaDto {

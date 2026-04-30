@@ -1,6 +1,6 @@
-import { Settings } from "../../../prisma/generated/client.js";
-import { SettingsCreateInput } from "../../../prisma/generated/models.js";
-import { CreateSettingsInput } from "../inputs/create-settings.input.js";
+import type { Settings } from '../../../prisma/generated/client.js';
+import type { SettingsCreateInput } from '../../../prisma/generated/models.js';
+import type { CreateSettingsInput } from '../inputs/create-settings.input.js';
 
 /**
  * Maps settings from DTO or parent entity into a valid Prisma create input
@@ -39,9 +39,6 @@ export class SettingsCreateMapper {
 
       isActive: base.isActive,
       isPublic: base.isPublic,
-
-      coverImageUrl: base.coverImageUrl ?? null,
-      logoUrl: base.logoUrl ?? null,
 
       dressCode: base.dressCode ?? null,
       description: base.description ?? null,

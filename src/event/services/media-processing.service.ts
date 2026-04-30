@@ -1,8 +1,17 @@
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { ImageService } from './image.service.js';
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { OmnixysLogger } from '@omnixys/logger';
-import { FILE_STORAGE, FileStorage } from '@omnixys/storage';
+import { FILE_STORAGE, FileStorage } from '@omnixys/media';
+
+interface ProcessedImageVariant {
+  mediaId: string;
+  key: string;
+  url: string;
+  width: number;
+  height: number;
+  format: string;
+}
 
 @Injectable()
 export class MediaProcessingService {
@@ -24,7 +33,7 @@ export class MediaProcessingService {
    * PROCESS IMAGE → GENERATE VARIANTS
    * ------------------------------------------------------------------------
    */
-  async processImage(mediaId: string, buffer: Buffer) {
+  async processImage(mediaId: string, buffer: Buffer): Promise<ProcessedImageVariant[]> {
     this.logger.debug('Processing image variants', { mediaId });
 
     const variants = await this.image.generateVariants(buffer);

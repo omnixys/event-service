@@ -4,12 +4,13 @@ import { Event, UserRoleType } from '../../prisma/generated//client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { EventTimelineMapper } from '../models/mapper/event-timeline.mapper.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
+import { mapMedia } from '../models/mapper/media.mapper.js';
 import { UserEventRoleMapper } from '../models/mapper/user-event-role.mapper.js';
+import { EventTreePayload } from '../models/payloads/event-tree.payload.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
-
 
 @Injectable()
 export class EventReadService {
@@ -71,6 +72,10 @@ export class EventReadService {
         where: {
           parentId: eventId,
         },
+        include: {
+          settings: true,
+        },
+
         orderBy: { createdAt: 'asc' },
       });
 
@@ -83,7 +88,7 @@ export class EventReadService {
     });
   }
 
-  async getTree(eventId: string, userId: string): Promise<EventPayload[]> {
+  async getTree(eventId: string, userId: string): Promise<EventTreePayload> {
     return TraceRunner.run('[SERVICE] getTree', async () => {
       this.logger.debug('Fetching full event tree', { eventId, userId });
 
@@ -95,14 +100,9 @@ export class EventReadService {
       });
 
       if (!root) {
-        this.logger.warn('Root event not found', { eventId });
+        this.logger.warn('Root event not found %s', eventId);
         throw new NotFoundException(`Event "${eventId}" not found`);
       }
-
-      /**
-       * 2. Normalize path
-       */
-      const rootPath = root.path?.trim() ? root.path : root.id;
 
       /**
        * 3. Fetch subtree (delimiter-safe)
@@ -113,7 +113,7 @@ export class EventReadService {
             { id: root.id },
             {
               path: {
-                startsWith: `${rootPath}.`,
+                startsWith: root.id,
               },
             },
           ],
@@ -121,7 +121,7 @@ export class EventReadService {
         orderBy: [{ depth: 'asc' }, { createdAt: 'asc' }],
       });
 
-      this.logger.debug('Tree resolved', {
+      this.logger.debug('Tree resolved %o', {
         rootId: root.id,
         count: events.length,
       });
@@ -134,7 +134,74 @@ export class EventReadService {
       /**
        * 5. Map payload
        */
-      return events.map((event, index) => EventMapper.toPayload(event, roles[index]));
+      const payloads = events.map((event, index) => EventMapper.toPayload(event, roles[index]));
+
+      const rootEvent = payloads.find((e) => e.id === root.id);
+      if (!rootEvent) {
+        throw new NotFoundException(`Event "${eventId}" not found in tree`);
+      }
+      const subEvents = payloads.filter((e) => e.id !== root.id);
+
+      return {
+        rootEvent,
+        subEvents,
+      };
+    });
+  }
+
+  async getPublicTree(eventId: string): Promise<EventTreePayload> {
+    return TraceRunner.run('[SERVICE] getTree', async () => {
+      this.logger.debug('Fetching full event tree | eventId=%s', eventId);
+
+      /**
+       * 1. Load root
+       */
+      const root = await this.prisma.event.findUnique({
+        where: { id: eventId },
+      });
+
+      if (!root) {
+        this.logger.warn('Root event not found %s', eventId);
+        throw new NotFoundException(`Event "${eventId}" not found`);
+      }
+
+      /**
+       * 3. Fetch subtree (delimiter-safe)
+       */
+      const events = await this.prisma.event.findMany({
+        where: {
+          OR: [
+            { id: root.id },
+            {
+              path: {
+                startsWith: root.id,
+              },
+            },
+          ],
+        },
+        orderBy: [{ depth: 'asc' }, { createdAt: 'asc' }],
+      });
+
+      this.logger.debug('Tree resolved %o', {
+        rootId: root.id,
+        count: events.length,
+      });
+
+      /**
+       * 5. Map payload
+       */
+      const payloads = events.map((event) => EventMapper.toPayload(event));
+
+      const rootEvent = payloads.find((e) => e.id === root.id);
+      if (!rootEvent) {
+        throw new NotFoundException(`Event "${eventId}" not found in tree`);
+      }
+      const subEvents = payloads.filter((e) => e.id !== root.id);
+
+      return {
+        rootEvent,
+        subEvents,
+      };
     });
   }
 
@@ -265,7 +332,7 @@ export class EventReadService {
        * 5. Resolve roles ONLY for filtered set
        */
       const roles = await this.resolveRolesBatch(filteredEvents, userId);
-      console.log({ roles });
+      this.logger.debug('Resolved roles for filtered events %o', { roles });
 
       return filteredEvents.map((event, index) => EventMapper.toPayload(event, roles[index]));
     });
@@ -286,6 +353,64 @@ export class EventReadService {
       });
 
       return rows.map((r) => r.userId);
+    });
+  }
+
+  async getMedia(eventId: string) {
+    return TraceRunner.run('[SERVICE] getMedia', async () => {
+      this.logger.debug('Fetching media for event', { eventId });
+
+      const media = await this.prisma.media.findMany({
+        where: { eventId },
+        include: {
+          variants: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      this.logger.debug('Media fetched', {
+        eventId,
+        count: media.length,
+      });
+
+      return media.map(mapMedia);
+    });
+  }
+
+  async getSingleMedia(mediaId: string | null | undefined, context: string) {
+    return TraceRunner.run(`[SERVICE] ${context}`, async () => {
+      if (!mediaId) {
+        this.logger.debug('No mediaId provided', { context });
+        return null;
+      }
+
+      this.logger.debug('Fetching single media', {
+        mediaId,
+        context,
+      });
+
+      const media = await this.prisma.media.findUnique({
+        where: { id: mediaId },
+        include: {
+          variants: {
+            orderBy: { width: 'asc' },
+          },
+        },
+      });
+
+      if (!media) {
+        this.logger.warn('Media not found', { mediaId, context });
+        return null;
+      }
+
+      this.logger.debug('Media resolved', {
+        mediaId,
+        variants: media.variants.length,
+      });
+
+      return mapMedia(media);
     });
   }
 
@@ -354,7 +479,9 @@ export class EventReadService {
         where: { id: eventId },
       });
 
-      if (!event) return undefined;
+      if (!event) {
+        return undefined;
+      }
 
       // 2. Hole gesamten Pfad (root → ... → current)
       const pathIds = event.path?.split('.') ?? [event.id];
@@ -379,7 +506,7 @@ export class EventReadService {
     });
   }
 
-  //TODO Optimieren!! unnötige redundanz
+  // TODO Optimieren!! unnötige redundanz
   async resolveRolesBatch(eventList: Event[], userId: string) {
     return TraceRunner.run('[SERVICE] resolveRolesBatch', async () => {
       this.logger.debug('resolveRolesBatch: eventList=%o userId=%s', eventList, userId);
@@ -397,7 +524,7 @@ export class EventReadService {
         },
       });
 
-      console.log({ roles });
+      this.logger.debug('Resolved inherited roles %o', { roles });
 
       const roleMap = new Map(roles.map((r) => [`${r.eventId}`, r.role]));
 
@@ -406,7 +533,9 @@ export class EventReadService {
 
         for (const id of ids) {
           const role = roleMap.get(id);
-          if (role) return role;
+          if (role) {
+            return role;
+          }
         }
 
         return undefined;
@@ -415,7 +544,7 @@ export class EventReadService {
   }
 
   private getPathIds(event: Event): string[] {
-    if (!event.path || !event.path.trim()) {
+    if (!event.path?.trim()) {
       return [event.id];
     }
 

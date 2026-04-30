@@ -15,16 +15,15 @@
  * For more information, visit <https://www.gnu.org/licenses/>.
  */
 
-import multipart from "@fastify/multipart";
-import fastifyStatic from "@fastify/static";
-import { join } from "path";
 import { AppModule } from './app.module.js';
 import { corsOptions } from './config/cors.js';
 import compress from '@fastify/compress';
 import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
+import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
+import fastifyStatic from '@fastify/static';
 // import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
@@ -33,6 +32,7 @@ import {
   type NestFastifyApplication,
 } from '@nestjs/platform-fastify';
 import { registerFastifyTracing } from '@omnixys/observability';
+import { join } from 'path';
 import 'reflect-metadata';
 
 /**
@@ -143,11 +143,11 @@ async function bootstrap(): Promise<void> {
     secret: process.env.COOKIE_SECRET ?? 'omnixys-default-secret',
   });
 
-    await app.register(multipart, {
-      limits: {
-        fileSize: 5_000_000, // 5MB
-      },
-    });
+  await app.register(multipart, {
+    limits: {
+      fileSize: 5_000_000, // 5MB
+    },
+  });
 
   await app.register(fastifyStatic, {
     root: join(process.cwd(), 'public'),
@@ -167,7 +167,7 @@ async function bootstrap(): Promise<void> {
 
   /** Port-Definition (Standard: 4000) */
   const port = Number(config.get('PORT') ?? 4000);
-  const service = config.get('SERVICE');
+  const service = config.get<string>('SERVICE') ?? 'event';
 
   // ======================================================
   // 🧩 VALIDATION

@@ -95,7 +95,9 @@ export class AuthenticationHandler {
         ValkeyKey.guestVerificationEvent,
         eventKey,
       );
-      if (!raw) throw new Error('Invalid token');
+      if (!raw) {
+        throw new Error('Invalid token');
+      }
 
       const input = JSON.parse(raw) as GuestEventKey;
 

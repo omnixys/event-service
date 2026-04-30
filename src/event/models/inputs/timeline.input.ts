@@ -1,7 +1,6 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 import { IsNotEmpty, IsString, IsDateString } from 'class-validator';
 
-
 @InputType()
 export class CreateTimelineInput {
   @Field()
@@ -17,7 +16,6 @@ export class CreateTimelineInput {
   @IsString()
   label!: string;
 }
-
 
 @InputType()
 export class UpdateTimelineInput {

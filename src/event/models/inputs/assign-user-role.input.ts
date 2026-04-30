@@ -17,6 +17,5 @@ export interface AssignUserRoleDTO {
   eventId: string;
   userId: string;
   eventRole: UserRoleType;
-  actorId: string
+  actorId: string;
 }
-

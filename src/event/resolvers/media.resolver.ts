@@ -1,28 +1,24 @@
+import { CreateMediaDto } from '../models/dto/media.dto.js';
 import { MediaService } from '../services/media.service.js';
 import { BadRequestException, Inject } from '@nestjs/common';
-import { Resolver, Query, Args, Mutation } from '@nestjs/graphql';
-import { FILE_STORAGE, FileStorage } from '@omnixys/storage';
-import { CreateMediaDto } from '../models/dto/media.dto.js';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { FILE_STORAGE, FileStorage } from '@omnixys/media';
 
 @Resolver()
 export class MediaResolver {
   constructor(
     private readonly media: MediaService,
 
-    
     /**
      * WHY:
      * Signed URLs must be generated via storage abstraction
      */
     @Inject(FILE_STORAGE)
     private readonly storage: FileStorage,
-  ) { }
-  
+  ) {}
 
   @Mutation(() => String)
-  async createMedia(
-    @Args('input') input: CreateMediaDto,
-  ): Promise<string> {
+  async createMedia(@Args('input') input: CreateMediaDto): Promise<string> {
     /**
      * Basic validation (boundary layer)
      */
@@ -69,8 +65,9 @@ export class MediaResolver {
   async mediaVariantUrl(
     @Args('mediaId') mediaId: string,
     @Args('width') width: number,
+    @Args('format') format: string,
   ): Promise<string> {
-    const variant = await this.media.findVariant(mediaId, width);
+    const variant = await this.media.findVariant(mediaId, width, format);
 
     return this.storage.getSignedDownloadUrl({
       key: variant.key,

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import sharp from 'sharp';
 
-type Variant = {
+interface Variant {
   buffer: Buffer;
   width: number;
   format: string;
-};
+}
 
 @Injectable()
 export class ImageService {

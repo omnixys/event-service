@@ -11,6 +11,18 @@ import {
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
+interface AuthenticatedUser {
+  id: string;
+}
+
+interface GraphQLRequest {
+  user?: AuthenticatedUser;
+}
+
+interface GraphQLContext {
+  req?: GraphQLRequest;
+}
+
 @Injectable()
 export class EventRoleGuard implements CanActivate {
   constructor(
@@ -29,14 +41,15 @@ export class EventRoleGuard implements CanActivate {
     }
 
     const gqlCtx = GqlExecutionContext.create(context);
-    const ctx = gqlCtx.getContext();
+    const ctx = gqlCtx.getContext<GraphQLContext>();
 
-    const user = ctx.req?.user;
+    const req = ctx.req;
+    const user = req?.user;
     if (!user) {
       throw new ForbiddenException('Unauthorized');
     }
 
-    const eventId = extractEventId(ctx.req);
+    const eventId = extractEventId(req);
 
     if (!eventId) {
       throw new ForbiddenException('Missing eventId');

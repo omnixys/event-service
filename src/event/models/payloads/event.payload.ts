@@ -11,6 +11,11 @@ export class EventPayload {
   @Field()
   owner!: string;
 
+  @Field(() => ID, { nullable: true })
+  coverMediaId?: string;
+  @Field(() => ID, { nullable: true })
+  logoMediaId?: string;
+
   @Field(() => String, { nullable: true })
   parentId?: string;
   @Field(() => String, { nullable: true })
@@ -25,6 +30,6 @@ export class EventPayload {
 
   @Field(() => UserRoleType, { nullable: true })
   myRole?: UserRoleType;
-  @Field(() => SettingsPayload)
+  @Field(() => SettingsPayload, { nullable: true })
   settings?: SettingsPayload;
 }

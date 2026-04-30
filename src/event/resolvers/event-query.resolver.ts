@@ -7,6 +7,7 @@ import {
   CurrentUserData,
 } from '@omnixys/security';
 
+import { EventTreePayload } from '../models/payloads/event-tree.payload.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventReadService } from '../services/event-read.service.js';
 import { OmnixysLogger } from '@omnixys/logger';
@@ -70,23 +71,31 @@ export class EventQueryResolver {
 
   // TODO optimieren!!!
   @Query(() => [EventPayload])
-  async eventChildren(@Args('eventId', { type: () => ID }) eventId: string) {
+  async eventChildren(
+    @Args('eventId', { type: () => ID }) eventId: string,
+  ): Promise<EventPayload[]> {
     return this.readService.getChildren(eventId);
   }
 
-  @Query(() => [EventPayload])
+  @Query(() => EventTreePayload)
   @UseGuards(CookieAuthGuard)
   async eventTree(
     @Args('eventId', { type: () => ID }) eventId: string,
     @CurrentUser() user: CurrentUserData,
-  ) {
+  ): Promise<EventTreePayload> {
     return this.readService.getTree(eventId, user.id);
+  }
+
+  @Query(() => EventTreePayload)
+  async publicEventTree(
+    @Args('eventId', { type: () => ID }) eventId: string,
+  ): Promise<EventTreePayload> {
+    return this.readService.getPublicTree(eventId);
   }
 
   // ─────────────────────────────────────────────
   // MY EVENTS
   // ─────────────────────────────────────────────
-
   @Query(() => [EventPayload], { name: 'myEvents' })
   @UseGuards(CookieAuthGuard)
   async getMyEvents(
@@ -114,7 +123,6 @@ export class EventQueryResolver {
   // ─────────────────────────────────────────────
   // EVENT GUESTS
   // ─────────────────────────────────────────────
-
   @Query(() => [String], { name: 'eventGuests' })
   @UseGuards(CookieAuthGuard)
   async getEventGuests(

@@ -21,7 +21,6 @@ export class CreateEventInput {
   @IsNotEmpty()
   name!: string;
 
-  // Optional nested objects
   @ValidateNested()
   @Field(() => EventAddressInput, { nullable: true })
   @Type(() => EventAddressInput)
@@ -37,5 +36,3 @@ export class CreateEventInput {
   @Field(() => [CreateEventInput], { nullable: true })
   children?: CreateEventInput[];
 }
-
-

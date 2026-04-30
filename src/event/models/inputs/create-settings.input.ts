@@ -1,16 +1,35 @@
-import { Field, GraphQLISODateTime, InputType, Int } from '@nestjs/graphql';
+import {
+  EventCategory,
+  InvitationApprovalMode,
+} from '../../../prisma/generated/enums.js';
+import {
+  Field,
+  GraphQLISODateTime,
+  InputType,
+  Int,
+  registerEnumType,
+} from '@nestjs/graphql';
+
 import {
   IsBoolean,
   IsInt,
-  IsISO8601,
   IsOptional,
   IsString,
   Max,
   Min,
+  IsDate,
+  IsUrl,
 } from 'class-validator';
+
+import { Type } from 'class-transformer';
+
+// ✅ Register enums ONCE
+registerEnumType(EventCategory, { name: 'EventCategory' });
+registerEnumType(InvitationApprovalMode, { name: 'InvitationApprovalMode' });
 
 @InputType()
 export class CreateSettingsInput {
+  // 🔧 Core
   @Field(() => Boolean, { defaultValue: true })
   @IsBoolean()
   allowReEntry!: boolean;
@@ -26,6 +45,7 @@ export class CreateSettingsInput {
   @Min(1)
   maxSeats!: number;
 
+  // 🌐 RSVP
   @Field(() => Boolean, { defaultValue: true })
   @IsBoolean()
   allowPublicRsvp!: boolean;
@@ -38,44 +58,80 @@ export class CreateSettingsInput {
   @IsBoolean()
   allowPublicRsvpWebsite!: boolean;
 
-    @Field(() => String, {nullable: true})
-  @IsString()
-  @IsOptional()
-  publicRsvpWebsite?: string
+  @Field(() => Boolean, { defaultValue: false })
+  @IsBoolean()
+  allowPlusOneUpdate!: boolean;
 
+  @Field(() => Int, { defaultValue: 0 })
+  @IsInt()
+  @Min(0)
+  maxPlusOnes!: number;
+
+  @Field(() => Boolean, { defaultValue: true })
+  @IsBoolean()
+  requireApprovalForPlusOnes!: boolean;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  rsvpDeadline?: Date;
+
+  // 🔥 Approval
+  @Field(() => InvitationApprovalMode, {
+    defaultValue: InvitationApprovalMode.MANUAL,
+  })
+  approvalMode!: InvitationApprovalMode;
+
+  // 🪑 Seating
+  @Field(() => Boolean, { defaultValue: false })
+  @IsBoolean()
+  allowGuestSeatSelection!: boolean;
+
+  @Field(() => Boolean, { defaultValue: false })
+  @IsBoolean()
+  allowSeatOverbooking!: boolean;
+
+  // 🌍 Visibility
   @Field(() => Boolean, { defaultValue: true })
   @IsBoolean()
   isActive!: boolean;
-  
-  @Field(() => Boolean, { defaultValue: true })
+
+  @Field(() => Boolean, { defaultValue: false })
   @IsBoolean()
   isPublic!: boolean;
 
-
+  // 🌐 Public
   @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsUrl()
+  publicRsvpWebsite?: string;
+
+  // 🎨 Content
+  @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsString()
-  @IsOptional()
-  coverImageUrl?: string
+  dressCode?: string;
 
   @Field(() => String, { nullable: true })
+  @IsOptional()
   @IsString()
-  @IsOptional()
-  logoUrl?: string
+  description?: string;
 
-  @Field(() => String, { nullable: true })
-  @IsString()
-  @IsOptional()
-  dressCode!: string;
-
-  @Field(() => String, { nullable: true })
-  @IsOptional()
-  description!: string;
-
+  // 📅 Time
   @Field(() => GraphQLISODateTime, { nullable: true })
-  @IsISO8601()
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
   startsAt!: Date;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
-  @IsISO8601()
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
   endsAt!: Date;
+
+  // 📂 Category
+  @Field(() => EventCategory)
+  category!: EventCategory;
 }

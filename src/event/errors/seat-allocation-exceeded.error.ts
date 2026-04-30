@@ -1,4 +1,4 @@
-import { BaseGraphQLError } from "./base-graphql.error.js";
+import { BaseGraphQLError } from './base-graphql.error.js';
 
 /**
  * Thrown when sum of child seats exceeds parent capacity

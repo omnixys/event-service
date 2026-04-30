@@ -12,7 +12,9 @@ export class EventAccessService {
       where: { id: eventId },
     });
 
-    if (!event) return undefined;
+    if (!event) {
+      return undefined;
+    }
 
     const pathIds = event.path?.split('.') ?? [event.id];
 
@@ -37,7 +39,9 @@ export class EventAccessService {
 
   // 🔥 Permission Check
   hasRequiredRole(userRole: UserRoleType | undefined, requiredRoles: UserRoleType[]): boolean {
-    if (!userRole) return false;
+    if (!userRole) {
+      return false;
+    }
 
     return requiredRoles.includes(userRole);
   }

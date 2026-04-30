@@ -19,15 +19,18 @@ datasource db {
 // ──────────────────────────────────────────────────────────
 
 model Event {
-  id String @id @default(uuid()) @map("id") @db.Uuid
+  id    String @id @default(uuid()) @map("id") @db.Uuid
   name  String
   owner String
 
   parentId String? @db.Uuid
-  parent   Event?  @relation("EventHierarchy",fields: [parentId],references: [id],onDelete: SetNull)
+  parent   Event?  @relation("EventHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children Event[] @relation("EventHierarchy")
-  path String @map("path") @default("")
-  depth Int @default(0)
+  path     String  @default("") @map("path")
+  depth    Int     @default(0)
+
+  coverMediaId String? @map("cover_image_id") @db.Uuid
+  logoMediaId  String? @map("logo_media_id") @db.Uuid
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -37,7 +40,12 @@ model Event {
   timelines Timeline[]
   roles     Role[]
 
-@@index([parentId])
+  media Media[] @relation("EventMedia")
+
+  coverMedia Media? @relation("EventCover", fields: [coverMediaId], references: [id])
+  logoMedia  Media? @relation("EventLogo",  fields: [logoMediaId],  references: [id])
+
+  @@index([parentId])
   @@map("event")
   @@schema("event")
 }
@@ -52,17 +60,23 @@ model Settings {
   rotateSeconds Int     @default(300) @map("rotate_seconds")
   maxSeats      Int     @default(10) @map("max_seats")
 
-  allowPublicRsvp Boolean @default(true) @map("allow_public_rsvp")
-  allowPublicPlusOne Boolean @default(true) @map("allow_public_plus_one")
+  allowPublicRsvp        Boolean @default(true) @map("allow_public_rsvp")
+  allowPublicPlusOne     Boolean @default(true) @map("allow_public_plus_one")
   allowPublicRsvpWebsite Boolean @default(false) @map("allow_public_rsvp_website")
+  allowPlusOneUpdate     Boolean @default(false) @map("allow_plus_one_update")
+
+  approvalMode InvitationApprovalMode @default(MANUAL)
+  allowGuestSeatSelection Boolean @default(false) @map("allow_guest_seat_selection")
+
+  maxPlusOnes Int @default(0) @map("max_plus_ones")
+  requireApprovalForPlusOnes Boolean @default(true) @map("require_approval_for_plus_ones")
+  rsvpDeadline DateTime? @map("rsvp_deadline")
+  allowSeatOverbooking Boolean @default(false) @map("allow_seat_overbooking")
 
   publicRsvpWebsite String? @map("public_rsvp_website")
 
-  isActive    Boolean @default(true) @map("is_active")
+  isActive Boolean @default(true) @map("is_active")
   isPublic Boolean @default(false) @map("is_public")
-
-  coverImageUrl String? @map("cover_image_url")
-  logoUrl       String? @map("logo_url")
 
   dressCode   String? @map("dress_code")
   description String? @map("description")
@@ -70,7 +84,7 @@ model Settings {
   startsAt DateTime
   endsAt   DateTime
 
-    category EventCategory @default(GENERAL) @map("category")
+  category EventCategory @default(GENERAL) @map("category")
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -85,7 +99,7 @@ model Settings {
 // ──────────────────────────────────────────────────────────
 //
 model Analytics {
-  id String @id @default(uuid()) @map("id") @db.Uuid
+  id      String @id @default(uuid()) @map("id") @db.Uuid
   eventId String @unique @map("event_id") @db.Uuid
 
   totalInvites Int @default(0) @map("total_invites")
@@ -130,7 +144,7 @@ model Analytics {
 // ──────────────────────────────────────────────────────────
 //
 model Timeline {
-  id String @id @default(uuid()) @map("id") @db.Uuid
+  id      String @id @default(uuid()) @map("id") @db.Uuid
   eventId String @map("event_id") @db.Uuid
 
   type      String   @map("type")
@@ -150,7 +164,7 @@ model Timeline {
 // ──────────────────────────────────────────────────────────
 //
 model Role {
-  id String @id @default(uuid()) @map("id") @db.Uuid
+  id      String       @id @default(uuid()) @map("id") @db.Uuid
   userId  String       @map("user_id") @db.Uuid
   eventId String       @map("event_id") @db.Uuid
   role    UserRoleType @map("role")
@@ -182,39 +196,62 @@ enum EventCategory {
   @@schema("event")
 }
 
-
 model Media {
-  id String @id @default(uuid()) @map("id") @db.Uuid
-  key       String   @unique
-  url       String
-  filename  String
-  mimetype  String
-  size      Int?
+  id       String @id @default(uuid()) @map("id") @db.Uuid
+  key      String @unique
+  url      String
+  filename String
+  mimetype String
+  size     Int?
 
-  ownerId     String? @db.Uuid
-  eventId     String? @db.Uuid
+  type MediaType @default(GALLERY)
 
-  variants  MediaVariant[]
+  eventId String @db.Uuid
+  event   Event  @relation("EventMedia", fields: [eventId], references: [id], onDelete: Cascade)
+  
+  coverFor Event[] @relation("EventCover")
+  logoFor  Event[] @relation("EventLogo")
+
+  variants MediaVariant[]
 
   createdAt DateTime @default(now())
+
   @@map("media")
+  @@index([eventId])
   @@schema("event")
 }
 
 model MediaVariant {
-  id       String @id @default(uuid()) @db.Uuid
+  id String @id @default(uuid()) @db.Uuid
 
-  mediaId  String @db.Uuid
-  media    Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  mediaId String @db.Uuid
+  media   Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 
-  key      String
-  url      String
-  width    Int
-  height   Int
-  format   String
+  key    String
+  url    String
+  width  Int
+  height Int
+  format String
 
+  @@unique([mediaId, width, format])
   @@index([mediaId])
-  @@unique([mediaId,width])
-    @@map("media_variant")
-    @@schema("event")
+  @@map("media_variant")
+  @@schema("event")
+}
+
+enum MediaType {
+  COVER
+  LOGO
+  GALLERY
+
+  @@schema("event")
+}
+
+enum InvitationApprovalMode {
+  MANUAL
+  AUTO
+  AUTO_PUBLIC_ONLY
+  AUTO_INVITE_ONLY
+
+  @@schema("event")
 }
