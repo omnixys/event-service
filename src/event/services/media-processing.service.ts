@@ -2,7 +2,8 @@ import { PrismaService } from '../../prisma/prisma.service.js';
 import { ImageService } from './image.service.js';
 import { Inject, Injectable } from '@nestjs/common';
 import { OmnixysLogger } from '@omnixys/logger';
-import { FILE_STORAGE, FileStorage } from '@omnixys/media';
+import { FILE_STORAGE } from '@omnixys/media';
+import type { FileStorage } from '@omnixys/media';
 
 interface ProcessedImageVariant {
   mediaId: string;

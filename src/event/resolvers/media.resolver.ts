@@ -2,7 +2,8 @@ import { CreateMediaDto } from '../models/dto/media.dto.js';
 import { MediaService } from '../services/media.service.js';
 import { BadRequestException, Inject } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { FILE_STORAGE, FileStorage } from '@omnixys/media';
+import { FILE_STORAGE } from '@omnixys/media';
+import type { FileStorage } from '@omnixys/media';
 
 @Resolver()
 export class MediaResolver {

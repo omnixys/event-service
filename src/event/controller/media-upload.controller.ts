@@ -15,7 +15,8 @@ import { FastifyRequest } from 'fastify';
 
 import { MediaProcessingService } from '../services/media-processing.service.js';
 import { MediaService } from '../services/media.service.js';
-import { FILE_STORAGE, FileStorage } from '@omnixys/media';
+import { FILE_STORAGE } from '@omnixys/media';
+import type { FileStorage } from '@omnixys/media';
 
 import { MediaType } from '../../prisma/generated/client.js';
 import { OmnixysLogger } from '@omnixys/logger';

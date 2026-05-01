@@ -2,7 +2,8 @@ import { Media, MediaVariant, Event } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { CreateMediaDto } from '../models/dto/media.dto.js';
 import { Injectable, NotFoundException, Inject } from '@nestjs/common';
-import { FILE_STORAGE, FileStorage } from '@omnixys/media';
+import { FILE_STORAGE } from '@omnixys/media';
+import type { FileStorage } from '@omnixys/media';
 
 @Injectable()
 export class MediaService {
