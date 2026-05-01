@@ -2,6 +2,104 @@
 
 All notable changes in this project will be documented in this file.
 
+
+## 1.0.0 (2026-05-01)
+
+### ⚠ BREAKING CHANGE
+
+* **Media:** - image processing now uses Buffer instead of ReadableStream
+- all services updated to use in-memory processing pipeline
+
+### Ci
+
+* **Ci:** change serets.SERVICE to vars.SERVICE ([](https://github.com/omnixys/event-service/commit/c57204b47d1a629517534ea6097d61d04b5219c2))
+* **Ci:** update CI ([](https://github.com/omnixys/event-service/commit/5c091f54ce01038fea424923b71cf82af2ee8942))
+
+### Create
+
+* **Create:** finished flow ([](https://github.com/omnixys/event-service/commit/7708be2ea293adee592de87c9195642d8fd358f1))
+
+### Enum
+
+* **Enum:** add enum ([](https://github.com/omnixys/event-service/commit/a5a5c51aac3527ec266324bca699177a8d3f7b4c))
+* **Enum:** fix CannotDetermineOutputTypeError: ([](https://github.com/omnixys/event-service/commit/4581aec7dce9ba12161738a3dd8c5b93ee7f6fc8))
+
+### Event
+
+* **Event:** Event hierarchy and Valkey rate-limiter ([](https://github.com/omnixys/event-service/commit/363eb51e17f33fc7ef84cabaefc4fc55aac4c0d9))
+
+### Event-service
+
+* **Event-service:** implement EventService logic and GraphQL resolvers ([](https://github.com/omnixys/event-service/commit/a53ef7b42c3ccab619897fc57441642b6a644007))
+* **Event-service:** implement EventService logic and GraphQL resolvers ([](https://github.com/omnixys/event-service/commit/aa8c0c00e13d212f5f72071b2495f3ed89bf01fd))
+* **Event-service:** implement GraphQL schema, DTOs, inputs and payloads ([](https://github.com/omnixys/event-service/commit/4d4873981a4e1a152721a7a2775642f89e7e5171))
+* **Event-service:** initialize project structure and base configuration ([](https://github.com/omnixys/event-service/commit/8afe9f7020709b1b8150727fcd9d08332c47e2af))
+* **Event-service:** set up PostgreSQL database, schema and Prisma models ([](https://github.com/omnixys/event-service/commit/3d0c8f52360a74bdf812dc1f1fa8831e1f1b789d))
+
+### Input
+
+* **Input:** change create event input ([](https://github.com/omnixys/event-service/commit/f4b6993a90e48728bdc0fde470533e5d9c4057d2))
+
+### Media
+
+* **Media:** add image processing pipeline with automatic variant generation ([](https://github.com/omnixys/event-service/commit/586aa7e6b32eab65f87d4629bb2ff2e2457dcde4))
+* **Media:** implement secure file upload flow with storage integration ([](https://github.com/omnixys/event-service/commit/3bf6b1c000a9ce3872bfe98a48c8e1825cf5318a))
+
+### Other
+
+* **Other:** workflow completed ([](https://github.com/omnixys/event-service/commit/cc8adcc9571b6265844920b618092a3646b760af))
+* **Other:** add CI ([](https://github.com/omnixys/event-service/commit/3a794464df1bf69c8f1fd84f2bfd4cd39aa62446))
+* **Other:** add Database ([](https://github.com/omnixys/event-service/commit/4bde3cf3d1fd0ac92bf06cf314a38de3013a64fc))
+* **Other:** add tests ([](https://github.com/omnixys/event-service/commit/f01efab45c726c69eb96174922fb10678ec94588))
+* **Other:** breaking:(1.0.0): unify workflows and remove legacy tests ([](https://github.com/omnixys/event-service/commit/9a91a270f012c2abddc8bd5d02bc185e490ade13))
+* **Other:** Create deploy.yml ([](https://github.com/omnixys/event-service/commit/44b30e470fe79e772eb6758e0d04d9388a4397cf))
+* **Other:** Merge branch '4-event-task-implement-eventservice-logic-and-graphql-resolvers' ([](https://github.com/omnixys/event-service/commit/3a97f3d6a88a2c2e979cb6d48381c14188d5f8b9))
+* **Other:** Merge branch 'main' of https://github.com/omnixys/omnixys-event-service ([](https://github.com/omnixys/event-service/commit/d519579c2f6f86a40c0d399460affac6f9b2e921))
+* **Other:** Merge branch 'main' of https://github.com/omnixys/omnixys-event-service ([](https://github.com/omnixys/event-service/commit/1f6f0fc9d9db31be1ed6887d0dd331494beb56a2))
+* **Other:** Merge pull request #5 from omnixys/1-event-task-initialize-event-service-project-structure-and-configuration ([](https://github.com/omnixys/event-service/commit/a44bd0669b4f26734fe141bb21ba1bda338d1e9e)), closes [#5](https://github.com/omnixys/event-service/issues/5)
+* **Other:** Merge pull request #6 from omnixys/2-event-task-create-postgresql-user-database-and-initial-schema-for-the-event-service ([](https://github.com/omnixys/event-service/commit/0b8f2756e01154cb35c6f5e8ef29c3ace8d8c0d0)), closes [#6](https://github.com/omnixys/event-service/issues/6)
+* **Other:** Merge pull request #7 from omnixys/3-event-task-implement-graphql-schema-entities-inputs-dtos-and-payloads-for-event-service ([](https://github.com/omnixys/event-service/commit/a7347a5c675408306b83f298b84ff56b6ae04bcd)), closes [#7](https://github.com/omnixys/event-service/issues/7)
+* **Other:** Merge pull request #8 from omnixys/4-event-task-implement-eventservice-logic-and-graphql-resolvers ([](https://github.com/omnixys/event-service/commit/738842b3817bb09d366fc299f77a88ec4df8ac9d)), closes [#8](https://github.com/omnixys/event-service/issues/8)
+* **Other:** Update docker-build.yaml ([](https://github.com/omnixys/event-service/commit/124b0b3623fcd11707c5ad38039c4db8f317efd1))
+* **Other:** Update docker-build.yaml ([](https://github.com/omnixys/event-service/commit/8ae481dec25508c009a49278ec80bf0f3d239988))
+* **Other:** Update docker-build.yaml ([](https://github.com/omnixys/event-service/commit/ab10892be66012b1d34001453c8c8eb25f167240))
+* **Other:** Update docker-build.yaml ([](https://github.com/omnixys/event-service/commit/ab269a12d9518cc00d0ea9bdeb558dc9f9074859))
+* **Other:** Update docker-build.yaml ([](https://github.com/omnixys/event-service/commit/ddd5be905917a0b0ad09a768a4fb7295089548b4))
+* **Other:** Update docker-build.yaml ([](https://github.com/omnixys/event-service/commit/60f12f29177d1117c3b710b4ac12645de8c96ecc))
+* **Other:** update DockerFile ([](https://github.com/omnixys/event-service/commit/b0dd5aa1f05134f1198548912c2034d373f2b765))
+* **Other:** Update Dockerfile ([](https://github.com/omnixys/event-service/commit/2b6488e516716a2bd2211159317eb91bc4a0aa59))
+* **Other:** Update Dockerfile ([](https://github.com/omnixys/event-service/commit/378d83edf0ee945e0b22485f6c0c43ecade5189f))
+* **Other:** update graphQl schema ([](https://github.com/omnixys/event-service/commit/a16a9a7c04250911d4cb1de4e0eba487823ab4ac))
+* **Other:** update seed ([](https://github.com/omnixys/event-service/commit/891ef4d5b95cd12ca94af7160ed3d48b3f96d505))
+
+### Prisma
+
+* **Prisma:** update prisma schema ([](https://github.com/omnixys/event-service/commit/dae6e3546b4e35219445dde8c721903382bdaf76))
+
+### Release
+
+* **Release:** v1.0.0 ([](https://github.com/omnixys/event-service/commit/8a6cd812968ad7b8caf9f788b65bab519c23bddd))
+* **Release:** 1.0.0 [skip ci] ([](https://github.com/omnixys/event-service/commit/0b15ec1984814d618e5031c7a92cec5ce545f8ef))
+* **Release:** 1.0.1 [skip ci] ([](https://github.com/omnixys/event-service/commit/c11a916c637b490c7eb50265948dac756aa9c27d))
+* **Release:** 1.0.2 [skip ci] ([](https://github.com/omnixys/event-service/commit/1f73c96d3c2cf7a8b67c5106282bebf1db6c50ce))
+* **Release:** 1.0.3 [skip ci] ([](https://github.com/omnixys/event-service/commit/df2e0942f3d172a54b8b12116b7cd21801b181cf))
+* **Release:** 1.0.4 [skip ci] ([](https://github.com/omnixys/event-service/commit/2d7e79717ce490530a16f81e513396f1f225c574))
+* **Release:** add SemVer ([](https://github.com/omnixys/event-service/commit/158864b099df3dc385f9f1c7c5c6eda8a79d644a))
+
+### Release-ci
+
+* **Release-ci:** add @semantic-release/npm ([](https://github.com/omnixys/event-service/commit/bfcf0c0946dc91a7bcb74fe0a5f411636d896ff3))
+* **Release-ci:** fix Release CI Job ([](https://github.com/omnixys/event-service/commit/55b72abcdb61fcbe86aee00552f3b0b6fc337cdf))
+
+### Service
+
+* **Service:** new event Service ([](https://github.com/omnixys/event-service/commit/76fb4cee2eddb6706f3cf266ea39c6b888c69cd8))
+* **Service:** Update deps and switch to local omnixys packages ([](https://github.com/omnixys/event-service/commit/82607c234cc1d02e0ae7f8db9646174a4710e339))
+
+### Setup
+
+* **Setup:** initialize NestJS project with modern config and Husky pre-commit hooks ([](https://github.com/omnixys/event-service/commit/9f403b149cc88c932213446b07292a1d5066463e))
+
 ## <small>1.0.4 (2026-02-26)</small>
 
 - Merge branch 'main' of https://github.com/omnixys/omnixys-event-service ([d519579c2f6f86a40c0d399460affac6f9b2e921](https://github.com/omnixys/omnixys-event-service/commit/d519579c2f6f86a40c0d399460affac6f9b2e921))
