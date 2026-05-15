@@ -26,4 +26,14 @@ export const users = [
     username: 'security',
     role: UserRoleType.SECURITY,
   },
+  {
+    id: '9e219f6f-7706-4294-8b5b-a4105999846f',
+    username: 'audrey',
+    role: UserRoleType.ADMIN,
+  },
+  {
+    id: '18bbde19-7e76-45dc-b204-f5c397e11362',
+    username: 'christabelle',
+    role: UserRoleType.ADMIN,
+  },
 ];

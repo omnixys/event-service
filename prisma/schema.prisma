@@ -10,7 +10,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas  = ["event"]
 }
 
 //
@@ -23,7 +22,7 @@ model Event {
   name  String
   owner String
 
-  parentId String? @db.Uuid
+  parentId String? @map("parent_id") @db.Uuid
   parent   Event?  @relation("EventHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
   children Event[] @relation("EventHierarchy")
   path     String  @default("") @map("path")
@@ -32,8 +31,8 @@ model Event {
   coverMediaId String? @map("cover_image_id") @db.Uuid
   logoMediaId  String? @map("logo_media_id") @db.Uuid
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 
   settings  Settings?
   analytics Analytics?
@@ -43,17 +42,16 @@ model Event {
   media Media[] @relation("EventMedia")
 
   coverMedia Media? @relation("EventCover", fields: [coverMediaId], references: [id])
-  logoMedia  Media? @relation("EventLogo",  fields: [logoMediaId],  references: [id])
+  logoMedia  Media? @relation("EventLogo", fields: [logoMediaId], references: [id])
 
   @@index([parentId])
   @@map("event")
-  @@schema("event")
 }
 
 model Settings {
   id String @id @default(uuid()) @map("id") @db.Uuid
 
-  eventId String @unique @db.Uuid
+  eventId String @unique @map("event_id") @db.Uuid
   event   Event? @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   allowReEntry  Boolean @default(true) @map("allow_re_entry")
@@ -65,13 +63,13 @@ model Settings {
   allowPublicRsvpWebsite Boolean @default(false) @map("allow_public_rsvp_website")
   allowPlusOneUpdate     Boolean @default(false) @map("allow_plus_one_update")
 
-  approvalMode InvitationApprovalMode @default(MANUAL)
-  allowGuestSeatSelection Boolean @default(false) @map("allow_guest_seat_selection")
+  approvalMode            InvitationApprovalMode @default(MANUAL) @map("approval_mode")
+  allowGuestSeatSelection Boolean                @default(false) @map("allow_guest_seat_selection")
 
-  maxPlusOnes Int @default(0) @map("max_plus_ones")
-  requireApprovalForPlusOnes Boolean @default(true) @map("require_approval_for_plus_ones")
-  rsvpDeadline DateTime? @map("rsvp_deadline")
-  allowSeatOverbooking Boolean @default(false) @map("allow_seat_overbooking")
+  maxPlusOnes                Int       @default(0) @map("max_plus_ones")
+  requireApprovalForPlusOnes Boolean   @default(true) @map("require_approval_for_plus_ones")
+  rsvpDeadline               DateTime? @map("rsvp_deadline")
+  allowSeatOverbooking       Boolean   @default(false) @map("allow_seat_overbooking")
 
   publicRsvpWebsite String? @map("public_rsvp_website")
 
@@ -81,16 +79,15 @@ model Settings {
   dressCode   String? @map("dress_code")
   description String? @map("description")
 
-  startsAt DateTime
-  endsAt   DateTime
+  startsAt DateTime @map("starts_at")
+  endsAt   DateTime @map("ends_at")
 
   category EventCategory @default(GENERAL) @map("category")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 
   @@map("settings")
-  @@schema("event")
 }
 
 //
@@ -114,7 +111,6 @@ model Analytics {
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   @@map("event_analytics")
-  @@schema("event")
 }
 
 //
@@ -135,7 +131,7 @@ model Analytics {
 
 //   @@index([eventId])
 //   @@map("event_audit_log")
-//   @@schema("event")
+//   
 // }
 
 //
@@ -155,7 +151,6 @@ model Timeline {
 
   @@index([eventId])
   @@map("event_timeline")
-  @@schema("event")
 }
 
 //
@@ -174,7 +169,6 @@ model Role {
   @@unique([userId, eventId])
   @@index([eventId])
   @@map("user_event_role")
-  @@schema("event")
 }
 
 enum UserRoleType {
@@ -182,7 +176,7 @@ enum UserRoleType {
   SECURITY
   GUEST
 
-  @@schema("event")
+  @@map("user_role_type")
 }
 
 enum EventCategory {
@@ -193,7 +187,7 @@ enum EventCategory {
   SOCIAL
   SPORTS
 
-  @@schema("event")
+  @@map("event_category")
 }
 
 model Media {
@@ -208,7 +202,7 @@ model Media {
 
   eventId String @db.Uuid
   event   Event  @relation("EventMedia", fields: [eventId], references: [id], onDelete: Cascade)
-  
+
   coverFor Event[] @relation("EventCover")
   logoFor  Event[] @relation("EventLogo")
 
@@ -216,9 +210,8 @@ model Media {
 
   createdAt DateTime @default(now())
 
-  @@map("media")
   @@index([eventId])
-  @@schema("event")
+  @@map("media")
 }
 
 model MediaVariant {
@@ -236,7 +229,6 @@ model MediaVariant {
   @@unique([mediaId, width, format])
   @@index([mediaId])
   @@map("media_variant")
-  @@schema("event")
 }
 
 enum MediaType {
@@ -244,7 +236,7 @@ enum MediaType {
   LOGO
   GALLERY
 
-  @@schema("event")
+  @@map("media_type")
 }
 
 enum InvitationApprovalMode {
@@ -253,5 +245,5 @@ enum InvitationApprovalMode {
   AUTO_PUBLIC_ONLY
   AUTO_INVITE_ONLY
 
-  @@schema("event")
+  @@map("invitation_approval_mode")
 }
