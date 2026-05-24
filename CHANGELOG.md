@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [1.0.2](https://github.com/omnixys/event-service/compare/v1.0.1...v1.0.2) (2026-05-24)
+
+### Prisma
+
+* **Prisma:** debug ([](https://github.com/omnixys/event-service/commit/1f22f29a0aa572a5864f75fd7c628d78a9ac37c1))
+
 ## [1.0.1](https://github.com/omnixys/event-service/compare/v1.0.0...v1.0.1) (2026-05-24)
 
 ### Docker
