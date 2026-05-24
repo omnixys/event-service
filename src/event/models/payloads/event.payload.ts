@@ -1,6 +1,6 @@
 import { UserRoleType } from '../../../prisma/generated/client.js';
 import { SettingsPayload } from './settings.payload.js';
-import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
+import { ObjectType, Field, ID, Int, GraphQLISODateTime } from '@nestjs/graphql';
 
 @ObjectType()
 export class EventPayload {
@@ -23,10 +23,12 @@ export class EventPayload {
   @Field(() => Int)
   depth!: number;
 
-  @Field()
+  @Field(() => GraphQLISODateTime)
   createdAt!: Date;
-  
-  @Field(() => Date, { nullable: true })
+
+  @Field(() => GraphQLISODateTime, {
+    nullable: true,
+  })
   updatedAt?: Date |undefined;
 
   @Field(() => UserRoleType, { nullable: true })

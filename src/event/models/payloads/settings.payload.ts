@@ -2,7 +2,7 @@ import {
   EventCategory,
   InvitationApprovalMode,
 } from '../../../prisma/generated/client.js';
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID, GraphQLISODateTime } from '@nestjs/graphql';
 
 @ObjectType()
 export class SettingsPayload {
@@ -72,9 +72,11 @@ export class SettingsPayload {
   @Field(() => EventCategory)
   category!: EventCategory;
 
-  @Field(() => Date)
+  @Field(() => GraphQLISODateTime)
   createdAt!: Date;
 
-  @Field(() => Date, { nullable: true })
+  @Field(() => GraphQLISODateTime, {
+    nullable: true,
+  })
   updatedAt?: Date | undefined;
 }
