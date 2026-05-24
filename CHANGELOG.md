@@ -3,6 +3,16 @@
 All notable changes in this project will be documented in this file.
 
 
+## [1.0.1](https://github.com/omnixys/event-service/compare/v1.0.0...v1.0.1) (2026-05-24)
+
+### Docker
+
+* **Docker:** update pnpm version ([](https://github.com/omnixys/event-service/commit/29c258e9985d8e570d095498a38f05399118d6f2))
+
+### Prisma
+
+* **Prisma:** update prisma schema ([](https://github.com/omnixys/event-service/commit/2277829c09e0d8f1788878e0cf5017c2ff875ae5))
+
 ## 1.0.0 (2026-05-01)
 
 ### ⚠ BREAKING CHANGE
