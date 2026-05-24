@@ -25,7 +25,8 @@ export class EventPayload {
 
   @Field()
   createdAt!: Date;
-  @Field()
+  
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date |undefined;
 
   @Field(() => UserRoleType, { nullable: true })

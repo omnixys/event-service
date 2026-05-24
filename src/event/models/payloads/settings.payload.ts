@@ -72,9 +72,9 @@ export class SettingsPayload {
   @Field(() => EventCategory)
   category!: EventCategory;
 
-  @Field()
+  @Field(() => Date)
   createdAt!: Date;
 
-  @Field()
+  @Field(() => Date, { nullable: true })
   updatedAt?: Date | undefined;
 }
