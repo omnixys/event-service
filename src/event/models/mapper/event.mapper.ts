@@ -25,7 +25,7 @@ export class EventMapper {
       depth: event.depth,
 
       createdAt: event.createdAt,
-      updatedAt: event.updatedAt,
+      updatedAt: n2u(event.updatedAt),
 
       myRole: n2u(myRole),
 
@@ -79,7 +79,7 @@ export class EventMapper {
 
             // 🧾 Meta
             createdAt: event.settings.createdAt,
-            updatedAt: event.settings.updatedAt,
+            updatedAt: n2u(event.settings.updatedAt),
           }
         : undefined,
     };

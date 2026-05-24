@@ -76,5 +76,5 @@ export class SettingsPayload {
   createdAt!: Date;
 
   @Field()
-  updatedAt!: Date;
+  updatedAt?: Date | undefined;
 }
