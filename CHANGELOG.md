@@ -3,6 +3,16 @@
 All notable changes in this project will be documented in this file.
 
 
+## [1.0.3](https://github.com/omnixys/event-service/compare/v1.0.2...v1.0.3) (2026-05-24)
+
+### Graphql
+
+* **Graphql:** add explicit type for the "updatedAt" ([](https://github.com/omnixys/event-service/commit/578df2b2d16acaa10bf3a621c03085a975934ae3))
+
+### Other
+
+* **Other:** Merge branch 'main' of https://github.com/omnixys/event-service ([](https://github.com/omnixys/event-service/commit/f956eddf7221e9b2ce6b27ca03888a6cb3eb7855))
+
 ## [1.0.2](https://github.com/omnixys/event-service/compare/v1.0.1...v1.0.2) (2026-05-24)
 
 ### Prisma
