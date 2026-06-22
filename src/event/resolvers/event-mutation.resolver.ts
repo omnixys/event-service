@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { EventAuthenticationRequiredError } from '../errors/event-domain.error.js';
 import { EventAdminGuard } from '../guards/event-admin.guard.js';
 import { EventOwnerGuard } from '../guards/event-owner.guard.js';
 import { AssignUserRoleInput } from '../models/inputs/assign-user-role.input.js';
@@ -13,7 +14,7 @@ import {
 import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventWriteService } from '../services/event-write.service.js';
-import { UnauthorizedException, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import {
   Args,
   Field,
@@ -47,7 +48,7 @@ export class EventMutationResolver {
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload> {
     if (!currentUser?.id) {
-      throw new UnauthorizedException('Not authenticated');
+      throw new EventAuthenticationRequiredError();
     }
     return this.writeService.createEvent(input, currentUser.id);
   }
@@ -59,7 +60,7 @@ export class EventMutationResolver {
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload> {
     if (!currentUser?.id) {
-      throw new UnauthorizedException('Not authenticated');
+      throw new EventAuthenticationRequiredError();
     }
     return this.writeService.updateEvent(input, currentUser.id);
   }
@@ -71,7 +72,7 @@ export class EventMutationResolver {
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<boolean> {
     if (!currentUser?.id) {
-      throw new UnauthorizedException('Not authenticated');
+      throw new EventAuthenticationRequiredError();
     }
     return this.writeService.deleteEvent(id, currentUser.id);
   }

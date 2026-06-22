@@ -1,5 +1,5 @@
 import { Field, GraphQLISODateTime, InputType, Int } from '@nestjs/graphql';
-import { IsOptional } from 'class-validator';
+import { ArrayMaxSize, IsArray, IsOptional, IsString } from 'class-validator';
 
 // @InputType()
 // export class UpdateEventInput extends PartialType(CreateEventInput) {
@@ -43,6 +43,13 @@ export class UpdateEventInput {
 
   @Field(() => String, { nullable: true })
   name?: string;
+
+  @Field(() => [String], { nullable: true })
+  @IsArray()
+  @ArrayMaxSize(20)
+  @IsString({ each: true })
+  @IsOptional()
+  tags?: string[];
 
   @Field(() => String, { nullable: true })
   parentId?: string;

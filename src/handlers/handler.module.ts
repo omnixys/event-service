@@ -18,11 +18,13 @@
 import { AdminModule } from '../admin/admin.module.js';
 import { EventModule } from '../event/event.module.js';
 import { AuthenticationHandler } from './authentication.handler.js';
+import { MediaHandler } from './media.handler.js';
+import { MilestoneHandler } from './milestone.handler.js';
 import { Module } from '@nestjs/common';
 
 @Module({
   imports: [AdminModule, EventModule],
-  providers: [AuthenticationHandler],
-  exports: [AuthenticationHandler],
+  providers: [AuthenticationHandler, MediaHandler, MilestoneHandler],
+  exports: [AuthenticationHandler, MediaHandler, MilestoneHandler],
 })
 export class HandlerModule {}

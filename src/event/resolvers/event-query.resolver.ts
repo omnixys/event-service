@@ -1,4 +1,4 @@
-import { UnauthorizedException, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { Args, ID, Query, Resolver } from '@nestjs/graphql';
 
 import {
@@ -7,9 +7,13 @@ import {
   CurrentUserData,
 } from '@omnixys/security';
 
+import { EventAuthenticationRequiredError } from '../errors/event-domain.error.js';
+import { GeocodeAddressInput } from '../models/inputs/geocode-address.input.js';
 import { EventTreePayload } from '../models/payloads/event-tree.payload.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
+import { GeocodeResultPayload } from '../models/payloads/geocode-result.payload.js';
 import { EventReadService } from '../services/event-read.service.js';
+import { GeocodingService } from '../services/geocoding.service.js';
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
 
@@ -19,9 +23,18 @@ export class EventQueryResolver {
 
   constructor(
     private readonly readService: EventReadService,
+    private readonly geocoding: GeocodingService,
     private readonly omnixysLogger: OmnixysLogger,
   ) {
     this.logger = this.omnixysLogger.log(this.constructor.name);
+  }
+
+  @Query(() => GeocodeResultPayload, { nullable: true })
+  @UseGuards(CookieAuthGuard)
+  geocodeAddress(
+    @Args('input') input: GeocodeAddressInput,
+  ): Promise<GeocodeResultPayload | null> {
+    return this.geocoding.geocode(input.address);
   }
 
   // ─────────────────────────────────────────────
@@ -41,7 +54,7 @@ export class EventQueryResolver {
 
     if (!currentUser?.id) {
       this.logger.warn('Unauthorized event query attempt', { eventId: id });
-      throw new UnauthorizedException('Not authenticated');
+      throw new EventAuthenticationRequiredError();
     }
 
     const event = await this.readService.getEventById(id, currentUser.id);
@@ -69,7 +82,6 @@ export class EventQueryResolver {
     });
   }
 
-  // TODO optimieren!!!
   @Query(() => [EventPayload])
   async eventChildren(
     @Args('eventId', { type: () => ID }) eventId: string,
@@ -107,7 +119,7 @@ export class EventQueryResolver {
 
     if (!currentUser?.id) {
       this.logger.warn('Unauthorized myEvents query attempt');
-      throw new UnauthorizedException('Not authenticated');
+      throw new EventAuthenticationRequiredError();
     }
 
     const events = await this.readService.findMyEvents(currentUser.id);
@@ -136,7 +148,7 @@ export class EventQueryResolver {
 
     if (!currentUser?.id) {
       this.logger.warn('Unauthorized eventGuests query attempt', { eventId });
-      throw new UnauthorizedException('Not authenticated');
+      throw new EventAuthenticationRequiredError();
     }
 
     const guests = await this.readService.findMyGuests(eventId);

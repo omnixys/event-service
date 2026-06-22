@@ -17,9 +17,16 @@
 
 import { Injectable } from '@nestjs/common';
 
+import { InvalidEventTokenError } from '../event/errors/event-domain.error.js';
 import { EventWriteService } from '../event/services/event-write.service.js';
 import { UserRoleType } from '../prisma/generated/client.js';
 import { ValkeyKey, ValkeyService } from '@omnixys/cache';
+import {
+  CreateUserWithInvitationIdDTO,
+  GuestEventKey,
+  GuestSignUpTokenPayload,
+  UserIdDTO,
+} from '@omnixys/contracts';
 import {
   IKafkaEventContext,
   KAFKA_HEADERS,
@@ -30,12 +37,6 @@ import {
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
 import { EncryptionService } from '@omnixys/security';
-import {
-  CreateUserWithInvitationIdDTO,
-  GuestEventKey,
-  GuestSignUpTokenPayload,
-  UserIdDTO,
-} from '@omnixys/shared';
 
 /**
  * Kafka event handler responsible for useristrative commands such as
@@ -96,7 +97,7 @@ export class AuthenticationHandler {
         eventKey,
       );
       if (!raw) {
-        throw new Error('Invalid token');
+        throw new InvalidEventTokenError('verification-state-missing');
       }
 
       const input = JSON.parse(raw) as GuestEventKey;
@@ -105,7 +106,7 @@ export class AuthenticationHandler {
        * 🔥 Validate invitationId is part of this event
        */
       if (!input.invitationIds.includes(invitationId)) {
-        throw new Error('InvitationId not part of event');
+        throw new InvalidEventTokenError('invitation-event-mismatch');
       }
 
       await this.eventWriteService.assignUserToEvent({

@@ -1,13 +1,13 @@
 import { UserRoleType } from '../../prisma/generated/client.js';
 import { EVENT_ROLES_KEY } from '../decorators/event-roles.decorator.js';
+import {
+  EventAccessDeniedError,
+  EventAuthenticationRequiredError,
+  EventValidationError,
+} from '../errors/event-domain.error.js';
 import { EventAccessService } from '../services/event-access.service.js';
 import { extractEventId } from '../utils/extract-event-id.util.js';
-import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
@@ -46,13 +46,13 @@ export class EventRoleGuard implements CanActivate {
     const req = ctx.req;
     const user = req?.user;
     if (!user) {
-      throw new ForbiddenException('Unauthorized');
+      throw new EventAuthenticationRequiredError();
     }
 
     const eventId = extractEventId(req);
 
     if (!eventId) {
-      throw new ForbiddenException('Missing eventId');
+      throw new EventValidationError('Event ID is required');
     }
 
     const role = await this.accessService.resolveRole(eventId, user.id);
@@ -60,9 +60,7 @@ export class EventRoleGuard implements CanActivate {
     const allowed = this.accessService.hasRequiredRole(role, requiredRoles);
 
     if (!allowed) {
-      throw new ForbiddenException(
-        `Required roles: ${requiredRoles.join(', ')}, but got: ${role}`,
-      );
+      throw new EventAccessDeniedError(eventId, 'required-event-role-missing');
     }
 
     return true;

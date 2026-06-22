@@ -27,6 +27,8 @@ export type AggregateTimeline = {
 export type TimelineMinAggregateOutputType = {
   id: string | null
   eventId: string | null
+  sourceId: string | null
+  referenceId: string | null
   type: string | null
   timestamp: Date | null
   label: string | null
@@ -35,6 +37,8 @@ export type TimelineMinAggregateOutputType = {
 export type TimelineMaxAggregateOutputType = {
   id: string | null
   eventId: string | null
+  sourceId: string | null
+  referenceId: string | null
   type: string | null
   timestamp: Date | null
   label: string | null
@@ -43,6 +47,8 @@ export type TimelineMaxAggregateOutputType = {
 export type TimelineCountAggregateOutputType = {
   id: number
   eventId: number
+  sourceId: number
+  referenceId: number
   type: number
   timestamp: number
   label: number
@@ -53,6 +59,8 @@ export type TimelineCountAggregateOutputType = {
 export type TimelineMinAggregateInputType = {
   id?: true
   eventId?: true
+  sourceId?: true
+  referenceId?: true
   type?: true
   timestamp?: true
   label?: true
@@ -61,6 +69,8 @@ export type TimelineMinAggregateInputType = {
 export type TimelineMaxAggregateInputType = {
   id?: true
   eventId?: true
+  sourceId?: true
+  referenceId?: true
   type?: true
   timestamp?: true
   label?: true
@@ -69,6 +79,8 @@ export type TimelineMaxAggregateInputType = {
 export type TimelineCountAggregateInputType = {
   id?: true
   eventId?: true
+  sourceId?: true
+  referenceId?: true
   type?: true
   timestamp?: true
   label?: true
@@ -150,6 +162,8 @@ export type TimelineGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 export type TimelineGroupByOutputType = {
   id: string
   eventId: string
+  sourceId: string | null
+  referenceId: string | null
   type: string
   timestamp: Date
   label: string
@@ -179,6 +193,8 @@ export type TimelineWhereInput = {
   NOT?: Prisma.TimelineWhereInput | Prisma.TimelineWhereInput[]
   id?: Prisma.UuidFilter<"Timeline"> | string
   eventId?: Prisma.UuidFilter<"Timeline"> | string
+  sourceId?: Prisma.StringNullableFilter<"Timeline"> | string | null
+  referenceId?: Prisma.StringNullableFilter<"Timeline"> | string | null
   type?: Prisma.StringFilter<"Timeline"> | string
   timestamp?: Prisma.DateTimeFilter<"Timeline"> | Date | string
   label?: Prisma.StringFilter<"Timeline"> | string
@@ -188,6 +204,8 @@ export type TimelineWhereInput = {
 export type TimelineOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
   label?: Prisma.SortOrder
@@ -196,19 +214,23 @@ export type TimelineOrderByWithRelationInput = {
 
 export type TimelineWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  sourceId?: string
   AND?: Prisma.TimelineWhereInput | Prisma.TimelineWhereInput[]
   OR?: Prisma.TimelineWhereInput[]
   NOT?: Prisma.TimelineWhereInput | Prisma.TimelineWhereInput[]
   eventId?: Prisma.UuidFilter<"Timeline"> | string
+  referenceId?: Prisma.StringNullableFilter<"Timeline"> | string | null
   type?: Prisma.StringFilter<"Timeline"> | string
   timestamp?: Prisma.DateTimeFilter<"Timeline"> | Date | string
   label?: Prisma.StringFilter<"Timeline"> | string
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
-}, "id">
+}, "id" | "sourceId">
 
 export type TimelineOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrderInput | Prisma.SortOrder
+  referenceId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
   label?: Prisma.SortOrder
@@ -223,6 +245,8 @@ export type TimelineScalarWhereWithAggregatesInput = {
   NOT?: Prisma.TimelineScalarWhereWithAggregatesInput | Prisma.TimelineScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Timeline"> | string
   eventId?: Prisma.UuidWithAggregatesFilter<"Timeline"> | string
+  sourceId?: Prisma.StringNullableWithAggregatesFilter<"Timeline"> | string | null
+  referenceId?: Prisma.StringNullableWithAggregatesFilter<"Timeline"> | string | null
   type?: Prisma.StringWithAggregatesFilter<"Timeline"> | string
   timestamp?: Prisma.DateTimeWithAggregatesFilter<"Timeline"> | Date | string
   label?: Prisma.StringWithAggregatesFilter<"Timeline"> | string
@@ -230,6 +254,8 @@ export type TimelineScalarWhereWithAggregatesInput = {
 
 export type TimelineCreateInput = {
   id?: string
+  sourceId?: string | null
+  referenceId?: string | null
   type: string
   timestamp: Date | string
   label: string
@@ -239,6 +265,8 @@ export type TimelineCreateInput = {
 export type TimelineUncheckedCreateInput = {
   id?: string
   eventId: string
+  sourceId?: string | null
+  referenceId?: string | null
   type: string
   timestamp: Date | string
   label: string
@@ -246,6 +274,8 @@ export type TimelineUncheckedCreateInput = {
 
 export type TimelineUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -255,6 +285,8 @@ export type TimelineUpdateInput = {
 export type TimelineUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -263,6 +295,8 @@ export type TimelineUncheckedUpdateInput = {
 export type TimelineCreateManyInput = {
   id?: string
   eventId: string
+  sourceId?: string | null
+  referenceId?: string | null
   type: string
   timestamp: Date | string
   label: string
@@ -270,6 +304,8 @@ export type TimelineCreateManyInput = {
 
 export type TimelineUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -278,6 +314,8 @@ export type TimelineUpdateManyMutationInput = {
 export type TimelineUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -296,6 +334,8 @@ export type TimelineOrderByRelationAggregateInput = {
 export type TimelineCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrder
+  referenceId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
   label?: Prisma.SortOrder
@@ -304,6 +344,8 @@ export type TimelineCountOrderByAggregateInput = {
 export type TimelineMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrder
+  referenceId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
   label?: Prisma.SortOrder
@@ -312,6 +354,8 @@ export type TimelineMaxOrderByAggregateInput = {
 export type TimelineMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   eventId?: Prisma.SortOrder
+  sourceId?: Prisma.SortOrder
+  referenceId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   timestamp?: Prisma.SortOrder
   label?: Prisma.SortOrder
@@ -361,6 +405,8 @@ export type TimelineUncheckedUpdateManyWithoutEventNestedInput = {
 
 export type TimelineCreateWithoutEventInput = {
   id?: string
+  sourceId?: string | null
+  referenceId?: string | null
   type: string
   timestamp: Date | string
   label: string
@@ -368,6 +414,8 @@ export type TimelineCreateWithoutEventInput = {
 
 export type TimelineUncheckedCreateWithoutEventInput = {
   id?: string
+  sourceId?: string | null
+  referenceId?: string | null
   type: string
   timestamp: Date | string
   label: string
@@ -405,6 +453,8 @@ export type TimelineScalarWhereInput = {
   NOT?: Prisma.TimelineScalarWhereInput | Prisma.TimelineScalarWhereInput[]
   id?: Prisma.UuidFilter<"Timeline"> | string
   eventId?: Prisma.UuidFilter<"Timeline"> | string
+  sourceId?: Prisma.StringNullableFilter<"Timeline"> | string | null
+  referenceId?: Prisma.StringNullableFilter<"Timeline"> | string | null
   type?: Prisma.StringFilter<"Timeline"> | string
   timestamp?: Prisma.DateTimeFilter<"Timeline"> | Date | string
   label?: Prisma.StringFilter<"Timeline"> | string
@@ -412,6 +462,8 @@ export type TimelineScalarWhereInput = {
 
 export type TimelineCreateManyEventInput = {
   id?: string
+  sourceId?: string | null
+  referenceId?: string | null
   type: string
   timestamp: Date | string
   label: string
@@ -419,6 +471,8 @@ export type TimelineCreateManyEventInput = {
 
 export type TimelineUpdateWithoutEventInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -426,6 +480,8 @@ export type TimelineUpdateWithoutEventInput = {
 
 export type TimelineUncheckedUpdateWithoutEventInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -433,6 +489,8 @@ export type TimelineUncheckedUpdateWithoutEventInput = {
 
 export type TimelineUncheckedUpdateManyWithoutEventInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  sourceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  referenceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.StringFieldUpdateOperationsInput | string
   timestamp?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   label?: Prisma.StringFieldUpdateOperationsInput | string
@@ -443,6 +501,8 @@ export type TimelineUncheckedUpdateManyWithoutEventInput = {
 export type TimelineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   eventId?: boolean
+  sourceId?: boolean
+  referenceId?: boolean
   type?: boolean
   timestamp?: boolean
   label?: boolean
@@ -452,6 +512,8 @@ export type TimelineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
 export type TimelineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   eventId?: boolean
+  sourceId?: boolean
+  referenceId?: boolean
   type?: boolean
   timestamp?: boolean
   label?: boolean
@@ -461,6 +523,8 @@ export type TimelineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type TimelineSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   eventId?: boolean
+  sourceId?: boolean
+  referenceId?: boolean
   type?: boolean
   timestamp?: boolean
   label?: boolean
@@ -470,12 +534,14 @@ export type TimelineSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type TimelineSelectScalar = {
   id?: boolean
   eventId?: boolean
+  sourceId?: boolean
+  referenceId?: boolean
   type?: boolean
   timestamp?: boolean
   label?: boolean
 }
 
-export type TimelineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "type" | "timestamp" | "label", ExtArgs["result"]["timeline"]>
+export type TimelineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "sourceId" | "referenceId" | "type" | "timestamp" | "label", ExtArgs["result"]["timeline"]>
 export type TimelineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
 }
@@ -494,6 +560,8 @@ export type $TimelinePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     eventId: string
+    sourceId: string | null
+    referenceId: string | null
     type: string
     timestamp: Date
     label: string
@@ -923,6 +991,8 @@ export interface Prisma__TimelineClient<T, Null = never, ExtArgs extends runtime
 export interface TimelineFieldRefs {
   readonly id: Prisma.FieldRef<"Timeline", 'String'>
   readonly eventId: Prisma.FieldRef<"Timeline", 'String'>
+  readonly sourceId: Prisma.FieldRef<"Timeline", 'String'>
+  readonly referenceId: Prisma.FieldRef<"Timeline", 'String'>
   readonly type: Prisma.FieldRef<"Timeline", 'String'>
   readonly timestamp: Prisma.FieldRef<"Timeline", 'DateTime'>
   readonly label: Prisma.FieldRef<"Timeline", 'String'>

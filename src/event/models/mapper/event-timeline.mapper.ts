@@ -6,6 +6,8 @@ export class EventTimelineMapper {
     return {
       id: entity.id,
       eventId: entity.eventId,
+      sourceId: entity.sourceId ?? undefined,
+      referenceId: entity.referenceId ?? undefined,
       type: entity.type,
       timestamp: entity.timestamp,
       label: entity.label,

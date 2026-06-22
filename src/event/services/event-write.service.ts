@@ -1,5 +1,12 @@
 import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import {
+  EventAccessDeniedError,
+  EventMemberNotFoundError,
+  EventNotFoundError,
+  EventTimelineNotFoundError,
+  EventValidationError,
+} from '../errors/event-domain.error.js';
 import { SeatAllocationExceededError } from '../errors/seat-allocation-exceeded.error.js';
 import { AssignUserRoleDTO } from '../models/inputs/assign-user-role.input.js';
 import { CreateEventInput } from '../models/inputs/create-event.input.js';
@@ -15,7 +22,8 @@ import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
 import { SettingsCreateMapper } from '../models/mapper/settings.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import type { EventMilestoneRecordedDTO } from '@omnixys/contracts';
 import {
   KafkaProducerService,
   KafkaTopics,
@@ -56,7 +64,7 @@ export class EventWriteService {
         });
 
         if (!parent) {
-          throw new NotFoundException('Parent event not found');
+          throw new EventNotFoundError(input.parentId);
         }
 
         depth = parent.depth + 1;
@@ -72,6 +80,7 @@ export class EventWriteService {
           data: {
             name: input.name,
             owner: actorId,
+            tags: normalizeTags(input.tags),
             parentId: input.parentId,
             depth,
             path: '',
@@ -173,6 +182,7 @@ export class EventWriteService {
                 data: {
                   name: childInput.name,
                   owner: actorId,
+                  tags: normalizeTags(childInput.tags),
                   parentId: event.id,
                   depth: depth + 1,
                   path: '',
@@ -294,7 +304,7 @@ export class EventWriteService {
         });
 
         if (!event) {
-          throw new NotFoundException('Event not found');
+          throw new EventNotFoundError(input.eventId);
         }
 
         /**
@@ -304,7 +314,9 @@ export class EventWriteService {
 
         if (input.parentId !== undefined) {
           if (input.parentId === input.eventId) {
-            throw new BadRequestException('Event cannot be its own parent');
+            throw new EventValidationError('Event cannot be its own parent', {
+              eventId: input.eventId,
+            });
           }
 
           if (input.parentId) {
@@ -313,11 +325,14 @@ export class EventWriteService {
             });
 
             if (!parent) {
-              throw new NotFoundException('Parent not found');
+              throw new EventNotFoundError(input.parentId);
             }
 
             if (parent.path && event.path && parent.path.startsWith(event.path)) {
-              throw new BadRequestException('Cycle detected in hierarchy');
+              throw new EventValidationError('Cycle detected in event hierarchy', {
+                eventId: input.eventId,
+                parentId: input.parentId,
+              });
             }
 
             parentData = {
@@ -336,6 +351,9 @@ export class EventWriteService {
           data: {
             ...(input.name !== undefined && {
               name: input.name,
+            }),
+            ...(input.tags !== undefined && {
+              tags: normalizeTags(input.tags),
             }),
             ...parentData,
           },
@@ -391,7 +409,7 @@ export class EventWriteService {
         });
 
         if (!updated) {
-          throw new NotFoundException('Event disappeared after update');
+          throw new EventNotFoundError(input.eventId);
         }
 
         /**
@@ -426,11 +444,11 @@ export class EventWriteService {
       });
 
       if (!event) {
-        throw new NotFoundException('Event not found');
+        throw new EventNotFoundError(eventId);
       }
 
       if (event.owner !== actorId) {
-        throw new Error('Only the owner can delete this event');
+        throw new EventAccessDeniedError(eventId, 'owner-required');
       }
 
       const eventIds = await this.collectAllEventIds([eventId]);
@@ -622,7 +640,7 @@ export class EventWriteService {
       });
 
       if (!eventExists) {
-        throw new Error('Event not found');
+        throw new EventNotFoundError(input.eventId);
       }
 
       await this.prisma.$transaction([
@@ -668,12 +686,12 @@ export class EventWriteService {
     });
 
     if (!event) {
-      throw new NotFoundException('Event not found.');
+      throw new EventNotFoundError(eventId);
     }
 
     // Owner check (target)
     if (event.owner === targetUserId) {
-      throw new Error('Cannot remove the event owner.');
+      throw new EventAccessDeniedError(eventId, 'owner-cannot-be-removed');
     }
 
     // Determine roles
@@ -681,20 +699,20 @@ export class EventWriteService {
     const actorRole = event.roles.find((r) => r.userId === actorId);
 
     if (!targetRole) {
-      throw new NotFoundException('User is not assigned to this event.');
+      throw new EventMemberNotFoundError(eventId, targetUserId);
     }
 
     // 2) Permission Matrix
 
     // If actor is NOT owner AND tries to remove an admin → forbidden
     if (targetRole.role === UserRoleType.ADMIN && actorId !== event.owner) {
-      throw new Error('Only the event owner can remove an admin.');
+      throw new EventAccessDeniedError(eventId, 'owner-required-to-remove-admin');
     }
 
     // If actor is NOT admin or owner → forbidden
     const isActorAdminOrOwner = actorRole?.role === UserRoleType.ADMIN || actorId === event.owner;
     if (!isActorAdminOrOwner) {
-      throw new Error('You are not allowed to remove users from this event.');
+      throw new EventAccessDeniedError(eventId, 'insufficient-role');
     }
 
     // If actor is admin and tries to remove an admin → forbidden
@@ -703,12 +721,12 @@ export class EventWriteService {
       targetRole.role === UserRoleType.ADMIN &&
       actorId !== event.owner
     ) {
-      throw new Error('Admins cannot remove other admins.');
+      throw new EventAccessDeniedError(eventId, 'admin-peer-removal-forbidden');
     }
 
     // Owner removing owner (self removal) is forbidden
     if (actorId === event.owner && targetUserId === event.owner) {
-      throw new Error('The event owner cannot remove themselves.');
+      throw new EventAccessDeniedError(eventId, 'owner-cannot-self-remove');
     }
 
     // 3) Execute deletion + audit log
@@ -741,17 +759,20 @@ export class EventWriteService {
     });
 
     if (!event) {
-      throw new NotFoundException('Event not found');
+      throw new EventNotFoundError(eventId);
     }
 
     // Only current owner can transfer ownership
     if (event.owner !== actorId) {
-      throw new Error('Only the event owner can transfer ownership.');
+      throw new EventAccessDeniedError(eventId, 'owner-required');
     }
 
     // Owner cannot transfer to themselves
     if (newOwnerId === event.owner) {
-      throw new Error('User is already owner of this event.');
+      throw new EventValidationError('User already owns this event', {
+        eventId,
+        userId: newOwnerId,
+      });
     }
 
     await this.prisma.$transaction([
@@ -791,10 +812,20 @@ export class EventWriteService {
   async activateEvent(eventId: string, actorId: string): Promise<boolean> {
     this.log.info('Activate Event %o', { actorId, eventId });
 
-    await this.prisma.settings.update({
-      where: { eventId },
-      data: { isActive: true },
-    });
+    await this.prisma.$transaction([
+      this.prisma.settings.update({
+        where: { eventId },
+        data: { isActive: true },
+      }),
+      this.prisma.timeline.create({
+        data: {
+          eventId,
+          type: 'event-activated',
+          timestamp: new Date(),
+          label: 'Event activated',
+        },
+      }),
+    ]);
 
     // await this.prisma.eventAuditLog.create({
     //   data: {
@@ -809,10 +840,20 @@ export class EventWriteService {
 
   async deactivateEvent(eventId: string, actorId: string): Promise<boolean> {
     this.log.info('Deactivate Event %o', { actorId, eventId });
-    await this.prisma.settings.update({
-      where: { eventId },
-      data: { isActive: false },
-    });
+    await this.prisma.$transaction([
+      this.prisma.settings.update({
+        where: { eventId },
+        data: { isActive: false },
+      }),
+      this.prisma.timeline.create({
+        data: {
+          eventId,
+          type: 'event-deactivated',
+          timestamp: new Date(),
+          label: 'Event deactivated',
+        },
+      }),
+    ]);
 
     // await this.prisma.eventAuditLog.create({
     //   data: {
@@ -834,7 +875,7 @@ export class EventWriteService {
 
     return TraceRunner.run('[SERVICE] addTimelines', async () => {
       if (!inputs.length) {
-        throw new BadRequestException('No timelines provided');
+        throw new EventValidationError('No timelines provided', { eventId });
       }
 
       await this.prisma.$transaction(async (tx) => {
@@ -853,7 +894,7 @@ export class EventWriteService {
       });
 
       if (!event) {
-        throw new NotFoundException('Event not found');
+        throw new EventNotFoundError(eventId);
       }
 
       return EventMapper.toPayload(event, UserRoleType.ADMIN);
@@ -868,7 +909,7 @@ export class EventWriteService {
     return TraceRunner.run('[SERVICE] updateTimelines', async () => {
       this.log.debug('updateTimelines: inputs: %o | actor=%satisfies', inputs, actorId);
       if (!inputs.length) {
-        throw new BadRequestException('No timelines provided');
+        throw new EventValidationError('No timelines provided', { eventId });
       }
 
       const timelines = await this.prisma.timeline.findMany({
@@ -878,7 +919,10 @@ export class EventWriteService {
       });
 
       if (timelines.length !== inputs.length) {
-        throw new NotFoundException('Some timelines not found');
+        throw new EventTimelineNotFoundError(
+          eventId,
+          inputs.map((input) => input.id),
+        );
       }
 
       const eventIdFound = eventId === timelines[0]?.eventId ? eventId : undefined;
@@ -901,7 +945,7 @@ export class EventWriteService {
       });
 
       if (!event) {
-        throw new NotFoundException('Event not found');
+        throw new EventNotFoundError(eventId);
       }
 
       return EventMapper.toPayload(event, UserRoleType.ADMIN);
@@ -916,7 +960,7 @@ export class EventWriteService {
     return TraceRunner.run('[SERVICE] removeTimelines', async () => {
       this.log.debug('removeTimlines: inputs: %o | actor=%satisfies', inputs, actorId);
       if (!inputs.length) {
-        throw new BadRequestException('No timeline IDs provided');
+        throw new EventValidationError('No timeline IDs provided', { eventId });
       }
 
       const timelines = await this.prisma.timeline.findMany({
@@ -926,7 +970,10 @@ export class EventWriteService {
       });
 
       if (!timelines.length) {
-        throw new NotFoundException('No timelines found');
+        throw new EventTimelineNotFoundError(
+          eventId,
+          inputs.map((input) => input.id),
+        );
       }
 
       const eventIdFound = eventId === timelines[0]?.eventId ? eventId : undefined;
@@ -942,7 +989,7 @@ export class EventWriteService {
       });
 
       if (!event) {
-        throw new NotFoundException('Event not found');
+        throw new EventNotFoundError(eventId);
       }
 
       return EventMapper.toPayload(event, UserRoleType.ADMIN);
@@ -966,7 +1013,7 @@ export class EventWriteService {
       });
 
       if (!event) {
-        throw new NotFoundException('Event not found');
+        throw new EventNotFoundError(eventId);
       }
 
       // ─────────────────────────────────────────────
@@ -998,7 +1045,7 @@ export class EventWriteService {
         const existingItem = existingMap.get(t.id);
 
         if (!existingItem) {
-          throw new BadRequestException(`Timeline not found: ${t.id}`);
+          throw new EventTimelineNotFoundError(eventId, [t.id]);
         }
 
         // Only update if changed (optional optimization)
@@ -1077,4 +1124,41 @@ export class EventWriteService {
       return EventMapper.toPayload(event, UserRoleType.ADMIN);
     });
   }
+
+  async recordMilestone(input: EventMilestoneRecordedDTO): Promise<void> {
+    await TraceRunner.run('[SERVICE] recordMilestone', async () => {
+      const event = await this.prisma.event.findUnique({
+        where: { id: input.eventId },
+        select: { id: true },
+      });
+      if (!event) {
+        throw new EventNotFoundError(input.eventId);
+      }
+
+      await this.prisma.timeline.upsert({
+        where: { sourceId: input.milestoneId },
+        create: {
+          eventId: input.eventId,
+          sourceId: input.milestoneId,
+          referenceId: input.referenceId,
+          type: input.type.toLowerCase().replaceAll('_', '-'),
+          timestamp: new Date(input.occurredAt),
+          label: input.label,
+        },
+        update: {},
+      });
+      this.log.info('Event milestone recorded', {
+        eventId: input.eventId,
+        milestoneId: input.milestoneId,
+        type: input.type,
+      });
+    });
+  }
+}
+
+function normalizeTags(tags: readonly string[] | undefined): string[] {
+  if (!tags) {
+    return [];
+  }
+  return [...new Set(tags.map((tag) => tag.trim()).filter(Boolean))];
 }

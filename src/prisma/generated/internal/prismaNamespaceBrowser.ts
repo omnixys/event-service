@@ -80,6 +80,7 @@ export const EventScalarFieldEnum = {
   id: 'id',
   name: 'name',
   owner: 'owner',
+  tags: 'tags',
   parentId: 'parentId',
   path: 'path',
   depth: 'depth',
@@ -141,6 +142,8 @@ export type AnalyticsScalarFieldEnum = (typeof AnalyticsScalarFieldEnum)[keyof t
 export const TimelineScalarFieldEnum = {
   id: 'id',
   eventId: 'eventId',
+  sourceId: 'sourceId',
+  referenceId: 'referenceId',
   type: 'type',
   timestamp: 'timestamp',
   label: 'label'

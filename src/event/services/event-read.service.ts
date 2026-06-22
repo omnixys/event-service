@@ -2,13 +2,18 @@
 
 import { Event, UserRoleType } from '../../prisma/generated//client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import {
+  EventAccessDeniedError,
+  EventClosedError,
+  EventNotFoundError,
+} from '../errors/event-domain.error.js';
 import { EventTimelineMapper } from '../models/mapper/event-timeline.mapper.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
 import { mapMedia } from '../models/mapper/media.mapper.js';
 import { UserEventRoleMapper } from '../models/mapper/user-event-role.mapper.js';
 import { EventTreePayload } from '../models/payloads/event-tree.payload.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
 
@@ -26,7 +31,6 @@ export class EventReadService {
   // ─────────────────────────────────────────────
   // EVENT
   // ─────────────────────────────────────────────
-  // TODO opzimieren!!!
   async getEventById(id: string, userId: string) {
     return TraceRunner.run('[SERVICE] getEventById', async () => {
       this.logger.debug('Fetching event for user', { eventId: id, userId });
@@ -48,11 +52,20 @@ export class EventReadService {
 
       const event = await this.prisma.event.findUnique({
         where: { id },
+        include: { settings: true },
       });
 
       if (!event) {
         this.logger.warn('Event not found', { eventId: id });
-        throw new NotFoundException(`Event "${id}" not found`);
+        throw new EventNotFoundError(id);
+      }
+
+      if (!event.settings?.isActive) {
+        throw new EventClosedError(id);
+      }
+
+      if (!event.settings.isPublic || !event.settings.allowPublicRsvp) {
+        throw new EventAccessDeniedError(id, 'public-rsvp-disabled');
       }
 
       return EventMapper.toPayload(event);
@@ -101,7 +114,7 @@ export class EventReadService {
 
       if (!root) {
         this.logger.warn('Root event not found %s', eventId);
-        throw new NotFoundException(`Event "${eventId}" not found`);
+        throw new EventNotFoundError(eventId);
       }
 
       /**
@@ -138,7 +151,7 @@ export class EventReadService {
 
       const rootEvent = payloads.find((e) => e.id === root.id);
       if (!rootEvent) {
-        throw new NotFoundException(`Event "${eventId}" not found in tree`);
+        throw new EventNotFoundError(eventId);
       }
       const subEvents = payloads.filter((e) => e.id !== root.id);
 
@@ -162,7 +175,7 @@ export class EventReadService {
 
       if (!root) {
         this.logger.warn('Root event not found %s', eventId);
-        throw new NotFoundException(`Event "${eventId}" not found`);
+        throw new EventNotFoundError(eventId);
       }
 
       /**
@@ -194,7 +207,7 @@ export class EventReadService {
 
       const rootEvent = payloads.find((e) => e.id === root.id);
       if (!rootEvent) {
-        throw new NotFoundException(`Event "${eventId}" not found in tree`);
+        throw new EventNotFoundError(eventId);
       }
       const subEvents = payloads.filter((e) => e.id !== root.id);
 
@@ -439,7 +452,7 @@ export class EventReadService {
 
       if (!event) {
         this.logger.warn('Event not found', { eventId: id });
-        throw new NotFoundException(`Event "${id}" not found`);
+        throw new EventNotFoundError(id);
       }
 
       if (!isAdmin && event.roles.length === 0) {
@@ -448,7 +461,7 @@ export class EventReadService {
           userId,
         });
 
-        throw new ForbiddenException('You are not part of this event');
+        throw new EventAccessDeniedError(id, 'missing-event-role');
       }
 
       const pathIds = this.getPathIds(event);
@@ -506,7 +519,6 @@ export class EventReadService {
     });
   }
 
-  // TODO Optimieren!! unnötige redundanz
   async resolveRolesBatch(eventList: Event[], userId: string) {
     return TraceRunner.run('[SERVICE] resolveRolesBatch', async () => {
       this.logger.debug('resolveRolesBatch: eventList=%o userId=%s', eventList, userId);

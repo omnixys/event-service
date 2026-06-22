@@ -1,4 +1,8 @@
-import { GraphQLError } from 'graphql';
+import { ContextAccessor } from '@omnixys/context';
+import {
+  FrameworkException,
+  type FrameworkExceptionOptions,
+} from '@omnixys/contracts';
 
 /**
  * BaseGraphQLError
@@ -6,17 +10,30 @@ import { GraphQLError } from 'graphql';
  * Central abstraction for all domain-specific GraphQL errors.
  * Ensures consistent structure for Apollo Client error handling.
  */
-export class BaseGraphQLError extends GraphQLError {
+export class BaseGraphQLError extends FrameworkException {
   constructor(
     message: string,
     code: string,
     details?: Record<string, unknown>,
   ) {
-    super(message, {
-      extensions: {
-        code,
-        ...details,
-      },
-    });
+    super(code, message, currentErrorOptions(details));
   }
+}
+
+export function currentErrorOptions(
+  metadata: Readonly<Record<string, unknown>> = {},
+  cause?: unknown,
+): FrameworkExceptionOptions {
+  const context = ContextAccessor.get();
+  return {
+    cause,
+    context: {
+      requestId: context?.requestId,
+      correlationId: context?.correlationId,
+      traceId: context?.trace?.traceId,
+      actorId: context?.principal?.actorId,
+      tenantId: context?.tenant?.tenantId ?? context?.principal?.tenantId,
+    },
+    metadata,
+  };
 }

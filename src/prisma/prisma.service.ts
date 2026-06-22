@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /**
  * @license GPL-3.0-or-later
  * © 2025 Caleb Gyamfi – Omnixys Technologies
@@ -9,6 +8,7 @@ import 'dotenv/config';
 
 import { env } from '../config/env.js';
 import { PrismaClient } from './generated/client.js';
+import { OmnixysLogger } from '@omnixys/logger';
 import { setupPrismaSpans } from '@omnixys/observability';
 import { PrismaPg } from '@prisma/adapter-pg';
 
@@ -16,7 +16,9 @@ const { DATABASE_URL } = env;
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
-  constructor() {
+  private readonly logger;
+
+  constructor(logger: OmnixysLogger) {
     const adapter = new PrismaPg({
       connectionString: DATABASE_URL,
     });
@@ -25,17 +27,18 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       adapter,
       log: [{ emit: 'event', level: 'query' }],
     });
+    this.logger = logger.log(this.constructor.name);
   }
 
   async onModuleInit(): Promise<void> {
     setupPrismaSpans(this);
 
     await this.$connect();
-    console.log('📦 Prisma connected');
+    this.logger.info('Database connection established');
   }
 
   async onModuleDestroy(): Promise<void> {
     await this.$disconnect();
-    console.log('📦 Prisma disconnected');
+    this.logger.info('Database connection closed');
   }
 }

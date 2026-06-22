@@ -1,12 +1,13 @@
 import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { EventAccessService } from '../services/event-access.service.js';
 import {
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-  Injectable,
-} from '@nestjs/common';
+  EventAccessDeniedError,
+  EventAuthenticationRequiredError,
+  EventNotFoundError,
+  EventValidationError,
+} from '../errors/event-domain.error.js';
+import { EventAccessService } from '../services/event-access.service.js';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 interface AuthenticatedUser {
@@ -37,7 +38,7 @@ export class EventAdminGuard implements CanActivate {
     const user = ctx.req?.user;
 
     if (!user?.id) {
-      throw new ForbiddenException('Not authenticated');
+      throw new EventAuthenticationRequiredError();
     }
 
     // ─────────────────────────────────────────────
@@ -47,7 +48,7 @@ export class EventAdminGuard implements CanActivate {
     const eventId = this.extractEventId(args);
 
     if (!eventId) {
-      throw new ForbiddenException('EventId missing');
+      throw new EventValidationError('Event ID is required');
     }
 
     // ─────────────────────────────────────────────
@@ -60,7 +61,7 @@ export class EventAdminGuard implements CanActivate {
     });
 
     if (!event) {
-      throw new ForbiddenException('Event not found');
+      throw new EventNotFoundError(eventId);
     }
 
     // OWNER shortcut
@@ -74,7 +75,7 @@ export class EventAdminGuard implements CanActivate {
       return true;
     }
 
-    throw new ForbiddenException('Not authorized for this event.');
+    throw new EventAccessDeniedError(eventId, 'admin-role-required');
   }
 
   /**
@@ -114,7 +115,7 @@ export class EventAdminGuard implements CanActivate {
       );
 
       if (!allSame) {
-        throw new ForbiddenException(
+        throw new EventValidationError(
           'All timelines must belong to the same event',
         );
       }

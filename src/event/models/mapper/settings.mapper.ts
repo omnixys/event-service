@@ -1,5 +1,6 @@
 import type { Settings } from '../../../prisma/generated/client.js';
 import type { SettingsCreateInput } from '../../../prisma/generated/models.js';
+import { EventValidationError } from '../../errors/event-domain.error.js';
 import type { CreateSettingsInput } from '../inputs/create-settings.input.js';
 
 /**
@@ -19,7 +20,9 @@ export class SettingsCreateMapper {
     const base = input.dto ?? input.parent;
 
     if (!base) {
-      throw new Error('Settings source missing');
+      throw new EventValidationError('Settings source is required', {
+        eventId: input.eventId,
+      });
     }
 
     return {

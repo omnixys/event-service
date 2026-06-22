@@ -1,4 +1,5 @@
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { EventMediaNotFoundError } from '../errors/event-domain.error.js';
 import { ImageService } from './image.service.js';
 import { Inject, Injectable } from '@nestjs/common';
 import { OmnixysLogger } from '@omnixys/logger';
@@ -54,15 +55,31 @@ export class MediaProcessingService {
           key,
           url,
           width: variant.width,
-          height: 0,
+          height: variant.height,
           format: variant.format,
         };
       }),
     );
 
-    await this.prisma.mediaVariant.createMany({
-      data: uploads,
-    });
+    await this.prisma.$transaction(
+      uploads.map((variant) =>
+        this.prisma.mediaVariant.upsert({
+          where: {
+            mediaId_width_format: {
+              mediaId,
+              width: variant.width,
+              format: variant.format,
+            },
+          },
+          create: variant,
+          update: {
+            key: variant.key,
+            url: variant.url,
+            height: variant.height,
+          },
+        }),
+      ),
+    );
 
     this.logger.debug('Variants created', {
       mediaId,
@@ -70,5 +87,18 @@ export class MediaProcessingService {
     });
 
     return uploads;
+  }
+
+  async processFromStorage(mediaId: string, key: string): Promise<ProcessedImageVariant[]> {
+    const media = await this.prisma.media.findUnique({
+      where: { id: mediaId },
+      select: { id: true, key: true },
+    });
+    if (media?.key !== key) {
+      throw new EventMediaNotFoundError(mediaId);
+    }
+
+    const buffer = await this.storage.get({ key });
+    return this.processImage(mediaId, buffer);
   }
 }

@@ -4,6 +4,7 @@ import sharp from 'sharp';
 interface Variant {
   buffer: Buffer;
   width: number;
+  height: number;
   format: string;
 }
 
@@ -26,21 +27,29 @@ export class ImageService {
   }
 
   private async resize(image: sharp.Sharp, width: number): Promise<Variant> {
-    const result = await image.resize(width).webp({ quality: 80 }).toBuffer();
+    const { data, info } = await image
+      .resize(width)
+      .webp({ quality: 80 })
+      .toBuffer({ resolveWithObject: true });
 
     return {
-      buffer: result,
-      width,
+      buffer: data,
+      width: info.width,
+      height: info.height,
       format: 'webp',
     };
   }
 
   private async thumbnail(image: sharp.Sharp): Promise<Variant> {
-    const result = await image.resize(128, 128).webp({ quality: 70 }).toBuffer();
+    const { data, info } = await image
+      .resize(128, 128, { fit: 'cover' })
+      .webp({ quality: 70 })
+      .toBuffer({ resolveWithObject: true });
 
     return {
-      buffer: result,
-      width: 128,
+      buffer: data,
+      width: info.width,
+      height: info.height,
       format: 'webp',
     };
   }

@@ -1,7 +1,8 @@
 import { Media, MediaVariant, Event } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { EventMediaNotFoundError } from '../errors/event-domain.error.js';
 import { CreateMediaDto } from '../models/dto/media.dto.js';
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { FILE_STORAGE } from '@omnixys/media';
 import type { FileStorage } from '@omnixys/media';
 
@@ -63,7 +64,7 @@ export class MediaService {
     });
 
     if (!media) {
-      throw new NotFoundException('Media not found');
+      throw new EventMediaNotFoundError(id);
     }
 
     /**
@@ -104,7 +105,7 @@ export class MediaService {
     });
 
     if (!variant) {
-      throw new NotFoundException('Media variant not found');
+      throw new EventMediaNotFoundError(mediaId, true);
     }
 
     return variant;

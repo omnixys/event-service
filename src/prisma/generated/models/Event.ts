@@ -64,6 +64,7 @@ export type EventCountAggregateOutputType = {
   id: number
   name: number
   owner: number
+  tags: number
   parentId: number
   path: number
   depth: number
@@ -113,6 +114,7 @@ export type EventCountAggregateInputType = {
   id?: true
   name?: true
   owner?: true
+  tags?: true
   parentId?: true
   path?: true
   depth?: true
@@ -213,6 +215,7 @@ export type EventGroupByOutputType = {
   id: string
   name: string
   owner: string
+  tags: string[]
   parentId: string | null
   path: string
   depth: number
@@ -249,6 +252,7 @@ export type EventWhereInput = {
   id?: Prisma.UuidFilter<"Event"> | string
   name?: Prisma.StringFilter<"Event"> | string
   owner?: Prisma.StringFilter<"Event"> | string
+  tags?: Prisma.StringNullableListFilter<"Event">
   parentId?: Prisma.UuidNullableFilter<"Event"> | string | null
   path?: Prisma.StringFilter<"Event"> | string
   depth?: Prisma.IntFilter<"Event"> | number
@@ -271,6 +275,7 @@ export type EventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   owner?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   path?: Prisma.SortOrder
   depth?: Prisma.SortOrder
@@ -296,6 +301,7 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[]
   name?: Prisma.StringFilter<"Event"> | string
   owner?: Prisma.StringFilter<"Event"> | string
+  tags?: Prisma.StringNullableListFilter<"Event">
   parentId?: Prisma.UuidNullableFilter<"Event"> | string | null
   path?: Prisma.StringFilter<"Event"> | string
   depth?: Prisma.IntFilter<"Event"> | number
@@ -318,6 +324,7 @@ export type EventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   owner?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   parentId?: Prisma.SortOrderInput | Prisma.SortOrder
   path?: Prisma.SortOrder
   depth?: Prisma.SortOrder
@@ -339,6 +346,7 @@ export type EventScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"Event"> | string
   name?: Prisma.StringWithAggregatesFilter<"Event"> | string
   owner?: Prisma.StringWithAggregatesFilter<"Event"> | string
+  tags?: Prisma.StringNullableListFilter<"Event">
   parentId?: Prisma.UuidNullableWithAggregatesFilter<"Event"> | string | null
   path?: Prisma.StringWithAggregatesFilter<"Event"> | string
   depth?: Prisma.IntWithAggregatesFilter<"Event"> | number
@@ -352,6 +360,7 @@ export type EventCreateInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -371,6 +380,7 @@ export type EventUncheckedCreateInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -390,6 +400,7 @@ export type EventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -409,6 +420,7 @@ export type EventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -428,6 +440,7 @@ export type EventCreateManyInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -441,6 +454,7 @@ export type EventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -451,6 +465,7 @@ export type EventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -458,6 +473,14 @@ export type EventUncheckedUpdateManyInput = {
   logoMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type EventNullableScalarRelationFilter = {
@@ -479,6 +502,7 @@ export type EventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   owner?: Prisma.SortOrder
+  tags?: Prisma.SortOrder
   parentId?: Prisma.SortOrder
   path?: Prisma.SortOrder
   depth?: Prisma.SortOrder
@@ -527,6 +551,10 @@ export type EventScalarRelationFilter = {
   isNot?: Prisma.EventWhereInput
 }
 
+export type EventCreatetagsInput = {
+  set: string[]
+}
+
 export type EventCreateNestedOneWithoutChildrenInput = {
   create?: Prisma.XOR<Prisma.EventCreateWithoutChildrenInput, Prisma.EventUncheckedCreateWithoutChildrenInput>
   connectOrCreate?: Prisma.EventCreateOrConnectWithoutChildrenInput
@@ -549,6 +577,11 @@ export type EventUncheckedCreateNestedManyWithoutParentInput = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type EventUpdatetagsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type IntFieldUpdateOperationsInput = {
@@ -769,6 +802,7 @@ export type EventCreateWithoutChildrenInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -787,6 +821,7 @@ export type EventUncheckedCreateWithoutChildrenInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -810,6 +845,7 @@ export type EventCreateWithoutParentInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -828,6 +864,7 @@ export type EventUncheckedCreateWithoutParentInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   coverMediaId?: string | null
@@ -867,6 +904,7 @@ export type EventUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -885,6 +923,7 @@ export type EventUncheckedUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -922,6 +961,7 @@ export type EventScalarWhereInput = {
   id?: Prisma.UuidFilter<"Event"> | string
   name?: Prisma.StringFilter<"Event"> | string
   owner?: Prisma.StringFilter<"Event"> | string
+  tags?: Prisma.StringNullableListFilter<"Event">
   parentId?: Prisma.UuidNullableFilter<"Event"> | string | null
   path?: Prisma.StringFilter<"Event"> | string
   depth?: Prisma.IntFilter<"Event"> | number
@@ -935,6 +975,7 @@ export type EventCreateWithoutSettingsInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -953,6 +994,7 @@ export type EventUncheckedCreateWithoutSettingsInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -987,6 +1029,7 @@ export type EventUpdateWithoutSettingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1005,6 +1048,7 @@ export type EventUncheckedUpdateWithoutSettingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1023,6 +1067,7 @@ export type EventCreateWithoutAnalyticsInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -1041,6 +1086,7 @@ export type EventUncheckedCreateWithoutAnalyticsInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -1075,6 +1121,7 @@ export type EventUpdateWithoutAnalyticsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1093,6 +1140,7 @@ export type EventUncheckedUpdateWithoutAnalyticsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1111,6 +1159,7 @@ export type EventCreateWithoutTimelinesInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -1129,6 +1178,7 @@ export type EventUncheckedCreateWithoutTimelinesInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -1163,6 +1213,7 @@ export type EventUpdateWithoutTimelinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1181,6 +1232,7 @@ export type EventUncheckedUpdateWithoutTimelinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1199,6 +1251,7 @@ export type EventCreateWithoutRolesInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -1217,6 +1270,7 @@ export type EventUncheckedCreateWithoutRolesInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -1251,6 +1305,7 @@ export type EventUpdateWithoutRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1269,6 +1324,7 @@ export type EventUncheckedUpdateWithoutRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1287,6 +1343,7 @@ export type EventCreateWithoutMediaInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -1305,6 +1362,7 @@ export type EventUncheckedCreateWithoutMediaInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -1328,6 +1386,7 @@ export type EventCreateWithoutCoverMediaInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -1346,6 +1405,7 @@ export type EventUncheckedCreateWithoutCoverMediaInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -1374,6 +1434,7 @@ export type EventCreateWithoutLogoMediaInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   createdAt?: Date | string
@@ -1392,6 +1453,7 @@ export type EventUncheckedCreateWithoutLogoMediaInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -1431,6 +1493,7 @@ export type EventUpdateWithoutMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1449,6 +1512,7 @@ export type EventUncheckedUpdateWithoutMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1499,6 +1563,7 @@ export type EventCreateManyParentInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
   coverMediaId?: string | null
@@ -1511,6 +1576,7 @@ export type EventUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1529,6 +1595,7 @@ export type EventUncheckedUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1547,6 +1614,7 @@ export type EventUncheckedUpdateManyWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1559,6 +1627,7 @@ export type EventCreateManyCoverMediaInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -1571,6 +1640,7 @@ export type EventCreateManyLogoMediaInput = {
   id?: string
   name: string
   owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
   parentId?: string | null
   path?: string
   depth?: number
@@ -1583,6 +1653,7 @@ export type EventUpdateWithoutCoverMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1601,6 +1672,7 @@ export type EventUncheckedUpdateWithoutCoverMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1619,6 +1691,7 @@ export type EventUncheckedUpdateManyWithoutCoverMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1631,6 +1704,7 @@ export type EventUpdateWithoutLogoMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1649,6 +1723,7 @@ export type EventUncheckedUpdateWithoutLogoMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1667,6 +1742,7 @@ export type EventUncheckedUpdateManyWithoutLogoMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
   parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1737,6 +1813,7 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   id?: boolean
   name?: boolean
   owner?: boolean
+  tags?: boolean
   parentId?: boolean
   path?: boolean
   depth?: boolean
@@ -1760,6 +1837,7 @@ export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   name?: boolean
   owner?: boolean
+  tags?: boolean
   parentId?: boolean
   path?: boolean
   depth?: boolean
@@ -1776,6 +1854,7 @@ export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   id?: boolean
   name?: boolean
   owner?: boolean
+  tags?: boolean
   parentId?: boolean
   path?: boolean
   depth?: boolean
@@ -1792,6 +1871,7 @@ export type EventSelectScalar = {
   id?: boolean
   name?: boolean
   owner?: boolean
+  tags?: boolean
   parentId?: boolean
   path?: boolean
   depth?: boolean
@@ -1801,7 +1881,7 @@ export type EventSelectScalar = {
   updatedAt?: boolean
 }
 
-export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "owner" | "parentId" | "path" | "depth" | "coverMediaId" | "logoMediaId" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
+export type EventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "owner" | "tags" | "parentId" | "path" | "depth" | "coverMediaId" | "logoMediaId" | "createdAt" | "updatedAt", ExtArgs["result"]["event"]>
 export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parent?: boolean | Prisma.Event$parentArgs<ExtArgs>
   children?: boolean | Prisma.Event$childrenArgs<ExtArgs>
@@ -1842,6 +1922,7 @@ export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     id: string
     name: string
     owner: string
+    tags: string[]
     parentId: string | null
     path: string
     depth: number
@@ -2284,6 +2365,7 @@ export interface EventFieldRefs {
   readonly id: Prisma.FieldRef<"Event", 'String'>
   readonly name: Prisma.FieldRef<"Event", 'String'>
   readonly owner: Prisma.FieldRef<"Event", 'String'>
+  readonly tags: Prisma.FieldRef<"Event", 'String[]'>
   readonly parentId: Prisma.FieldRef<"Event", 'String'>
   readonly path: Prisma.FieldRef<"Event", 'String'>
   readonly depth: Prisma.FieldRef<"Event", 'Int'>

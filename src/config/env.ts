@@ -18,8 +18,6 @@
 import 'dotenv/config';
 import process from 'node:process';
 
-const warned = new Set<string>();
-
 type EnvValue = boolean | number | string;
 interface EnvOptions<T extends EnvValue> {
   required?: boolean;
@@ -45,13 +43,6 @@ function getEnv(
   const raw = process.env[key];
 
   if (!raw) {
-    if (!warned.has(key) && process.env.NODE_ENV !== 'production') {
-      console.warn(
-        `[ENV] Missing "${key}" → using fallback: ${fallback ?? 'undefined'}`,
-      );
-      warned.add(key);
-    }
-
     if (options?.required && process.env.NODE_ENV === 'production') {
       throw new Error(`[ENV] Missing required env: ${key}`);
     }
@@ -140,15 +131,12 @@ export const env = {
     transform: toBool,
   }),
 
-  COOKIE_SECRET: getEnv('COOKIE_SECRET', 'omnixys-default-secret'),
+  COOKIE_SECRET: getEnv('COOKIE_SECRET', 'omnixys-development-secret', {
+    required: true,
+  }),
+  GEOCODING_URL: getEnv(
+    'GEOCODING_URL',
+    'https://nominatim.openstreetmap.org/search',
+  ),
+  GEOCODING_COUNTRY_CODES: getEnv('GEOCODING_COUNTRY_CODES', 'de'),
 } as const;
-
-// /**
-//  * Debug output:
-//  * Print all environment variables in non-production environments.
-//  */
-// if (process.env.NODE_ENV !== 'production') {
-//   console.log('================= ENVIRONMENT VARIABLES =================');
-//   console.log(JSON.stringify(env, null, 2));
-//   console.log('==========================================================');
-// }

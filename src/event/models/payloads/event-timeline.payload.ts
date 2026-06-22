@@ -8,6 +8,12 @@ export class EventTimelinePayload {
   @Field()
   eventId!: string;
 
+  @Field({ nullable: true })
+  sourceId?: string;
+
+  @Field({ nullable: true })
+  referenceId?: string;
+
   @Field()
   type!: string;
 
