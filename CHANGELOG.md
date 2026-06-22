@@ -3,6 +3,16 @@
 All notable changes in this project will be documented in this file.
 
 
+## [1.0.4](https://github.com/omnixys/event-service/compare/v1.0.3...v1.0.4) (2026-05-25)
+
+### Docker
+
+* **Docker:** Dockerfile ([](https://github.com/omnixys/event-service/commit/cea469f7b47c4db6c55375dfe9f27848d8eef1a9))
+
+### Other
+
+* **Other:** Merge branch 'main' of https://github.com/omnixys/event-service ([](https://github.com/omnixys/event-service/commit/586b5b625fb4b2ac01b69587f90f636a9ff0b257))
+
 ## [1.0.3](https://github.com/omnixys/event-service/compare/v1.0.2...v1.0.3) (2026-05-24)
 
 ### Graphql
