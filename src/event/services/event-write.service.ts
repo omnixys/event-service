@@ -23,7 +23,13 @@ import { EventMapper } from '../models/mapper/event.mapper.js';
 import { SettingsCreateMapper } from '../models/mapper/settings.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { Injectable } from '@nestjs/common';
-import type { EventMilestoneRecordedDTO } from '@omnixys/contracts';
+import {
+  EventRoleType,
+  type EventMilestoneRecordedDTO,
+  type EventOwnerChangedDTO,
+  type EventRoleAssignedDTO,
+  type EventRoleRemovedDTO,
+} from '@omnixys/contracts';
 import {
   KafkaProducerService,
   KafkaTopics,
@@ -69,6 +75,8 @@ export class EventWriteService {
 
         depth = parent.depth + 1;
       }
+
+      const childIds: string[] = [];
 
       const result = await this.prisma.$transaction(async (tx) => {
         /**
@@ -189,6 +197,8 @@ export class EventWriteService {
                 },
               });
 
+              childIds.push(child.id);
+
               const childPath = `${path}.${child.id}`;
 
               await tx.event.update({
@@ -283,6 +293,35 @@ export class EventWriteService {
           },
         });
       }
+
+      const allEventIds = [result.id, ...childIds];
+      const now = new Date().toISOString();
+
+      for (const eventId of allEventIds) {
+        void this.kafkaProducerService.send({
+          topic: KafkaTopics.event.roleAssigned,
+          payload: {
+            eventId,
+            userId: actorId,
+            role: EventRoleType.ADMIN,
+            assignedBy: actorId,
+            occurredAt: now,
+          } satisfies EventRoleAssignedDTO,
+          meta: this.meta(actorId, 'Create Event Role'),
+        });
+      }
+
+      void this.kafkaProducerService.send({
+        topic: KafkaTopics.event.ownerChanged,
+        payload: {
+          eventId: result.id,
+          oldOwnerId: '',
+          newOwnerId: actorId,
+          changedBy: actorId,
+          occurredAt: now,
+        } satisfies EventOwnerChangedDTO,
+        meta: this.meta(actorId, 'Create Event Owner'),
+      });
 
       return EventMapper.toPayload(result, UserRoleType.ADMIN);
     });
@@ -527,6 +566,11 @@ export class EventWriteService {
           tenantId: 'omnixys',
         },
       }),
+      this.kafkaProducerService.send({
+        topic: KafkaTopics.event.deleted,
+        payload: { eventIds },
+        meta: this.meta(actorId, 'Delete Event'),
+      }),
     ]);
 
     /**
@@ -658,6 +702,18 @@ export class EventWriteService {
         //   },
         // }),
       ]);
+
+      void this.kafkaProducerService.send({
+        topic: KafkaTopics.event.roleAssigned,
+        payload: {
+          eventId,
+          userId,
+          role: role as unknown as EventRoleType,
+          assignedBy: input.actorId,
+          occurredAt: new Date().toISOString(),
+        } satisfies EventRoleAssignedDTO,
+        meta: this.meta(input.actorId, 'Assign Event Role'),
+      });
     });
   }
 
@@ -744,6 +800,18 @@ export class EventWriteService {
       //   },
       // }),
     ]);
+
+    void this.kafkaProducerService.send({
+      topic: KafkaTopics.event.roleRemoved,
+      payload: {
+        eventId,
+        userId: targetUserId,
+        oldRole: targetRole.role as unknown as EventRoleType,
+        removedBy: actorId,
+        occurredAt: new Date().toISOString(),
+      } satisfies EventRoleRemovedDTO,
+      meta: this.meta(actorId, 'Remove Event Role'),
+    });
   }
 
   async transferEventOwnership(
@@ -807,6 +875,18 @@ export class EventWriteService {
       //   },
       // }),
     ]);
+
+    void this.kafkaProducerService.send({
+      topic: KafkaTopics.event.ownerChanged,
+      payload: {
+        eventId,
+        oldOwnerId: event.owner,
+        newOwnerId,
+        changedBy: actorId,
+        occurredAt: new Date().toISOString(),
+      } satisfies EventOwnerChangedDTO,
+      meta: this.meta(actorId, 'Transfer Event Ownership'),
+    });
   }
 
   async activateEvent(eventId: string, actorId: string): Promise<boolean> {

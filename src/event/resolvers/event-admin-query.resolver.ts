@@ -2,18 +2,21 @@ import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventReadService } from '../services/event-read.service.js';
 import { UseGuards } from '@nestjs/common';
 import { Args, ID, Query, Resolver } from '@nestjs/graphql';
-import { RealmRoleType } from '@omnixys/contracts';
+import { EventRoleType, RealmRoleType } from '@omnixys/contracts';
 import {
   CookieAuthGuard,
   CurrentUser,
   CurrentUserData,
+  EventRoleGuard,
+  EventRoles,
   RoleGuard,
   Roles,
 } from '@omnixys/security';
 
 @Resolver(() => EventPayload)
-@UseGuards(CookieAuthGuard, RoleGuard)
-@Roles(RealmRoleType.ADMIN)
+@UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+@Roles(RealmRoleType.USER)
+@EventRoles(EventRoleType.ADMIN)
 export class EventAdminQueryResolver {
   constructor(private readonly readService: EventReadService) {}
 

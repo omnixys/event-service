@@ -17,6 +17,7 @@ import { MediaProcessingService } from './services/media-processing.service.js';
 import { MediaService } from './services/media.service.js';
 import { Module } from '@nestjs/common';
 import { registerEnumType } from '@nestjs/graphql';
+import { EventRoleGuard, EventRoleResolver } from '@omnixys/security';
 
 registerEnumType(UserRoleType, {
   name: 'UserRoleType',
@@ -40,7 +41,13 @@ registerEnumType(UserRoleType, {
     MediaProcessingService,
     MediaService,
     GeocodingService,
+
+    EventRoleGuard,
+    {
+      provide: EventRoleResolver,
+      useExisting: EventAccessService,
+    },
   ],
-  exports: [EventWriteService, EventReadService, MediaProcessingService],
+  exports: [EventWriteService, EventReadService, MediaProcessingService, EventAccessService],
 })
 export class EventModule {}

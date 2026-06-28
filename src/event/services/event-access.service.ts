@@ -1,10 +1,49 @@
 import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { Injectable } from '@nestjs/common';
+import type { EventRoleType } from '@omnixys/contracts';
+import { EventRoleResolver } from '@omnixys/security';
+
+function mapToEventRoleType(role: UserRoleType | undefined): EventRoleType | null {
+  if (!role) {
+    return null;
+  }
+
+  switch (role) {
+    case UserRoleType.ADMIN:
+      return 'ADMIN' as EventRoleType;
+    case UserRoleType.SECURITY:
+      return 'SECURITY' as EventRoleType;
+    case UserRoleType.GUEST:
+      return 'GUEST' as EventRoleType;
+    default:
+      return null;
+  }
+}
 
 @Injectable()
-export class EventAccessService {
-  constructor(private readonly prisma: PrismaService) {}
+export class EventAccessService extends EventRoleResolver {
+  constructor(private readonly prisma: PrismaService) {
+    super();
+  }
+
+  async getRoleForUser(userId: string, eventId: string): Promise<EventRoleType | null> {
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+    });
+
+    if (!event) {
+      return null;
+    }
+
+    // Owner shortcut: event owner always has ADMIN access
+    if (event.owner === userId) {
+      return 'ADMIN' as EventRoleType;
+    }
+
+    const role = await this.resolveRole(eventId, userId);
+    return mapToEventRoleType(role);
+  }
 
   // 🔥 ROOT OVERRIDE LOGIK
   async resolveRole(eventId: string, userId: string): Promise<UserRoleType | undefined> {
