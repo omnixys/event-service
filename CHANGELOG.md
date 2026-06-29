@@ -3,6 +3,16 @@
 All notable changes in this project will be documented in this file.
 
 
+## [2.0.3](https://github.com/omnixys/event-service/compare/v2.0.2...v2.0.3) (2026-06-29)
+
+### Other
+
+* **Other:** Merge branch 'main' of https://github.com/omnixys/event-service ([](https://github.com/omnixys/event-service/commit/762b2f8fa9fb2fd38b3fa81b9886aa061859738e))
+
+### Storage
+
+* **Storage:** remove healthcheck ([](https://github.com/omnixys/event-service/commit/25ae60c18a5cfdf456a1747dc837c288034eb124))
+
 ## [2.0.2](https://github.com/omnixys/event-service/compare/v2.0.1...v2.0.2) (2026-06-29)
 
 ### Media
