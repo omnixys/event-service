@@ -3,6 +3,20 @@
 All notable changes in this project will be documented in this file.
 
 
+## [2.0.0](https://github.com/omnixys/event-service/compare/v1.0.4...v2.0.0) (2026-06-28)
+
+### Dependencies
+
+* **Dependencies:** update Dependecies ([](https://github.com/omnixys/event-service/commit/c14de81f11336ca2004a38768d7c494f2b297f01))
+
+### Event
+
+* **Event:** harden context media and lifecycle flows ([](https://github.com/omnixys/event-service/commit/2209dba2c3bfef93ba4e94acd4b7b69660997141))
+
+### Other
+
+* **Other:** Merge branch 'main' of https://github.com/omnixys/event-service ([](https://github.com/omnixys/event-service/commit/79878a32e5aa27857ff077a0ee418be17a3c10d8))
+
 ## [1.0.4](https://github.com/omnixys/event-service/compare/v1.0.3...v1.0.4) (2026-05-25)
 
 ### Docker
