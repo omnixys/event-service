@@ -3,6 +3,16 @@
 All notable changes in this project will be documented in this file.
 
 
+## [2.0.1](https://github.com/omnixys/event-service/compare/v2.0.0...v2.0.1) (2026-06-29)
+
+### Kafka
+
+* **Kafka:** update kafka dependency ([](https://github.com/omnixys/event-service/commit/f8e40dc47dbcf09fd054d52a222dc25dcf18e369))
+
+### Other
+
+* **Other:** Merge branch 'main' of https://github.com/omnixys/event-service ([](https://github.com/omnixys/event-service/commit/5c9fa0592d9b74e103130d89f0927d6e8ab3fa2f))
+
 ## [2.0.0](https://github.com/omnixys/event-service/compare/v1.0.4...v2.0.0) (2026-06-28)
 
 ### Dependencies
