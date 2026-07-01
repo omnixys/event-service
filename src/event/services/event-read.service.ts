@@ -192,6 +192,9 @@ export class EventReadService {
             },
           ],
         },
+          include: {
+    settings: true,
+  },
         orderBy: [{ depth: 'asc' }, { createdAt: 'asc' }],
       });
 
