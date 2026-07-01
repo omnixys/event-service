@@ -3,6 +3,16 @@
 All notable changes in this project will be documented in this file.
 
 
+## [2.0.4](https://github.com/omnixys/event-service/compare/v2.0.3...v2.0.4) (2026-07-01)
+
+### Other
+
+* **Other:** Merge branch 'main' of https://github.com/omnixys/event-service ([](https://github.com/omnixys/event-service/commit/7ee5bfa1fd5cf47054e4de7084fe4a52e24f11a7))
+
+### RSVP
+
+* **RSVP:** fix for public RSVP ([](https://github.com/omnixys/event-service/commit/4b0bb7ade25300c0de2d6e9ec152514451d28cf1))
+
 ## [2.0.3](https://github.com/omnixys/event-service/compare/v2.0.2...v2.0.3) (2026-06-29)
 
 ### Other
