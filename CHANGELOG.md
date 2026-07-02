@@ -3,6 +3,16 @@
 All notable changes in this project will be documented in this file.
 
 
+## [2.1.0](https://github.com/omnixys/event-service/compare/v2.0.4...v2.1.0) (2026-07-02)
+
+### Deps
+
+* **Deps:** update dependencys ([](https://github.com/omnixys/event-service/commit/90002b3d71d9ba06c51d80abc3c708362128606a))
+
+### Other
+
+* **Other:** Merge branch 'main' of https://github.com/omnixys/event-service ([](https://github.com/omnixys/event-service/commit/52e26f8179c69a9c38b0bc9e476051e64a4cbdb9))
+
 ## [2.0.4](https://github.com/omnixys/event-service/compare/v2.0.3...v2.0.4) (2026-07-01)
 
 ### Other
