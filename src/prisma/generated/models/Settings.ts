@@ -58,6 +58,7 @@ export type SettingsMinAggregateOutputType = {
   isPublic: boolean | null
   dressCode: string | null
   description: string | null
+  ticketReleaseAt: Date | null
   startsAt: Date | null
   endsAt: Date | null
   category: $Enums.EventCategory | null
@@ -86,6 +87,7 @@ export type SettingsMaxAggregateOutputType = {
   isPublic: boolean | null
   dressCode: string | null
   description: string | null
+  ticketReleaseAt: Date | null
   startsAt: Date | null
   endsAt: Date | null
   category: $Enums.EventCategory | null
@@ -110,10 +112,12 @@ export type SettingsCountAggregateOutputType = {
   rsvpDeadline: number
   allowSeatOverbooking: number
   publicRsvpWebsite: number
+  invitedByOptions: number
   isActive: number
   isPublic: number
   dressCode: number
   description: number
+  ticketReleaseAt: number
   startsAt: number
   endsAt: number
   category: number
@@ -156,6 +160,7 @@ export type SettingsMinAggregateInputType = {
   isPublic?: true
   dressCode?: true
   description?: true
+  ticketReleaseAt?: true
   startsAt?: true
   endsAt?: true
   category?: true
@@ -184,6 +189,7 @@ export type SettingsMaxAggregateInputType = {
   isPublic?: true
   dressCode?: true
   description?: true
+  ticketReleaseAt?: true
   startsAt?: true
   endsAt?: true
   category?: true
@@ -208,10 +214,12 @@ export type SettingsCountAggregateInputType = {
   rsvpDeadline?: true
   allowSeatOverbooking?: true
   publicRsvpWebsite?: true
+  invitedByOptions?: true
   isActive?: true
   isPublic?: true
   dressCode?: true
   description?: true
+  ticketReleaseAt?: true
   startsAt?: true
   endsAt?: true
   category?: true
@@ -323,10 +331,12 @@ export type SettingsGroupByOutputType = {
   rsvpDeadline: Date | null
   allowSeatOverbooking: boolean
   publicRsvpWebsite: string | null
+  invitedByOptions: string[]
   isActive: boolean
   isPublic: boolean
   dressCode: string | null
   description: string | null
+  ticketReleaseAt: Date | null
   startsAt: Date
   endsAt: Date
   category: $Enums.EventCategory
@@ -374,10 +384,12 @@ export type SettingsWhereInput = {
   rsvpDeadline?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   allowSeatOverbooking?: Prisma.BoolFilter<"Settings"> | boolean
   publicRsvpWebsite?: Prisma.StringNullableFilter<"Settings"> | string | null
+  invitedByOptions?: Prisma.StringNullableListFilter<"Settings">
   isActive?: Prisma.BoolFilter<"Settings"> | boolean
   isPublic?: Prisma.BoolFilter<"Settings"> | boolean
   dressCode?: Prisma.StringNullableFilter<"Settings"> | string | null
   description?: Prisma.StringNullableFilter<"Settings"> | string | null
+  ticketReleaseAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   startsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   category?: Prisma.EnumEventCategoryFilter<"Settings"> | $Enums.EventCategory
@@ -403,10 +415,12 @@ export type SettingsOrderByWithRelationInput = {
   rsvpDeadline?: Prisma.SortOrderInput | Prisma.SortOrder
   allowSeatOverbooking?: Prisma.SortOrder
   publicRsvpWebsite?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitedByOptions?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  ticketReleaseAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -435,10 +449,12 @@ export type SettingsWhereUniqueInput = Prisma.AtLeast<{
   rsvpDeadline?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   allowSeatOverbooking?: Prisma.BoolFilter<"Settings"> | boolean
   publicRsvpWebsite?: Prisma.StringNullableFilter<"Settings"> | string | null
+  invitedByOptions?: Prisma.StringNullableListFilter<"Settings">
   isActive?: Prisma.BoolFilter<"Settings"> | boolean
   isPublic?: Prisma.BoolFilter<"Settings"> | boolean
   dressCode?: Prisma.StringNullableFilter<"Settings"> | string | null
   description?: Prisma.StringNullableFilter<"Settings"> | string | null
+  ticketReleaseAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   startsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   category?: Prisma.EnumEventCategoryFilter<"Settings"> | $Enums.EventCategory
@@ -464,10 +480,12 @@ export type SettingsOrderByWithAggregationInput = {
   rsvpDeadline?: Prisma.SortOrderInput | Prisma.SortOrder
   allowSeatOverbooking?: Prisma.SortOrder
   publicRsvpWebsite?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitedByOptions?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  ticketReleaseAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -500,10 +518,12 @@ export type SettingsScalarWhereWithAggregatesInput = {
   rsvpDeadline?: Prisma.DateTimeNullableWithAggregatesFilter<"Settings"> | Date | string | null
   allowSeatOverbooking?: Prisma.BoolWithAggregatesFilter<"Settings"> | boolean
   publicRsvpWebsite?: Prisma.StringNullableWithAggregatesFilter<"Settings"> | string | null
+  invitedByOptions?: Prisma.StringNullableListFilter<"Settings">
   isActive?: Prisma.BoolWithAggregatesFilter<"Settings"> | boolean
   isPublic?: Prisma.BoolWithAggregatesFilter<"Settings"> | boolean
   dressCode?: Prisma.StringNullableWithAggregatesFilter<"Settings"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Settings"> | string | null
+  ticketReleaseAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Settings"> | Date | string | null
   startsAt?: Prisma.DateTimeWithAggregatesFilter<"Settings"> | Date | string
   endsAt?: Prisma.DateTimeWithAggregatesFilter<"Settings"> | Date | string
   category?: Prisma.EnumEventCategoryWithAggregatesFilter<"Settings"> | $Enums.EventCategory
@@ -527,10 +547,12 @@ export type SettingsCreateInput = {
   rsvpDeadline?: Date | string | null
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
+  invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
   category?: $Enums.EventCategory
@@ -556,10 +578,12 @@ export type SettingsUncheckedCreateInput = {
   rsvpDeadline?: Date | string | null
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
+  invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
   category?: $Enums.EventCategory
@@ -583,10 +607,12 @@ export type SettingsUpdateInput = {
   rsvpDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
@@ -612,10 +638,12 @@ export type SettingsUncheckedUpdateInput = {
   rsvpDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
@@ -640,10 +668,12 @@ export type SettingsCreateManyInput = {
   rsvpDeadline?: Date | string | null
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
+  invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
   category?: $Enums.EventCategory
@@ -667,10 +697,12 @@ export type SettingsUpdateManyMutationInput = {
   rsvpDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
@@ -695,10 +727,12 @@ export type SettingsUncheckedUpdateManyInput = {
   rsvpDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
@@ -728,10 +762,12 @@ export type SettingsCountOrderByAggregateInput = {
   rsvpDeadline?: Prisma.SortOrder
   allowSeatOverbooking?: Prisma.SortOrder
   publicRsvpWebsite?: Prisma.SortOrder
+  invitedByOptions?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  ticketReleaseAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -766,6 +802,7 @@ export type SettingsMaxOrderByAggregateInput = {
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  ticketReleaseAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -794,6 +831,7 @@ export type SettingsMinOrderByAggregateInput = {
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  ticketReleaseAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
   category?: Prisma.SortOrder
@@ -839,12 +877,21 @@ export type SettingsUncheckedUpdateOneWithoutEventNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.SettingsUpdateToOneWithWhereWithoutEventInput, Prisma.SettingsUpdateWithoutEventInput>, Prisma.SettingsUncheckedUpdateWithoutEventInput>
 }
 
+export type SettingsCreateinvitedByOptionsInput = {
+  set: string[]
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
 export type EnumInvitationApprovalModeFieldUpdateOperationsInput = {
   set?: $Enums.InvitationApprovalMode
+}
+
+export type SettingsUpdateinvitedByOptionsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type EnumEventCategoryFieldUpdateOperationsInput = {
@@ -867,10 +914,12 @@ export type SettingsCreateWithoutEventInput = {
   rsvpDeadline?: Date | string | null
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
+  invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
   category?: $Enums.EventCategory
@@ -894,10 +943,12 @@ export type SettingsUncheckedCreateWithoutEventInput = {
   rsvpDeadline?: Date | string | null
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
+  invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
   category?: $Enums.EventCategory
@@ -937,10 +988,12 @@ export type SettingsUpdateWithoutEventInput = {
   rsvpDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
@@ -964,10 +1017,12 @@ export type SettingsUncheckedUpdateWithoutEventInput = {
   rsvpDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
@@ -994,10 +1049,12 @@ export type SettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   rsvpDeadline?: boolean
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: boolean
+  invitedByOptions?: boolean
   isActive?: boolean
   isPublic?: boolean
   dressCode?: boolean
   description?: boolean
+  ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
   category?: boolean
@@ -1023,10 +1080,12 @@ export type SettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   rsvpDeadline?: boolean
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: boolean
+  invitedByOptions?: boolean
   isActive?: boolean
   isPublic?: boolean
   dressCode?: boolean
   description?: boolean
+  ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
   category?: boolean
@@ -1052,10 +1111,12 @@ export type SettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   rsvpDeadline?: boolean
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: boolean
+  invitedByOptions?: boolean
   isActive?: boolean
   isPublic?: boolean
   dressCode?: boolean
   description?: boolean
+  ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
   category?: boolean
@@ -1081,10 +1142,12 @@ export type SettingsSelectScalar = {
   rsvpDeadline?: boolean
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: boolean
+  invitedByOptions?: boolean
   isActive?: boolean
   isPublic?: boolean
   dressCode?: boolean
   description?: boolean
+  ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
   category?: boolean
@@ -1092,7 +1155,7 @@ export type SettingsSelectScalar = {
   updatedAt?: boolean
 }
 
-export type SettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "allowReEntry" | "rotateSeconds" | "maxSeats" | "allowPublicRsvp" | "allowPublicPlusOne" | "allowPublicRsvpWebsite" | "allowPlusOneUpdate" | "approvalMode" | "allowGuestSeatSelection" | "maxPlusOnes" | "requireApprovalForPlusOnes" | "rsvpDeadline" | "allowSeatOverbooking" | "publicRsvpWebsite" | "isActive" | "isPublic" | "dressCode" | "description" | "startsAt" | "endsAt" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["settings"]>
+export type SettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "allowReEntry" | "rotateSeconds" | "maxSeats" | "allowPublicRsvp" | "allowPublicPlusOne" | "allowPublicRsvpWebsite" | "allowPlusOneUpdate" | "approvalMode" | "allowGuestSeatSelection" | "maxPlusOnes" | "requireApprovalForPlusOnes" | "rsvpDeadline" | "allowSeatOverbooking" | "publicRsvpWebsite" | "invitedByOptions" | "isActive" | "isPublic" | "dressCode" | "description" | "ticketReleaseAt" | "startsAt" | "endsAt" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["settings"]>
 export type SettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.Settings$eventArgs<ExtArgs>
 }
@@ -1125,10 +1188,12 @@ export type $SettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     rsvpDeadline: Date | null
     allowSeatOverbooking: boolean
     publicRsvpWebsite: string | null
+    invitedByOptions: string[]
     isActive: boolean
     isPublic: boolean
     dressCode: string | null
     description: string | null
+    ticketReleaseAt: Date | null
     startsAt: Date
     endsAt: Date
     category: $Enums.EventCategory
@@ -1574,10 +1639,12 @@ export interface SettingsFieldRefs {
   readonly rsvpDeadline: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly allowSeatOverbooking: Prisma.FieldRef<"Settings", 'Boolean'>
   readonly publicRsvpWebsite: Prisma.FieldRef<"Settings", 'String'>
+  readonly invitedByOptions: Prisma.FieldRef<"Settings", 'String[]'>
   readonly isActive: Prisma.FieldRef<"Settings", 'Boolean'>
   readonly isPublic: Prisma.FieldRef<"Settings", 'Boolean'>
   readonly dressCode: Prisma.FieldRef<"Settings", 'String'>
   readonly description: Prisma.FieldRef<"Settings", 'String'>
+  readonly ticketReleaseAt: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly startsAt: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly endsAt: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly category: Prisma.FieldRef<"Settings", 'EventCategory'>

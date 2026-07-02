@@ -18,7 +18,7 @@ datasource db {
 // ──────────────────────────────────────────────────────────
 
 model Event {
-  id    String @id @default(uuid()) @map("id") @db.Uuid
+  id    String   @id @default(uuid()) @map("id") @db.Uuid
   name  String
   owner String
   tags  String[] @default([])
@@ -72,13 +72,16 @@ model Settings {
   rsvpDeadline               DateTime? @map("rsvp_deadline")
   allowSeatOverbooking       Boolean   @default(false) @map("allow_seat_overbooking")
 
-  publicRsvpWebsite String? @map("public_rsvp_website")
+  publicRsvpWebsite String?  @map("public_rsvp_website")
+  invitedByOptions  String[] @default([]) @map("invited_by_options")
 
   isActive Boolean @default(true) @map("is_active")
   isPublic Boolean @default(false) @map("is_public")
 
   dressCode   String? @map("dress_code")
   description String? @map("description")
+
+  ticketReleaseAt DateTime? @map("ticket_release_at")
 
   startsAt DateTime @map("starts_at")
   endsAt   DateTime @map("ends_at")
@@ -141,9 +144,9 @@ model Analytics {
 // ──────────────────────────────────────────────────────────
 //
 model Timeline {
-  id      String @id @default(uuid()) @map("id") @db.Uuid
-  eventId String @map("event_id") @db.Uuid
-  sourceId String? @unique @map("source_id")
+  id          String  @id @default(uuid()) @map("id") @db.Uuid
+  eventId     String  @map("event_id") @db.Uuid
+  sourceId    String? @unique @map("source_id")
   referenceId String? @map("reference_id")
 
   type      String   @map("type")

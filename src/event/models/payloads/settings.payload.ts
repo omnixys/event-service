@@ -69,8 +69,14 @@ export class SettingsPayload {
   @Field({ nullable: true })
   publicRsvpWebsite?: string;
 
+  @Field(() => [String])
+  invitedByOptions!: string[];
+
   @Field(() => EventCategory)
   category!: EventCategory;
+
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  ticketReleaseAt?: Date;
 
   @Field(() => GraphQLISODateTime)
   createdAt!: Date;

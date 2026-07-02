@@ -231,3 +231,50 @@ test('event mapping preserves normalized categorization tags', () => {
   });
   assert.deepEqual(payload.tags, ['🚀 launch']);
 });
+
+test('event mapping preserves invited-by options from settings', () => {
+  const now = new Date(0);
+  const payload = EventMapper.toPayload({
+    id: 'event-1',
+    name: 'Launch',
+    owner: 'actor-1',
+    tags: [],
+    parentId: null,
+    path: 'event-1',
+    depth: 0,
+    coverMediaId: null,
+    logoMediaId: null,
+    createdAt: now,
+    updatedAt: null,
+    settings: {
+      id: 'settings-1',
+      eventId: 'event-1',
+      allowReEntry: true,
+      rotateSeconds: 300,
+      maxSeats: 50,
+      allowPublicRsvp: true,
+      allowPublicPlusOne: true,
+      allowPublicRsvpWebsite: false,
+      allowPlusOneUpdate: false,
+      approvalMode: 'MANUAL',
+      allowGuestSeatSelection: false,
+      maxPlusOnes: 0,
+      requireApprovalForPlusOnes: true,
+      rsvpDeadline: null,
+      allowSeatOverbooking: false,
+      publicRsvpWebsite: null,
+      invitedByOptions: ['Team', 'Host'],
+      isActive: true,
+      isPublic: false,
+      dressCode: null,
+      description: null,
+      startsAt: now,
+      endsAt: now,
+      category: 'GENERAL',
+      createdAt: now,
+      updatedAt: null,
+    },
+  });
+
+  assert.deepEqual(payload.settings.invitedByOptions, ['Team', 'Host']);
+});

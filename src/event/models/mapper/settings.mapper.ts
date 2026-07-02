@@ -25,6 +25,8 @@ export class SettingsCreateMapper {
       });
     }
 
+    const extendedBase = base;
+
     return {
       event: {
         connect: { id: input.eventId },
@@ -37,8 +39,16 @@ export class SettingsCreateMapper {
       allowPublicRsvp: base.allowPublicRsvp,
       allowPublicPlusOne: base.allowPublicPlusOne,
       allowPublicRsvpWebsite: base.allowPublicRsvpWebsite,
+      allowPlusOneUpdate: base.allowPlusOneUpdate,
+      maxPlusOnes: base.maxPlusOnes,
+      requireApprovalForPlusOnes: base.requireApprovalForPlusOnes,
+      rsvpDeadline: base.rsvpDeadline ?? null,
+      approvalMode: base.approvalMode,
+      allowGuestSeatSelection: base.allowGuestSeatSelection,
+      allowSeatOverbooking: base.allowSeatOverbooking,
 
       publicRsvpWebsite: base.publicRsvpWebsite ?? null,
+      invitedByOptions: extendedBase.invitedByOptions ?? [],
 
       isActive: base.isActive,
       isPublic: base.isPublic,
@@ -46,8 +56,11 @@ export class SettingsCreateMapper {
       dressCode: base.dressCode ?? null,
       description: base.description ?? null,
 
+      ticketReleaseAt: base.ticketReleaseAt ?? null,
+
       startsAt: base.startsAt,
       endsAt: base.endsAt,
+      category: base.category,
 
       ...input.override,
     };

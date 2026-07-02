@@ -131,6 +131,9 @@ export class EventReadService {
             },
           ],
         },
+        include: {
+          settings: true,
+        },
         orderBy: [{ depth: 'asc' }, { createdAt: 'asc' }],
       });
 
@@ -192,9 +195,9 @@ export class EventReadService {
             },
           ],
         },
-          include: {
-    settings: true,
-  },
+        include: {
+          settings: true,
+        },
         orderBy: [{ depth: 'asc' }, { createdAt: 'asc' }],
       });
 

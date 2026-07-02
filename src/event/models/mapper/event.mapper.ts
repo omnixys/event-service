@@ -15,6 +15,8 @@ export class EventMapper {
     event: EventWithSettings,
     myRole?: UserRoleType,
   ): EventPayload {
+    const settings = event.settings;
+
     return {
       id: event.id,
       name: event.name,
@@ -33,54 +35,54 @@ export class EventMapper {
       coverMediaId: n2u(event.coverMediaId),
       logoMediaId: n2u(event.logoMediaId),
 
-      settings: event.settings
+      settings: settings
         ? {
-            id: event.settings.id,
+            id: settings.id,
 
             // 🔧 Core
-            allowReEntry: event.settings.allowReEntry,
-            rotateSeconds: event.settings.rotateSeconds,
-            maxSeats: event.settings.maxSeats,
+            allowReEntry: settings.allowReEntry,
+            rotateSeconds: settings.rotateSeconds,
+            maxSeats: settings.maxSeats,
 
             // 🌐 RSVP
-            allowPublicRsvp: event.settings.allowPublicRsvp,
-            allowPublicPlusOne: event.settings.allowPublicPlusOne,
-            allowPublicRsvpWebsite: event.settings.allowPublicRsvpWebsite,
-            allowPlusOneUpdate: event.settings.allowPlusOneUpdate,
+            allowPublicRsvp: settings.allowPublicRsvp,
+            allowPublicPlusOne: settings.allowPublicPlusOne,
+            allowPublicRsvpWebsite: settings.allowPublicRsvpWebsite,
+            allowPlusOneUpdate: settings.allowPlusOneUpdate,
 
-            maxPlusOnes: event.settings.maxPlusOnes,
-            requireApprovalForPlusOnes:
-              event.settings.requireApprovalForPlusOnes,
-            rsvpDeadline: n2u(event.settings.rsvpDeadline),
+            maxPlusOnes: settings.maxPlusOnes,
+            requireApprovalForPlusOnes: settings.requireApprovalForPlusOnes,
+            rsvpDeadline: n2u(settings.rsvpDeadline),
 
             // 🔥 Approval
-            approvalMode: event.settings.approvalMode,
+            approvalMode: settings.approvalMode,
 
             // 🪑 Seating
-            allowGuestSeatSelection: event.settings.allowGuestSeatSelection,
-            allowSeatOverbooking: event.settings.allowSeatOverbooking,
+            allowGuestSeatSelection: settings.allowGuestSeatSelection,
+            allowSeatOverbooking: settings.allowSeatOverbooking,
 
             // 🌍 Visibility
-            isActive: event.settings.isActive,
-            isPublic: event.settings.isPublic,
+            isActive: settings.isActive,
+            isPublic: settings.isPublic,
 
             // 🌐 Public
-            publicRsvpWebsite: n2u(event.settings.publicRsvpWebsite),
+            publicRsvpWebsite: n2u(settings.publicRsvpWebsite),
+            invitedByOptions: settings.invitedByOptions ?? [],
 
             // 🎨 Content
-            dressCode: n2u(event.settings.dressCode),
-            description: n2u(event.settings.description),
+            dressCode: n2u(settings.dressCode),
+            description: n2u(settings.description),
 
             // 📅 Time
-            startsAt: event.settings.startsAt,
-            endsAt: event.settings.endsAt,
+            startsAt: settings.startsAt,
+            endsAt: settings.endsAt,
 
             // 📂 Category
-            category: event.settings.category,
+            category: settings.category,
 
             // 🧾 Meta
-            createdAt: event.settings.createdAt,
-            updatedAt: n2u(event.settings.updatedAt),
+            createdAt: settings.createdAt,
+            updatedAt: n2u(settings.updatedAt),
           }
         : undefined,
     };

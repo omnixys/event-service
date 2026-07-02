@@ -11,7 +11,9 @@ import {
 } from '@nestjs/graphql';
 
 import {
+  ArrayMaxSize,
   IsBoolean,
+  IsArray,
   IsInt,
   IsOptional,
   IsString,
@@ -107,6 +109,12 @@ export class CreateSettingsInput {
   @IsUrl()
   publicRsvpWebsite?: string;
 
+  @Field(() => [String], { defaultValue: [] })
+  @IsArray()
+  @ArrayMaxSize(50)
+  @IsString({ each: true })
+  invitedByOptions!: string[];
+
   // 🎨 Content
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -117,6 +125,13 @@ export class CreateSettingsInput {
   @IsOptional()
   @IsString()
   description?: string;
+
+  // 🎫 Ticket Release
+  @Field(() => GraphQLISODateTime, { nullable: true })
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  ticketReleaseAt?: Date;
 
   // 📅 Time
   @Field(() => GraphQLISODateTime, { nullable: true })

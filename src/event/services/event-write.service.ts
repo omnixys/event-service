@@ -25,10 +25,12 @@ import { EventPayload } from '../models/payloads/event.payload.js';
 import { Injectable } from '@nestjs/common';
 import {
   EventRoleType,
+  type EventCreatedDTO,
   type EventMilestoneRecordedDTO,
   type EventOwnerChangedDTO,
   type EventRoleAssignedDTO,
   type EventRoleRemovedDTO,
+  type EventUpdatedDTO,
 } from '@omnixys/contracts';
 import {
   KafkaProducerService,
@@ -78,185 +80,213 @@ export class EventWriteService {
 
       const childIds: string[] = [];
 
-      const result = await this.prisma.$transaction(async (tx) => {
-        /**
-         * -------------------------------------------------------
-         * 1. CREATE ROOT EVENT
-         * -------------------------------------------------------
-         */
-        const event = await tx.event.create({
-          data: {
-            name: input.name,
-            owner: actorId,
-            tags: normalizeTags(input.tags),
-            parentId: input.parentId,
-            depth,
-            path: '',
-          },
-        });
-
-        path = parent?.path ? `${parent.path}.${event.id}` : event.id;
-
-        await tx.event.update({
-          where: { id: event.id },
-          data: { path },
-        });
-
-        /**
-         * -------------------------------------------------------
-         * 2. ROLE
-         * -------------------------------------------------------
-         */
-        await tx.role.upsert({
-          where: { userId_eventId: { userId: actorId, eventId: event.id } },
-          create: {
-            userId: actorId,
-            eventId: event.id,
-            role: UserRoleType.ADMIN,
-          },
-          update: { role: UserRoleType.ADMIN },
-        });
-
-        /**
-         * -------------------------------------------------------
-         * 3. SETTINGS (PARENT)
-         * -------------------------------------------------------
-         */
-        const parentSettings = input.settings
-          ? await tx.settings.create({
-              data: {
-                eventId: event.id,
-                ...input.settings,
-              },
-            })
-          : parent?.settings;
-
-        /**
-         * -------------------------------------------------------
-         * 4. CHILDREN HANDLING
-         * -------------------------------------------------------
-         */
-        if (input.children?.length) {
-          const children = input.children;
-
-          const parentMaxSeats = parentSettings?.maxSeats ?? 50;
-
-          const childrenWithSeats = children.filter((c) => c.settings?.maxSeats != null);
-
-          let seatDistribution: number[];
-
+      const { event: result, settings: createSettings } = await this.prisma.$transaction(
+        async (tx) => {
           /**
-           * CASE A: NO CHILD SEATS → DISTRIBUTE
+           * -------------------------------------------------------
+           * 1. CREATE ROOT EVENT
+           * -------------------------------------------------------
            */
-          if (childrenWithSeats.length === 0) {
-            const base = Math.floor(parentMaxSeats / children.length);
-            let remainder = parentMaxSeats % children.length;
+          const event = await tx.event.create({
+            data: {
+              name: input.name,
+              owner: actorId,
+              tags: normalizeTags(input.tags),
+              parentId: input.parentId,
+              depth,
+              path: '',
+            },
+          });
 
-            seatDistribution = children.map(() => {
-              const seats = base + (remainder > 0 ? 1 : 0);
-              if (remainder > 0) {
-                remainder--;
-              }
-              return seats;
-            });
-          } else {
-            /**
-             * CASE B: CUSTOM SEATS
-             */
-            const total = children.reduce((sum, c) => sum + (c.settings?.maxSeats ?? 0), 0);
+          path = parent?.path ? `${parent.path}.${event.id}` : event.id;
 
-            if (total > parentMaxSeats) {
-              throw new SeatAllocationExceededError(parentMaxSeats, total);
-            }
-
-            seatDistribution = children.map((c) => c.settings?.maxSeats ?? 0);
-          }
+          await tx.event.update({
+            where: { id: event.id },
+            data: { path },
+          });
 
           /**
            * -------------------------------------------------------
-           * CREATE CHILDREN
+           * 2. ROLE
            * -------------------------------------------------------
            */
-          if (children.length > 0) {
-            for (let i = 0; i < children.length; i++) {
-              const childInput = children[i];
-              const seats = seatDistribution[i];
+          await tx.role.upsert({
+            where: { userId_eventId: { userId: actorId, eventId: event.id } },
+            create: {
+              userId: actorId,
+              eventId: event.id,
+              role: UserRoleType.ADMIN,
+            },
+            update: { role: UserRoleType.ADMIN },
+          });
 
-              if (childInput === undefined) {
-                continue;
-              }
-
-              const child = await tx.event.create({
+          /**
+           * -------------------------------------------------------
+           * 3. SETTINGS (PARENT)
+           * -------------------------------------------------------
+           */
+          const parentSettings = input.settings
+            ? await tx.settings.create({
                 data: {
-                  name: childInput.name,
-                  owner: actorId,
-                  tags: normalizeTags(childInput.tags),
-                  parentId: event.id,
-                  depth: depth + 1,
-                  path: '',
+                  eventId: event.id,
+                  ...input.settings,
                 },
+              })
+            : parent?.settings;
+
+          /**
+           * -------------------------------------------------------
+           * 4. CHILDREN HANDLING
+           * -------------------------------------------------------
+           */
+          if (input.children?.length) {
+            const children = input.children;
+
+            const parentMaxSeats = parentSettings?.maxSeats ?? 50;
+
+            const childrenWithSeats = children.filter((c) => c.settings?.maxSeats != null);
+
+            let seatDistribution: number[];
+
+            /**
+             * CASE A: NO CHILD SEATS → DISTRIBUTE
+             */
+            if (childrenWithSeats.length === 0) {
+              const base = Math.floor(parentMaxSeats / children.length);
+              let remainder = parentMaxSeats % children.length;
+
+              seatDistribution = children.map(() => {
+                const seats = base + (remainder > 0 ? 1 : 0);
+                if (remainder > 0) {
+                  remainder--;
+                }
+                return seats;
               });
-
-              childIds.push(child.id);
-
-              const childPath = `${path}.${child.id}`;
-
-              await tx.event.update({
-                where: { id: child.id },
-                data: { path: childPath },
-              });
-
+            } else {
               /**
-               * SETTINGS (inherit or override)
+               * CASE B: CUSTOM SEATS
                */
-              await tx.settings.create({
-                data: SettingsCreateMapper.from({
-                  dto: childInput.settings,
-                  parent: parentSettings,
-                  eventId: child.id,
-                  override: {
-                    maxSeats: seats,
+              const total = children.reduce((sum, c) => sum + (c.settings?.maxSeats ?? 0), 0);
+
+              if (total > parentMaxSeats) {
+                throw new SeatAllocationExceededError(parentMaxSeats, total);
+              }
+
+              seatDistribution = children.map((c) => c.settings?.maxSeats ?? 0);
+            }
+
+            /**
+             * -------------------------------------------------------
+             * CREATE CHILDREN
+             * -------------------------------------------------------
+             */
+            if (children.length > 0) {
+              for (let i = 0; i < children.length; i++) {
+                const childInput = children[i];
+                const seats = seatDistribution[i];
+
+                if (childInput === undefined) {
+                  continue;
+                }
+
+                const child = await tx.event.create({
+                  data: {
+                    name: childInput.name,
+                    owner: actorId,
+                    tags: normalizeTags(childInput.tags),
+                    parentId: event.id,
+                    depth: depth + 1,
+                    path: '',
                   },
-                }),
-              });
-              /**
-               * ROLE (inherit admin)
-               */
-              await tx.role.upsert({
-                where: { userId_eventId: { userId: actorId, eventId: child.id } },
-                create: {
-                  userId: actorId,
-                  eventId: child.id,
-                  role: UserRoleType.ADMIN,
-                },
-                update: { role: UserRoleType.ADMIN },
-              });
+                });
+
+                childIds.push(child.id);
+
+                const childPath = `${path}.${child.id}`;
+
+                await tx.event.update({
+                  where: { id: child.id },
+                  data: { path: childPath },
+                });
+
+                /**
+                 * SETTINGS (inherit or override)
+                 */
+                await tx.settings.create({
+                  data: SettingsCreateMapper.from({
+                    dto: childInput.settings,
+                    parent: parentSettings,
+                    eventId: child.id,
+                    override: {
+                      maxSeats: seats,
+                    },
+                  }),
+                });
+                /**
+                 * ROLE (inherit admin)
+                 */
+                await tx.role.upsert({
+                  where: { userId_eventId: { userId: actorId, eventId: child.id } },
+                  create: {
+                    userId: actorId,
+                    eventId: child.id,
+                    role: UserRoleType.ADMIN,
+                  },
+                  update: { role: UserRoleType.ADMIN },
+                });
+              }
             }
           }
-        }
 
-        /**
-         * -------------------------------------------------------
-         * TIMELINE
-         * -------------------------------------------------------
-         */
-        await tx.timeline.create({
-          data: {
-            eventId: event.id,
-            type: 'event-created',
-            timestamp: new Date(),
-            label: 'Event created',
-          },
-        });
+          /**
+           * -------------------------------------------------------
+           * TIMELINE
+           * -------------------------------------------------------
+           */
+          await tx.timeline.create({
+            data: {
+              eventId: event.id,
+              type: 'event-created',
+              timestamp: new Date(),
+              label: 'Event created',
+            },
+          });
 
-        return event;
-      });
+          return { event, settings: parentSettings };
+        },
+      );
 
       /**
        * -------------------------------------------------------
        * ASYNC EVENTS (Kafka)
        * -------------------------------------------------------
        */
+      const s = createSettings;
+
+      if (!s) {
+        throw new Error('Event settings not found after creation');
+      }
+
+      void this.kafkaProducerService.send({
+        topic: KafkaTopics.event.created,
+        payload: {
+          eventId: result.id,
+          name: result.name,
+          endsAt: s.endsAt.toISOString(),
+          approvalMode: s.approvalMode,
+          maxSeats: s.maxSeats,
+          startsAt: s.startsAt.toISOString(),
+          allowPublicRsvp: s.allowPublicRsvp,
+          allowPublicPlusOne: s.allowPublicPlusOne,
+          allowGuestSeatSelection: s.allowGuestSeatSelection,
+          ticketReleaseAt: s.ticketReleaseAt?.toISOString(),
+          rsvpDeadline: s.rsvpDeadline?.toISOString(),
+          category: s.category,
+          occurredAt: new Date().toISOString(),
+        } satisfies EventCreatedDTO,
+        meta: this.meta(actorId, 'Create Event Settings'),
+      });
+
       void this.kafkaProducerService.send({
         topic: KafkaTopics.seat.create,
         payload: {
@@ -334,7 +364,7 @@ export class EventWriteService {
     return TraceRunner.run('[SERVICE] updateEvent', async () => {
       this.log.info('Updating event: eventId=%s | actorId=%s', input.eventId, actorId);
 
-      return this.prisma.$transaction(async (tx) => {
+      const txResult = await this.prisma.$transaction(async (tx) => {
         /**
          * STEP 1: Load event
          */
@@ -431,6 +461,52 @@ export class EventWriteService {
               ...(s.isActive !== undefined && {
                 isActive: s.isActive,
               }),
+              ...(s.allowPublicRsvp !== undefined && {
+                allowPublicRsvp: s.allowPublicRsvp,
+              }),
+              ...(s.allowPublicPlusOne !== undefined && {
+                allowPublicPlusOne: s.allowPublicPlusOne,
+              }),
+              ...(s.allowPublicRsvpWebsite !== undefined && {
+                allowPublicRsvpWebsite: s.allowPublicRsvpWebsite,
+              }),
+              ...(s.allowPlusOneUpdate !== undefined && {
+                allowPlusOneUpdate: s.allowPlusOneUpdate,
+              }),
+              ...(s.maxPlusOnes !== undefined && {
+                maxPlusOnes: s.maxPlusOnes,
+              }),
+              ...(s.requireApprovalForPlusOnes !== undefined && {
+                requireApprovalForPlusOnes: s.requireApprovalForPlusOnes,
+              }),
+              ...(s.rsvpDeadline !== undefined && {
+                rsvpDeadline: s.rsvpDeadline ? new Date(s.rsvpDeadline) : null,
+              }),
+              ...(s.approvalMode !== undefined && {
+                approvalMode: s.approvalMode,
+              }),
+              ...(s.allowGuestSeatSelection !== undefined && {
+                allowGuestSeatSelection: s.allowGuestSeatSelection,
+              }),
+              ...(s.allowSeatOverbooking !== undefined && {
+                allowSeatOverbooking: s.allowSeatOverbooking,
+              }),
+              ...(s.isPublic !== undefined && {
+                isPublic: s.isPublic,
+              }),
+              ...(s.publicRsvpWebsite !== undefined && {
+                publicRsvpWebsite: s.publicRsvpWebsite,
+              }),
+              ...(s.category !== undefined && {
+                category: s.category,
+              }),
+              ...(s.ticketReleaseAt !== undefined && {
+                ticketReleaseAt: s.ticketReleaseAt ? new Date(s.ticketReleaseAt) : null,
+              }),
+
+              ...(s.invitedByOptions !== undefined && {
+                invitedByOptions: s.invitedByOptions,
+              }),
             },
           });
         }
@@ -463,8 +539,37 @@ export class EventWriteService {
         //   },
         // });
 
-        return EventMapper.toPayload(updated, UserRoleType.ADMIN);
+        return {
+          payload: EventMapper.toPayload(updated, UserRoleType.ADMIN),
+          settings: updated.settings,
+        };
       });
+
+      const updatedSettings = txResult.settings;
+
+      if (updatedSettings) {
+        void this.kafkaProducerService.send({
+          topic: KafkaTopics.event.updated,
+          payload: {
+            eventId: input.eventId,
+            name: txResult.payload.name,
+            endsAt: updatedSettings.endsAt.toISOString(),
+            approvalMode: updatedSettings.approvalMode,
+            maxSeats: updatedSettings.maxSeats,
+            startsAt: updatedSettings.startsAt.toISOString(),
+            allowPublicRsvp: updatedSettings.allowPublicRsvp,
+            allowPublicPlusOne: updatedSettings.allowPublicPlusOne,
+            allowGuestSeatSelection: updatedSettings.allowGuestSeatSelection,
+            ticketReleaseAt: updatedSettings.ticketReleaseAt?.toISOString(),
+            rsvpDeadline: updatedSettings.rsvpDeadline?.toISOString(),
+            category: updatedSettings.category,
+            occurredAt: new Date().toISOString(),
+          } satisfies EventUpdatedDTO,
+          meta: this.meta(actorId, 'Update Event Settings'),
+        });
+      }
+
+      return txResult.payload;
     });
   }
 
@@ -756,6 +861,15 @@ export class EventWriteService {
 
     if (!targetRole) {
       throw new EventMemberNotFoundError(eventId, targetUserId);
+    }
+
+    if (input.eventRole !== targetRole.role) {
+      throw new EventValidationError('Event role does not match target member role', {
+        eventId,
+        userId: targetUserId,
+        expectedRole: input.eventRole,
+        actualRole: targetRole.role,
+      });
     }
 
     // 2) Permission Matrix
