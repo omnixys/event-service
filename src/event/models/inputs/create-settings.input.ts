@@ -1,5 +1,6 @@
 import {
   EventCategory,
+  EventVisibleTab,
   InvitationApprovalMode,
 } from '../../../prisma/generated/enums.js';
 import {
@@ -21,13 +22,22 @@ import {
   Min,
   IsDate,
   IsUrl,
+  ValidateNested,
 } from 'class-validator';
 
+import { SeatColorGroupInput } from './seat-color-group.input.js';
 import { Type } from 'class-transformer';
 
 // ✅ Register enums ONCE
 registerEnumType(EventCategory, { name: 'EventCategory' });
+registerEnumType(EventVisibleTab, { name: 'EventVisibleTab' });
 registerEnumType(InvitationApprovalMode, { name: 'InvitationApprovalMode' });
+
+const DEFAULT_VISIBLE_TABS = [
+  EventVisibleTab.TIMELINE,
+  EventVisibleTab.DETAILS,
+  EventVisibleTab.MAP,
+];
 
 @InputType()
 export class CreateSettingsInput {
@@ -115,6 +125,17 @@ export class CreateSettingsInput {
   @IsString({ each: true })
   invitedByOptions!: string[];
 
+  @Field(() => [EventVisibleTab], { defaultValue: DEFAULT_VISIBLE_TABS })
+  @IsArray()
+  @ArrayMaxSize(10)
+  visibleTabs!: EventVisibleTab[];
+
+  @Field(() => [SeatColorGroupInput], { nullable: true })
+  @ValidateNested({ each: true })
+  @Type(() => SeatColorGroupInput)
+  @IsOptional()
+  seatColorGroups?: SeatColorGroupInput[];
+
   // 🎨 Content
   @Field(() => String, { nullable: true })
   @IsOptional()
@@ -127,6 +148,10 @@ export class CreateSettingsInput {
   description?: string;
 
   // 🎫 Ticket Release
+  @Field(() => Boolean, { defaultValue: false })
+  @IsBoolean()
+  scheduleTicketRelease!: boolean;
+
   @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()
   @Type(() => Date)

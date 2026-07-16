@@ -7,9 +7,13 @@ import { EventAdminQueryResolver } from './resolvers/event-admin-query.resolver.
 import { EventFieldsResolver } from './resolvers/event-fields.resolver.js';
 import { EventMutationResolver } from './resolvers/event-mutation.resolver.js';
 import { EventQueryResolver } from './resolvers/event-query.resolver.js';
+import { EventRbacResolver } from './resolvers/event-rbac.resolver.js';
+import { EventStaffResolver } from './resolvers/event-staff.resolver.js';
 import { MediaResolver } from './resolvers/media.resolver.js';
 import { EventAccessService } from './services/event-access.service.js';
+import { EventRbacService } from './services/event-rbac.service.js';
 import { EventReadService } from './services/event-read.service.js';
+import { EventStaffService } from './services/event-staff.service.js';
 import { EventWriteService } from './services/event-write.service.js';
 import { GeocodingService } from './services/geocoding.service.js';
 import { ImageService } from './services/image.service.js';
@@ -17,7 +21,12 @@ import { MediaProcessingService } from './services/media-processing.service.js';
 import { MediaService } from './services/media.service.js';
 import { Module } from '@nestjs/common';
 import { registerEnumType } from '@nestjs/graphql';
-import { EventRoleGuard, EventRoleResolver } from '@omnixys/security';
+import {
+  EventPermissionGuard,
+  EventPermissionResolver,
+  EventRoleGuard,
+  EventRoleResolver,
+} from '@omnixys/security';
 
 registerEnumType(UserRoleType, {
   name: 'UserRoleType',
@@ -31,23 +40,38 @@ registerEnumType(UserRoleType, {
     EventAdminQueryResolver,
     EventQueryResolver,
     EventMutationResolver,
+    EventRbacResolver,
     EventFieldsResolver,
+    EventStaffResolver,
     MediaResolver,
 
     EventWriteService,
     EventReadService,
     EventAccessService,
+    EventRbacService,
     ImageService,
     MediaProcessingService,
     MediaService,
     GeocodingService,
+    EventStaffService,
 
     EventRoleGuard,
+    EventPermissionGuard,
     {
       provide: EventRoleResolver,
       useExisting: EventAccessService,
     },
+    {
+      provide: EventPermissionResolver,
+      useExisting: EventAccessService,
+    },
   ],
-  exports: [EventWriteService, EventReadService, MediaProcessingService, EventAccessService],
+  exports: [
+    EventWriteService,
+    EventReadService,
+    EventRbacService,
+    MediaProcessingService,
+    EventAccessService,
+  ],
 })
 export class EventModule {}

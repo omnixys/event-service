@@ -20,13 +20,13 @@ import {
   Mutation,
   Resolver,
 } from '@nestjs/graphql';
-import { EventRoleType, RealmRoleType } from '@omnixys/contracts';
+import { EventPermissionKey, RealmRoleType } from '@omnixys/contracts';
 import {
   CookieAuthGuard,
   CurrentUser,
   CurrentUserData,
-  EventRoleGuard,
-  EventRoles,
+  EventPermissionGuard,
+  EventPermissions,
   RoleGuard,
   Roles,
 } from '@omnixys/security';
@@ -54,9 +54,9 @@ export class EventMutationResolver {
   }
 
   @Mutation(() => EventPayload)
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
+  @EventPermissions(EventPermissionKey.EditEvent)
   async updateEvent(
     @Args('input') input: UpdateEventInput,
     @CurrentUser() currentUser: CurrentUserData,
@@ -65,9 +65,9 @@ export class EventMutationResolver {
   }
 
   @Mutation(() => Boolean)
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
+  @EventPermissions(EventPermissionKey.DeleteEvent)
   async deleteEvent(
     @Args('id', { type: () => ID }) id: string,
     @CurrentUser() currentUser: CurrentUserData,
@@ -75,31 +75,29 @@ export class EventMutationResolver {
     return this.writeService.deleteEvent(id, currentUser.id);
   }
 
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
-  @Mutation(() => Boolean)
+  @EventPermissions(EventPermissionKey.ManageRoles)
+  @Mutation(() => EventPayload)
   async assignUserToEvent(
     @Args('input') input: AssignUserRoleInput,
     @CurrentUser() currentUser: CurrentUserData,
-  ): Promise<boolean> {
-    await this.writeService.assignUserToEvent({
+  ): Promise<EventPayload> {
+    return this.writeService.assignUserToEvent({
       ...input,
       actorId: currentUser.id,
     });
-    return true;
   }
 
-  @Mutation(() => Boolean)
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @Mutation(() => EventPayload)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
+  @EventPermissions(EventPermissionKey.ManageRoles)
   async removeUserFromEvent(
     @Args('input') input: RemoveUserFromEventInput,
     @CurrentUser() currentUser: CurrentUserData,
-  ): Promise<boolean> {
-    await this.writeService.removeUserFromEvent(input, currentUser.id);
-    return true;
+  ): Promise<EventPayload> {
+    return this.writeService.removeUserFromEvent(input, currentUser.id);
   }
 
   @UseGuards(CookieAuthGuard, RoleGuard)
@@ -118,9 +116,9 @@ export class EventMutationResolver {
     return true;
   }
 
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
+  @EventPermissions(EventPermissionKey.ManageEventSettings)
   @Mutation(() => Boolean)
   async activateEvent(
     @Args('eventId', { type: () => ID }) eventId: string,
@@ -129,9 +127,9 @@ export class EventMutationResolver {
     return this.writeService.activateEvent(eventId, user.id);
   }
 
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
+  @EventPermissions(EventPermissionKey.ManageEventSettings)
   @Mutation(() => Boolean)
   async deactivateEvent(
     @Args('eventId', { type: () => ID }) eventId: string,
@@ -140,9 +138,9 @@ export class EventMutationResolver {
     return this.writeService.deactivateEvent(eventId, user.id);
   }
 
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
+  @EventPermissions(EventPermissionKey.ManageTimeline)
   @Mutation(() => EventPayload)
   async addTimeLines(
     @Args('eventId', { type: () => ID }) eventId: string,
@@ -153,9 +151,9 @@ export class EventMutationResolver {
     return this.writeService.addTimelines(eventId, timelineInputs, user.id);
   }
 
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
+  @EventPermissions(EventPermissionKey.ManageTimeline)
   @Mutation(() => EventPayload)
   async updateTimeLines(
     @Args('eventId', { type: () => ID }) eventId: string,
@@ -166,9 +164,9 @@ export class EventMutationResolver {
     return this.writeService.updateTimelines(eventId, input, user.id);
   }
 
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
+  @EventPermissions(EventPermissionKey.ManageTimeline)
   @Mutation(() => EventPayload)
   async removeTimeLines(
     @Args('eventId', { type: () => ID }) eventId: string,
@@ -179,9 +177,9 @@ export class EventMutationResolver {
     return this.writeService.removeTimelines(eventId, input, user.id);
   }
 
-  @UseGuards(CookieAuthGuard, RoleGuard, EventRoleGuard)
+  @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
   @Roles(RealmRoleType.USER)
-  @EventRoles(EventRoleType.ADMIN)
+  @EventPermissions(EventPermissionKey.ManageTimeline)
   @Mutation(() => EventPayload)
   async setTimelines(
     @Args('input') input: SetTimelineInput,

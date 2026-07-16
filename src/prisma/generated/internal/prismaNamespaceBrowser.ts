@@ -55,8 +55,13 @@ export const ModelName = {
   Analytics: 'Analytics',
   Timeline: 'Timeline',
   Role: 'Role',
+  EventRoleDefinition: 'EventRoleDefinition',
+  EventPermissionDefinition: 'EventPermissionDefinition',
+  EventRolePermission: 'EventRolePermission',
+  EventUserRoleAssignment: 'EventUserRoleAssignment',
   Media: 'Media',
-  MediaVariant: 'MediaVariant'
+  MediaVariant: 'MediaVariant',
+  SeatColorGroup: 'SeatColorGroup'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -110,10 +115,12 @@ export const SettingsScalarFieldEnum = {
   allowSeatOverbooking: 'allowSeatOverbooking',
   publicRsvpWebsite: 'publicRsvpWebsite',
   invitedByOptions: 'invitedByOptions',
+  visibleTabs: 'visibleTabs',
   isActive: 'isActive',
   isPublic: 'isPublic',
   dressCode: 'dressCode',
   description: 'description',
+  scheduleTicketRelease: 'scheduleTicketRelease',
   ticketReleaseAt: 'ticketReleaseAt',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
@@ -163,6 +170,57 @@ export const RoleScalarFieldEnum = {
 export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
 
 
+export const EventRoleDefinitionScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  key: 'key',
+  name: 'name',
+  description: 'description',
+  color: 'color',
+  icon: 'icon',
+  systemKey: 'systemKey',
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventRoleDefinitionScalarFieldEnum = (typeof EventRoleDefinitionScalarFieldEnum)[keyof typeof EventRoleDefinitionScalarFieldEnum]
+
+
+export const EventPermissionDefinitionScalarFieldEnum = {
+  key: 'key',
+  category: 'category',
+  label: 'label',
+  description: 'description',
+  premiumFeatureKey: 'premiumFeatureKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventPermissionDefinitionScalarFieldEnum = (typeof EventPermissionDefinitionScalarFieldEnum)[keyof typeof EventPermissionDefinitionScalarFieldEnum]
+
+
+export const EventRolePermissionScalarFieldEnum = {
+  roleId: 'roleId',
+  permissionKey: 'permissionKey'
+} as const
+
+export type EventRolePermissionScalarFieldEnum = (typeof EventRolePermissionScalarFieldEnum)[keyof typeof EventRolePermissionScalarFieldEnum]
+
+
+export const EventUserRoleAssignmentScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  userId: 'userId',
+  roleId: 'roleId',
+  assignedBy: 'assignedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventUserRoleAssignmentScalarFieldEnum = (typeof EventUserRoleAssignmentScalarFieldEnum)[keyof typeof EventUserRoleAssignmentScalarFieldEnum]
+
+
 export const MediaScalarFieldEnum = {
   id: 'id',
   key: 'key',
@@ -191,12 +249,36 @@ export const MediaVariantScalarFieldEnum = {
 export type MediaVariantScalarFieldEnum = (typeof MediaVariantScalarFieldEnum)[keyof typeof MediaVariantScalarFieldEnum]
 
 
+export const SeatColorGroupScalarFieldEnum = {
+  id: 'id',
+  settingsId: 'settingsId',
+  name: 'name',
+  style: 'style',
+  matchType: 'matchType',
+  invitedByValues: 'invitedByValues',
+  priority: 'priority',
+  order: 'order',
+  isOrphaned: 'isOrphaned',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SeatColorGroupScalarFieldEnum = (typeof SeatColorGroupScalarFieldEnum)[keyof typeof SeatColorGroupScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -213,4 +295,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

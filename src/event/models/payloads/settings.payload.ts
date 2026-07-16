@@ -1,7 +1,9 @@
 import {
   EventCategory,
+  EventVisibleTab,
   InvitationApprovalMode,
 } from '../../../prisma/generated/client.js';
+import { SeatColorGroupPayload } from './seat-color-group.payload.js';
 import { ObjectType, Field, ID, GraphQLISODateTime } from '@nestjs/graphql';
 
 @ObjectType()
@@ -72,8 +74,17 @@ export class SettingsPayload {
   @Field(() => [String])
   invitedByOptions!: string[];
 
+  @Field(() => [EventVisibleTab])
+  visibleTabs!: EventVisibleTab[];
+
+  @Field(() => [SeatColorGroupPayload])
+  seatColorGroups!: SeatColorGroupPayload[];
+
   @Field(() => EventCategory)
   category!: EventCategory;
+
+  @Field(() => Boolean)
+  scheduleTicketRelease!: boolean;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
   ticketReleaseAt?: Date;

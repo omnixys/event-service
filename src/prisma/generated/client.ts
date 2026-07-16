@@ -66,6 +66,26 @@ export type Timeline = Prisma.TimelineModel
  */
 export type Role = Prisma.RoleModel
 /**
+ * Model EventRoleDefinition
+ * 
+ */
+export type EventRoleDefinition = Prisma.EventRoleDefinitionModel
+/**
+ * Model EventPermissionDefinition
+ * 
+ */
+export type EventPermissionDefinition = Prisma.EventPermissionDefinitionModel
+/**
+ * Model EventRolePermission
+ * 
+ */
+export type EventRolePermission = Prisma.EventRolePermissionModel
+/**
+ * Model EventUserRoleAssignment
+ * 
+ */
+export type EventUserRoleAssignment = Prisma.EventUserRoleAssignmentModel
+/**
  * Model Media
  * 
  */
@@ -75,3 +95,8 @@ export type Media = Prisma.MediaModel
  * 
  */
 export type MediaVariant = Prisma.MediaVariantModel
+/**
+ * Model SeatColorGroup
+ * 
+ */
+export type SeatColorGroup = Prisma.SeatColorGroupModel

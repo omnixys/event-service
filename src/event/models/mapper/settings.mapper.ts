@@ -1,4 +1,7 @@
-import type { Settings } from '../../../prisma/generated/client.js';
+import {
+  EventVisibleTab,
+  type Settings,
+} from '../../../prisma/generated/client.js';
 import type { SettingsCreateInput } from '../../../prisma/generated/models.js';
 import { EventValidationError } from '../../errors/event-domain.error.js';
 import type { CreateSettingsInput } from '../inputs/create-settings.input.js';
@@ -49,6 +52,11 @@ export class SettingsCreateMapper {
 
       publicRsvpWebsite: base.publicRsvpWebsite ?? null,
       invitedByOptions: extendedBase.invitedByOptions ?? [],
+      visibleTabs: extendedBase.visibleTabs ?? [
+        EventVisibleTab.TIMELINE,
+        EventVisibleTab.DETAILS,
+        EventVisibleTab.MAP,
+      ],
 
       isActive: base.isActive,
       isPublic: base.isPublic,
@@ -56,7 +64,10 @@ export class SettingsCreateMapper {
       dressCode: base.dressCode ?? null,
       description: base.description ?? null,
 
-      ticketReleaseAt: base.ticketReleaseAt ?? null,
+      scheduleTicketRelease: base.scheduleTicketRelease,
+      ticketReleaseAt: base.scheduleTicketRelease
+        ? (base.ticketReleaseAt ?? null)
+        : null,
 
       startsAt: base.startsAt,
       endsAt: base.endsAt,

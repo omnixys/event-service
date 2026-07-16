@@ -1,8 +1,9 @@
 import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { EventRbacService } from './event-rbac.service.js';
 import { Injectable } from '@nestjs/common';
-import type { EventRoleType } from '@omnixys/contracts';
-import { EventRoleResolver } from '@omnixys/security';
+import type { EventPermissionKey, EventRoleType } from '@omnixys/contracts';
+import { EventPermissionResolver, EventRoleResolver } from '@omnixys/security';
 
 function mapToEventRoleType(role: UserRoleType | undefined): EventRoleType | null {
   if (!role) {
@@ -16,14 +17,19 @@ function mapToEventRoleType(role: UserRoleType | undefined): EventRoleType | nul
       return 'SECURITY' as EventRoleType;
     case UserRoleType.GUEST:
       return 'GUEST' as EventRoleType;
+    case UserRoleType.SUPPORT:
+      return 'SUPPORT' as EventRoleType;
     default:
       return null;
   }
 }
 
 @Injectable()
-export class EventAccessService extends EventRoleResolver {
-  constructor(private readonly prisma: PrismaService) {
+export class EventAccessService extends EventRoleResolver implements EventPermissionResolver {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly rbacService: EventRbacService,
+  ) {
     super();
   }
 
@@ -83,5 +89,12 @@ export class EventAccessService extends EventRoleResolver {
     }
 
     return requiredRoles.includes(userRole);
+  }
+
+  async getPermissionsForUser(
+    userId: string,
+    eventId: string,
+  ): Promise<readonly EventPermissionKey[]> {
+    return this.rbacService.getPermissionKeysForUser(userId, eventId);
   }
 }

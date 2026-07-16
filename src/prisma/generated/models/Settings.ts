@@ -58,6 +58,7 @@ export type SettingsMinAggregateOutputType = {
   isPublic: boolean | null
   dressCode: string | null
   description: string | null
+  scheduleTicketRelease: boolean | null
   ticketReleaseAt: Date | null
   startsAt: Date | null
   endsAt: Date | null
@@ -87,6 +88,7 @@ export type SettingsMaxAggregateOutputType = {
   isPublic: boolean | null
   dressCode: string | null
   description: string | null
+  scheduleTicketRelease: boolean | null
   ticketReleaseAt: Date | null
   startsAt: Date | null
   endsAt: Date | null
@@ -113,10 +115,12 @@ export type SettingsCountAggregateOutputType = {
   allowSeatOverbooking: number
   publicRsvpWebsite: number
   invitedByOptions: number
+  visibleTabs: number
   isActive: number
   isPublic: number
   dressCode: number
   description: number
+  scheduleTicketRelease: number
   ticketReleaseAt: number
   startsAt: number
   endsAt: number
@@ -160,6 +164,7 @@ export type SettingsMinAggregateInputType = {
   isPublic?: true
   dressCode?: true
   description?: true
+  scheduleTicketRelease?: true
   ticketReleaseAt?: true
   startsAt?: true
   endsAt?: true
@@ -189,6 +194,7 @@ export type SettingsMaxAggregateInputType = {
   isPublic?: true
   dressCode?: true
   description?: true
+  scheduleTicketRelease?: true
   ticketReleaseAt?: true
   startsAt?: true
   endsAt?: true
@@ -215,10 +221,12 @@ export type SettingsCountAggregateInputType = {
   allowSeatOverbooking?: true
   publicRsvpWebsite?: true
   invitedByOptions?: true
+  visibleTabs?: true
   isActive?: true
   isPublic?: true
   dressCode?: true
   description?: true
+  scheduleTicketRelease?: true
   ticketReleaseAt?: true
   startsAt?: true
   endsAt?: true
@@ -332,10 +340,12 @@ export type SettingsGroupByOutputType = {
   allowSeatOverbooking: boolean
   publicRsvpWebsite: string | null
   invitedByOptions: string[]
+  visibleTabs: $Enums.EventVisibleTab[]
   isActive: boolean
   isPublic: boolean
   dressCode: string | null
   description: string | null
+  scheduleTicketRelease: boolean
   ticketReleaseAt: Date | null
   startsAt: Date
   endsAt: Date
@@ -385,10 +395,12 @@ export type SettingsWhereInput = {
   allowSeatOverbooking?: Prisma.BoolFilter<"Settings"> | boolean
   publicRsvpWebsite?: Prisma.StringNullableFilter<"Settings"> | string | null
   invitedByOptions?: Prisma.StringNullableListFilter<"Settings">
+  visibleTabs?: Prisma.EnumEventVisibleTabNullableListFilter<"Settings">
   isActive?: Prisma.BoolFilter<"Settings"> | boolean
   isPublic?: Prisma.BoolFilter<"Settings"> | boolean
   dressCode?: Prisma.StringNullableFilter<"Settings"> | string | null
   description?: Prisma.StringNullableFilter<"Settings"> | string | null
+  scheduleTicketRelease?: Prisma.BoolFilter<"Settings"> | boolean
   ticketReleaseAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   startsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
@@ -396,6 +408,7 @@ export type SettingsWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   updatedAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   event?: Prisma.XOR<Prisma.EventNullableScalarRelationFilter, Prisma.EventWhereInput> | null
+  seatColorGroups?: Prisma.SeatColorGroupListRelationFilter
 }
 
 export type SettingsOrderByWithRelationInput = {
@@ -416,10 +429,12 @@ export type SettingsOrderByWithRelationInput = {
   allowSeatOverbooking?: Prisma.SortOrder
   publicRsvpWebsite?: Prisma.SortOrderInput | Prisma.SortOrder
   invitedByOptions?: Prisma.SortOrder
+  visibleTabs?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  scheduleTicketRelease?: Prisma.SortOrder
   ticketReleaseAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
@@ -427,6 +442,7 @@ export type SettingsOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   event?: Prisma.EventOrderByWithRelationInput
+  seatColorGroups?: Prisma.SeatColorGroupOrderByRelationAggregateInput
 }
 
 export type SettingsWhereUniqueInput = Prisma.AtLeast<{
@@ -450,10 +466,12 @@ export type SettingsWhereUniqueInput = Prisma.AtLeast<{
   allowSeatOverbooking?: Prisma.BoolFilter<"Settings"> | boolean
   publicRsvpWebsite?: Prisma.StringNullableFilter<"Settings"> | string | null
   invitedByOptions?: Prisma.StringNullableListFilter<"Settings">
+  visibleTabs?: Prisma.EnumEventVisibleTabNullableListFilter<"Settings">
   isActive?: Prisma.BoolFilter<"Settings"> | boolean
   isPublic?: Prisma.BoolFilter<"Settings"> | boolean
   dressCode?: Prisma.StringNullableFilter<"Settings"> | string | null
   description?: Prisma.StringNullableFilter<"Settings"> | string | null
+  scheduleTicketRelease?: Prisma.BoolFilter<"Settings"> | boolean
   ticketReleaseAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   startsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
@@ -461,6 +479,7 @@ export type SettingsWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   updatedAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   event?: Prisma.XOR<Prisma.EventNullableScalarRelationFilter, Prisma.EventWhereInput> | null
+  seatColorGroups?: Prisma.SeatColorGroupListRelationFilter
 }, "id" | "eventId">
 
 export type SettingsOrderByWithAggregationInput = {
@@ -481,10 +500,12 @@ export type SettingsOrderByWithAggregationInput = {
   allowSeatOverbooking?: Prisma.SortOrder
   publicRsvpWebsite?: Prisma.SortOrderInput | Prisma.SortOrder
   invitedByOptions?: Prisma.SortOrder
+  visibleTabs?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  scheduleTicketRelease?: Prisma.SortOrder
   ticketReleaseAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
@@ -519,10 +540,12 @@ export type SettingsScalarWhereWithAggregatesInput = {
   allowSeatOverbooking?: Prisma.BoolWithAggregatesFilter<"Settings"> | boolean
   publicRsvpWebsite?: Prisma.StringNullableWithAggregatesFilter<"Settings"> | string | null
   invitedByOptions?: Prisma.StringNullableListFilter<"Settings">
+  visibleTabs?: Prisma.EnumEventVisibleTabNullableListFilter<"Settings">
   isActive?: Prisma.BoolWithAggregatesFilter<"Settings"> | boolean
   isPublic?: Prisma.BoolWithAggregatesFilter<"Settings"> | boolean
   dressCode?: Prisma.StringNullableWithAggregatesFilter<"Settings"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Settings"> | string | null
+  scheduleTicketRelease?: Prisma.BoolWithAggregatesFilter<"Settings"> | boolean
   ticketReleaseAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Settings"> | Date | string | null
   startsAt?: Prisma.DateTimeWithAggregatesFilter<"Settings"> | Date | string
   endsAt?: Prisma.DateTimeWithAggregatesFilter<"Settings"> | Date | string
@@ -548,10 +571,12 @@ export type SettingsCreateInput = {
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
   invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsCreatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  scheduleTicketRelease?: boolean
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
@@ -559,6 +584,7 @@ export type SettingsCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string | null
   event?: Prisma.EventCreateNestedOneWithoutSettingsInput
+  seatColorGroups?: Prisma.SeatColorGroupCreateNestedManyWithoutSettingsInput
 }
 
 export type SettingsUncheckedCreateInput = {
@@ -579,16 +605,19 @@ export type SettingsUncheckedCreateInput = {
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
   invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsCreatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  scheduleTicketRelease?: boolean
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
+  seatColorGroups?: Prisma.SeatColorGroupUncheckedCreateNestedManyWithoutSettingsInput
 }
 
 export type SettingsUpdateInput = {
@@ -608,10 +637,12 @@ export type SettingsUpdateInput = {
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsUpdatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleTicketRelease?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -619,6 +650,7 @@ export type SettingsUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   event?: Prisma.EventUpdateOneWithoutSettingsNestedInput
+  seatColorGroups?: Prisma.SeatColorGroupUpdateManyWithoutSettingsNestedInput
 }
 
 export type SettingsUncheckedUpdateInput = {
@@ -639,16 +671,19 @@ export type SettingsUncheckedUpdateInput = {
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsUpdatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleTicketRelease?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  seatColorGroups?: Prisma.SeatColorGroupUncheckedUpdateManyWithoutSettingsNestedInput
 }
 
 export type SettingsCreateManyInput = {
@@ -669,10 +704,12 @@ export type SettingsCreateManyInput = {
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
   invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsCreatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  scheduleTicketRelease?: boolean
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
@@ -698,10 +735,12 @@ export type SettingsUpdateManyMutationInput = {
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsUpdatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleTicketRelease?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -728,10 +767,12 @@ export type SettingsUncheckedUpdateManyInput = {
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsUpdatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleTicketRelease?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -743,6 +784,14 @@ export type SettingsUncheckedUpdateManyInput = {
 export type SettingsNullableScalarRelationFilter = {
   is?: Prisma.SettingsWhereInput | null
   isNot?: Prisma.SettingsWhereInput | null
+}
+
+export type EnumEventVisibleTabNullableListFilter<$PrismaModel = never> = {
+  equals?: $Enums.EventVisibleTab[] | Prisma.ListEnumEventVisibleTabFieldRefInput<$PrismaModel> | null
+  has?: $Enums.EventVisibleTab | Prisma.EnumEventVisibleTabFieldRefInput<$PrismaModel> | null
+  hasEvery?: $Enums.EventVisibleTab[] | Prisma.ListEnumEventVisibleTabFieldRefInput<$PrismaModel>
+  hasSome?: $Enums.EventVisibleTab[] | Prisma.ListEnumEventVisibleTabFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type SettingsCountOrderByAggregateInput = {
@@ -763,10 +812,12 @@ export type SettingsCountOrderByAggregateInput = {
   allowSeatOverbooking?: Prisma.SortOrder
   publicRsvpWebsite?: Prisma.SortOrder
   invitedByOptions?: Prisma.SortOrder
+  visibleTabs?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  scheduleTicketRelease?: Prisma.SortOrder
   ticketReleaseAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
@@ -802,6 +853,7 @@ export type SettingsMaxOrderByAggregateInput = {
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  scheduleTicketRelease?: Prisma.SortOrder
   ticketReleaseAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
@@ -831,6 +883,7 @@ export type SettingsMinOrderByAggregateInput = {
   isPublic?: Prisma.SortOrder
   dressCode?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  scheduleTicketRelease?: Prisma.SortOrder
   ticketReleaseAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
@@ -843,6 +896,11 @@ export type SettingsSumOrderByAggregateInput = {
   rotateSeconds?: Prisma.SortOrder
   maxSeats?: Prisma.SortOrder
   maxPlusOnes?: Prisma.SortOrder
+}
+
+export type SettingsScalarRelationFilter = {
+  is?: Prisma.SettingsWhereInput
+  isNot?: Prisma.SettingsWhereInput
 }
 
 export type SettingsCreateNestedOneWithoutEventInput = {
@@ -881,6 +939,10 @@ export type SettingsCreateinvitedByOptionsInput = {
   set: string[]
 }
 
+export type SettingsCreatevisibleTabsInput = {
+  set: $Enums.EventVisibleTab[]
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
@@ -894,8 +956,27 @@ export type SettingsUpdateinvitedByOptionsInput = {
   push?: string | string[]
 }
 
+export type SettingsUpdatevisibleTabsInput = {
+  set?: $Enums.EventVisibleTab[]
+  push?: $Enums.EventVisibleTab | $Enums.EventVisibleTab[]
+}
+
 export type EnumEventCategoryFieldUpdateOperationsInput = {
   set?: $Enums.EventCategory
+}
+
+export type SettingsCreateNestedOneWithoutSeatColorGroupsInput = {
+  create?: Prisma.XOR<Prisma.SettingsCreateWithoutSeatColorGroupsInput, Prisma.SettingsUncheckedCreateWithoutSeatColorGroupsInput>
+  connectOrCreate?: Prisma.SettingsCreateOrConnectWithoutSeatColorGroupsInput
+  connect?: Prisma.SettingsWhereUniqueInput
+}
+
+export type SettingsUpdateOneRequiredWithoutSeatColorGroupsNestedInput = {
+  create?: Prisma.XOR<Prisma.SettingsCreateWithoutSeatColorGroupsInput, Prisma.SettingsUncheckedCreateWithoutSeatColorGroupsInput>
+  connectOrCreate?: Prisma.SettingsCreateOrConnectWithoutSeatColorGroupsInput
+  upsert?: Prisma.SettingsUpsertWithoutSeatColorGroupsInput
+  connect?: Prisma.SettingsWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.SettingsUpdateToOneWithWhereWithoutSeatColorGroupsInput, Prisma.SettingsUpdateWithoutSeatColorGroupsInput>, Prisma.SettingsUncheckedUpdateWithoutSeatColorGroupsInput>
 }
 
 export type SettingsCreateWithoutEventInput = {
@@ -915,16 +996,19 @@ export type SettingsCreateWithoutEventInput = {
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
   invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsCreatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  scheduleTicketRelease?: boolean
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
+  seatColorGroups?: Prisma.SeatColorGroupCreateNestedManyWithoutSettingsInput
 }
 
 export type SettingsUncheckedCreateWithoutEventInput = {
@@ -944,16 +1028,19 @@ export type SettingsUncheckedCreateWithoutEventInput = {
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: string | null
   invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsCreatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: boolean
   isPublic?: boolean
   dressCode?: string | null
   description?: string | null
+  scheduleTicketRelease?: boolean
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
+  seatColorGroups?: Prisma.SeatColorGroupUncheckedCreateNestedManyWithoutSettingsInput
 }
 
 export type SettingsCreateOrConnectWithoutEventInput = {
@@ -989,16 +1076,19 @@ export type SettingsUpdateWithoutEventInput = {
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsUpdatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleTicketRelease?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  seatColorGroups?: Prisma.SeatColorGroupUpdateManyWithoutSettingsNestedInput
 }
 
 export type SettingsUncheckedUpdateWithoutEventInput = {
@@ -1018,10 +1108,157 @@ export type SettingsUncheckedUpdateWithoutEventInput = {
   allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsUpdatevisibleTabsInput | $Enums.EventVisibleTab[]
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
   dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleTicketRelease?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  seatColorGroups?: Prisma.SeatColorGroupUncheckedUpdateManyWithoutSettingsNestedInput
+}
+
+export type SettingsCreateWithoutSeatColorGroupsInput = {
+  id?: string
+  allowReEntry?: boolean
+  rotateSeconds?: number
+  maxSeats?: number
+  allowPublicRsvp?: boolean
+  allowPublicPlusOne?: boolean
+  allowPublicRsvpWebsite?: boolean
+  allowPlusOneUpdate?: boolean
+  approvalMode?: $Enums.InvitationApprovalMode
+  allowGuestSeatSelection?: boolean
+  maxPlusOnes?: number
+  requireApprovalForPlusOnes?: boolean
+  rsvpDeadline?: Date | string | null
+  allowSeatOverbooking?: boolean
+  publicRsvpWebsite?: string | null
+  invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsCreatevisibleTabsInput | $Enums.EventVisibleTab[]
+  isActive?: boolean
+  isPublic?: boolean
+  dressCode?: string | null
+  description?: string | null
+  scheduleTicketRelease?: boolean
+  ticketReleaseAt?: Date | string | null
+  startsAt: Date | string
+  endsAt: Date | string
+  category?: $Enums.EventCategory
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  event?: Prisma.EventCreateNestedOneWithoutSettingsInput
+}
+
+export type SettingsUncheckedCreateWithoutSeatColorGroupsInput = {
+  id?: string
+  eventId: string
+  allowReEntry?: boolean
+  rotateSeconds?: number
+  maxSeats?: number
+  allowPublicRsvp?: boolean
+  allowPublicPlusOne?: boolean
+  allowPublicRsvpWebsite?: boolean
+  allowPlusOneUpdate?: boolean
+  approvalMode?: $Enums.InvitationApprovalMode
+  allowGuestSeatSelection?: boolean
+  maxPlusOnes?: number
+  requireApprovalForPlusOnes?: boolean
+  rsvpDeadline?: Date | string | null
+  allowSeatOverbooking?: boolean
+  publicRsvpWebsite?: string | null
+  invitedByOptions?: Prisma.SettingsCreateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsCreatevisibleTabsInput | $Enums.EventVisibleTab[]
+  isActive?: boolean
+  isPublic?: boolean
+  dressCode?: string | null
+  description?: string | null
+  scheduleTicketRelease?: boolean
+  ticketReleaseAt?: Date | string | null
+  startsAt: Date | string
+  endsAt: Date | string
+  category?: $Enums.EventCategory
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+}
+
+export type SettingsCreateOrConnectWithoutSeatColorGroupsInput = {
+  where: Prisma.SettingsWhereUniqueInput
+  create: Prisma.XOR<Prisma.SettingsCreateWithoutSeatColorGroupsInput, Prisma.SettingsUncheckedCreateWithoutSeatColorGroupsInput>
+}
+
+export type SettingsUpsertWithoutSeatColorGroupsInput = {
+  update: Prisma.XOR<Prisma.SettingsUpdateWithoutSeatColorGroupsInput, Prisma.SettingsUncheckedUpdateWithoutSeatColorGroupsInput>
+  create: Prisma.XOR<Prisma.SettingsCreateWithoutSeatColorGroupsInput, Prisma.SettingsUncheckedCreateWithoutSeatColorGroupsInput>
+  where?: Prisma.SettingsWhereInput
+}
+
+export type SettingsUpdateToOneWithWhereWithoutSeatColorGroupsInput = {
+  where?: Prisma.SettingsWhereInput
+  data: Prisma.XOR<Prisma.SettingsUpdateWithoutSeatColorGroupsInput, Prisma.SettingsUncheckedUpdateWithoutSeatColorGroupsInput>
+}
+
+export type SettingsUpdateWithoutSeatColorGroupsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  allowPublicRsvp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowPublicPlusOne?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowPublicRsvpWebsite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowPlusOneUpdate?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvalMode?: Prisma.EnumInvitationApprovalModeFieldUpdateOperationsInput | $Enums.InvitationApprovalMode
+  allowGuestSeatSelection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxPlusOnes?: Prisma.IntFieldUpdateOperationsInput | number
+  requireApprovalForPlusOnes?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rsvpDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsUpdatevisibleTabsInput | $Enums.EventVisibleTab[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleTicketRelease?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  event?: Prisma.EventUpdateOneWithoutSettingsNestedInput
+}
+
+export type SettingsUncheckedUpdateWithoutSeatColorGroupsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  allowReEntry?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rotateSeconds?: Prisma.IntFieldUpdateOperationsInput | number
+  maxSeats?: Prisma.IntFieldUpdateOperationsInput | number
+  allowPublicRsvp?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowPublicPlusOne?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowPublicRsvpWebsite?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  allowPlusOneUpdate?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  approvalMode?: Prisma.EnumInvitationApprovalModeFieldUpdateOperationsInput | $Enums.InvitationApprovalMode
+  allowGuestSeatSelection?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  maxPlusOnes?: Prisma.IntFieldUpdateOperationsInput | number
+  requireApprovalForPlusOnes?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  rsvpDeadline?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  allowSeatOverbooking?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  publicRsvpWebsite?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitedByOptions?: Prisma.SettingsUpdateinvitedByOptionsInput | string[]
+  visibleTabs?: Prisma.SettingsUpdatevisibleTabsInput | $Enums.EventVisibleTab[]
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isPublic?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  dressCode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  scheduleTicketRelease?: Prisma.BoolFieldUpdateOperationsInput | boolean
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1030,6 +1267,35 @@ export type SettingsUncheckedUpdateWithoutEventInput = {
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
+
+/**
+ * Count Type SettingsCountOutputType
+ */
+
+export type SettingsCountOutputType = {
+  seatColorGroups: number
+}
+
+export type SettingsCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  seatColorGroups?: boolean | SettingsCountOutputTypeCountSeatColorGroupsArgs
+}
+
+/**
+ * SettingsCountOutputType without action
+ */
+export type SettingsCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SettingsCountOutputType
+   */
+  select?: Prisma.SettingsCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * SettingsCountOutputType without action
+ */
+export type SettingsCountOutputTypeCountSeatColorGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SeatColorGroupWhereInput
+}
 
 
 export type SettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1050,10 +1316,12 @@ export type SettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: boolean
   invitedByOptions?: boolean
+  visibleTabs?: boolean
   isActive?: boolean
   isPublic?: boolean
   dressCode?: boolean
   description?: boolean
+  scheduleTicketRelease?: boolean
   ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
@@ -1061,6 +1329,8 @@ export type SettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   createdAt?: boolean
   updatedAt?: boolean
   event?: boolean | Prisma.Settings$eventArgs<ExtArgs>
+  seatColorGroups?: boolean | Prisma.Settings$seatColorGroupsArgs<ExtArgs>
+  _count?: boolean | Prisma.SettingsCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["settings"]>
 
 export type SettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1081,10 +1351,12 @@ export type SettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: boolean
   invitedByOptions?: boolean
+  visibleTabs?: boolean
   isActive?: boolean
   isPublic?: boolean
   dressCode?: boolean
   description?: boolean
+  scheduleTicketRelease?: boolean
   ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
@@ -1112,10 +1384,12 @@ export type SettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: boolean
   invitedByOptions?: boolean
+  visibleTabs?: boolean
   isActive?: boolean
   isPublic?: boolean
   dressCode?: boolean
   description?: boolean
+  scheduleTicketRelease?: boolean
   ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
@@ -1143,10 +1417,12 @@ export type SettingsSelectScalar = {
   allowSeatOverbooking?: boolean
   publicRsvpWebsite?: boolean
   invitedByOptions?: boolean
+  visibleTabs?: boolean
   isActive?: boolean
   isPublic?: boolean
   dressCode?: boolean
   description?: boolean
+  scheduleTicketRelease?: boolean
   ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
@@ -1155,9 +1431,11 @@ export type SettingsSelectScalar = {
   updatedAt?: boolean
 }
 
-export type SettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "allowReEntry" | "rotateSeconds" | "maxSeats" | "allowPublicRsvp" | "allowPublicPlusOne" | "allowPublicRsvpWebsite" | "allowPlusOneUpdate" | "approvalMode" | "allowGuestSeatSelection" | "maxPlusOnes" | "requireApprovalForPlusOnes" | "rsvpDeadline" | "allowSeatOverbooking" | "publicRsvpWebsite" | "invitedByOptions" | "isActive" | "isPublic" | "dressCode" | "description" | "ticketReleaseAt" | "startsAt" | "endsAt" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["settings"]>
+export type SettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "allowReEntry" | "rotateSeconds" | "maxSeats" | "allowPublicRsvp" | "allowPublicPlusOne" | "allowPublicRsvpWebsite" | "allowPlusOneUpdate" | "approvalMode" | "allowGuestSeatSelection" | "maxPlusOnes" | "requireApprovalForPlusOnes" | "rsvpDeadline" | "allowSeatOverbooking" | "publicRsvpWebsite" | "invitedByOptions" | "visibleTabs" | "isActive" | "isPublic" | "dressCode" | "description" | "scheduleTicketRelease" | "ticketReleaseAt" | "startsAt" | "endsAt" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["settings"]>
 export type SettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.Settings$eventArgs<ExtArgs>
+  seatColorGroups?: boolean | Prisma.Settings$seatColorGroupsArgs<ExtArgs>
+  _count?: boolean | Prisma.SettingsCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type SettingsIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.Settings$eventArgs<ExtArgs>
@@ -1170,6 +1448,7 @@ export type $SettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   name: "Settings"
   objects: {
     event: Prisma.$EventPayload<ExtArgs> | null
+    seatColorGroups: Prisma.$SeatColorGroupPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1189,10 +1468,12 @@ export type $SettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     allowSeatOverbooking: boolean
     publicRsvpWebsite: string | null
     invitedByOptions: string[]
+    visibleTabs: $Enums.EventVisibleTab[]
     isActive: boolean
     isPublic: boolean
     dressCode: string | null
     description: string | null
+    scheduleTicketRelease: boolean
     ticketReleaseAt: Date | null
     startsAt: Date
     endsAt: Date
@@ -1594,6 +1875,7 @@ readonly fields: SettingsFieldRefs;
 export interface Prisma__SettingsClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   event<T extends Prisma.Settings$eventArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Settings$eventArgs<ExtArgs>>): Prisma.Prisma__EventClient<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  seatColorGroups<T extends Prisma.Settings$seatColorGroupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Settings$seatColorGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SeatColorGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1640,10 +1922,12 @@ export interface SettingsFieldRefs {
   readonly allowSeatOverbooking: Prisma.FieldRef<"Settings", 'Boolean'>
   readonly publicRsvpWebsite: Prisma.FieldRef<"Settings", 'String'>
   readonly invitedByOptions: Prisma.FieldRef<"Settings", 'String[]'>
+  readonly visibleTabs: Prisma.FieldRef<"Settings", 'EventVisibleTab[]'>
   readonly isActive: Prisma.FieldRef<"Settings", 'Boolean'>
   readonly isPublic: Prisma.FieldRef<"Settings", 'Boolean'>
   readonly dressCode: Prisma.FieldRef<"Settings", 'String'>
   readonly description: Prisma.FieldRef<"Settings", 'String'>
+  readonly scheduleTicketRelease: Prisma.FieldRef<"Settings", 'Boolean'>
   readonly ticketReleaseAt: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly startsAt: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly endsAt: Prisma.FieldRef<"Settings", 'DateTime'>
@@ -2067,6 +2351,30 @@ export type Settings$eventArgs<ExtArgs extends runtime.Types.Extensions.Internal
    */
   include?: Prisma.EventInclude<ExtArgs> | null
   where?: Prisma.EventWhereInput
+}
+
+/**
+ * Settings.seatColorGroups
+ */
+export type Settings$seatColorGroupsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SeatColorGroup
+   */
+  select?: Prisma.SeatColorGroupSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SeatColorGroup
+   */
+  omit?: Prisma.SeatColorGroupOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SeatColorGroupInclude<ExtArgs> | null
+  where?: Prisma.SeatColorGroupWhereInput
+  orderBy?: Prisma.SeatColorGroupOrderByWithRelationInput | Prisma.SeatColorGroupOrderByWithRelationInput[]
+  cursor?: Prisma.SeatColorGroupWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SeatColorGroupScalarFieldEnum | Prisma.SeatColorGroupScalarFieldEnum[]
 }
 
 /**

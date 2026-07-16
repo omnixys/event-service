@@ -1,13 +1,15 @@
 import type {
   Event,
   Settings,
+  SeatColorGroup,
   UserRoleType,
 } from '../../../prisma/generated/client.js';
 import { n2u } from '../../utils/null-to-undefined.js';
 import type { EventPayload } from '../payloads/event.payload.js';
+import { SeatColorGroupMapper } from './seat-color-group.mapper.js';
 
 type EventWithSettings = Event & {
-  settings?: Settings | null;
+  settings?: (Settings & { seatColorGroups?: SeatColorGroup[] }) | null;
 };
 
 export class EventMapper {
@@ -68,6 +70,10 @@ export class EventMapper {
             // 🌐 Public
             publicRsvpWebsite: n2u(settings.publicRsvpWebsite),
             invitedByOptions: settings.invitedByOptions ?? [],
+            visibleTabs: settings.visibleTabs ?? [],
+            seatColorGroups: SeatColorGroupMapper.toPayloadList(
+              settings.seatColorGroups ?? [],
+            ),
 
             // 🎨 Content
             dressCode: n2u(settings.dressCode),
@@ -76,6 +82,8 @@ export class EventMapper {
             // 📅 Time
             startsAt: settings.startsAt,
             endsAt: settings.endsAt,
+            scheduleTicketRelease: settings.scheduleTicketRelease,
+            ticketReleaseAt: n2u(settings.ticketReleaseAt),
 
             // 📂 Category
             category: settings.category,

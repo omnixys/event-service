@@ -139,4 +139,7 @@ export const env = {
     'https://nominatim.openstreetmap.org/search',
   ),
   GEOCODING_COUNTRY_CODES: getEnv('GEOCODING_COUNTRY_CODES', 'de'),
+
+  USER_SERVICE_URI: getEnv('USER_SERVICE_URI', 'http://localhost:7001/graphql'),
+  AUTH_SERVICE_URI: getEnv('AUTH_SERVICE_URI', 'http://localhost:7501/graphql'),
 } as const;

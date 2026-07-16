@@ -9,9 +9,16 @@ import { GeocodingUnavailableError } from '../../dist/event/errors/geocoding-una
 import { EventMapper } from '../../dist/event/models/mapper/event.mapper.js';
 import { MediaUploadController } from '../../dist/event/controller/media-upload.controller.js';
 import { GeocodingService } from '../../dist/event/services/geocoding.service.js';
+import { EventRbacService } from '../../dist/event/services/event-rbac.service.js';
 import { MediaProcessingService } from '../../dist/event/services/media-processing.service.js';
 import { MediaHandler } from '../../dist/handlers/media.handler.js';
 import { MilestoneHandler } from '../../dist/handlers/milestone.handler.js';
+import {
+  EVENT_PERMISSION_KEYS,
+  EventPermissionKey,
+  EventRoleType,
+  getDefaultPermissionsForEventRole,
+} from '@omnixys/contracts';
 
 const logger = {
   log() {
@@ -45,6 +52,162 @@ test('event domain errors capture canonical diagnostic identifiers', () => {
       assert.deepEqual(error.metadata, { eventId: 'event-1' });
     },
   );
+});
+
+test('default event RBAC permissions preserve legacy equivalence and guest self-service split', () => {
+  const admin = getDefaultPermissionsForEventRole(EventRoleType.ADMIN);
+  assert.deepEqual(new Set(admin), new Set(EVENT_PERMISSION_KEYS));
+
+  const security = getDefaultPermissionsForEventRole(EventRoleType.SECURITY);
+  assert.ok(security.includes(EventPermissionKey.ViewGuests));
+  assert.ok(security.includes(EventPermissionKey.ViewTickets));
+  assert.ok(security.includes(EventPermissionKey.ViewSeats));
+  assert.ok(security.includes(EventPermissionKey.ScanTickets));
+
+  const guest = getDefaultPermissionsForEventRole(EventRoleType.GUEST);
+  assert.ok(guest.includes(EventPermissionKey.ViewSelfTicket));
+  assert.ok(guest.includes(EventPermissionKey.ViewSelfSeat));
+  assert.ok(guest.includes(EventPermissionKey.ManageSelfPlusOnes));
+  assert.equal(guest.includes(EventPermissionKey.ViewGuests), false);
+  assert.equal(guest.includes(EventPermissionKey.ViewTickets), false);
+  assert.equal(guest.includes(EventPermissionKey.ViewSeats), false);
+
+  const support = getDefaultPermissionsForEventRole(EventRoleType.SUPPORT);
+  assert.ok(support.includes(EventPermissionKey.ViewSupport));
+  assert.ok(support.includes(EventPermissionKey.RespondSupport));
+  assert.ok(support.includes(EventPermissionKey.ViewNotifications));
+  assert.equal(support.includes(EventPermissionKey.ViewTickets), false);
+});
+
+test('current owner access is published for root and child events', async () => {
+  const published = [];
+  const service = new EventRbacService(
+    {},
+    logger,
+    {
+      async send(event) {
+        published.push(event);
+      },
+    },
+  );
+
+  service.getAccessForUser = async (userId, eventId) => ({
+    eventId,
+    userId,
+    roles: [],
+    permissions: [...EVENT_PERMISSION_KEYS],
+  });
+
+  await Promise.all([
+    service.publishCurrentAccess('event-root', 'owner-1', 'owner-1'),
+    service.publishCurrentAccess('event-child', 'owner-1', 'owner-1'),
+  ]);
+
+  assert.deepEqual(
+    published.map(({ topic, payload }) => ({
+      topic,
+      eventId: payload.eventId,
+      userId: payload.userId,
+      canSendNotifications: payload.permissions.includes(EventPermissionKey.SendNotifications),
+    })),
+    [
+      {
+        topic: KafkaTopics.event.userAccessChanged,
+        eventId: 'event-root',
+        userId: 'owner-1',
+        canSendNotifications: true,
+      },
+      {
+        topic: KafkaTopics.event.userAccessChanged,
+        eventId: 'event-child',
+        userId: 'owner-1',
+        canSendNotifications: true,
+      },
+    ],
+  );
+});
+
+test('role mutations authorize against the resolved role event', async () => {
+  const checkedEventIds = [];
+  const service = new EventRbacService(
+    {
+      eventRoleDefinition: {
+        async findUnique() {
+          return {
+            id: 'role-b',
+            eventId: 'event-b',
+            key: 'worker',
+            name: 'Worker',
+            description: null,
+            color: null,
+            icon: null,
+            systemKey: null,
+            archivedAt: null,
+            permissions: [],
+            _count: { assignments: 0 },
+          };
+        },
+        async update() {
+          throw new Error('update must not run without event-b permission');
+        },
+      },
+    },
+    logger,
+    { send: async () => {} },
+  );
+  service.getPermissionKeysForUser = async (_userId, eventId) => {
+    checkedEventIds.push(eventId);
+    return eventId === 'event-a' ? [EventPermissionKey.ManageRoles] : [];
+  };
+
+  await assert.rejects(
+    service.updateRole({ eventId: 'event-b', roleId: 'role-b', name: 'Worker 2' }, 'actor-1'),
+    (error) => {
+      assert.equal(error.code, 'EVENT_ACCESS_DENIED');
+      return true;
+    },
+  );
+  assert.deepEqual(checkedEventIds, ['event-b']);
+});
+
+test('role mutations reject mismatched requested event before permission checks', async () => {
+  let permissionChecks = 0;
+  const service = new EventRbacService(
+    {
+      eventRoleDefinition: {
+        async findUnique() {
+          return {
+            id: 'role-b',
+            eventId: 'event-b',
+            key: 'worker',
+            name: 'Worker',
+            description: null,
+            color: null,
+            icon: null,
+            systemKey: null,
+            archivedAt: null,
+            permissions: [],
+            _count: { assignments: 0 },
+          };
+        },
+      },
+    },
+    logger,
+    { send: async () => {} },
+  );
+  service.getPermissionKeysForUser = async () => {
+    permissionChecks += 1;
+    return [EventPermissionKey.ManageRoles];
+  };
+
+  await assert.rejects(
+    service.archiveRole({ eventId: 'event-a', roleId: 'role-b' }, 'actor-1'),
+    (error) => {
+      assert.equal(error.code, 'EVENT_INVALID_INPUT');
+      return true;
+    },
+  );
+  assert.equal(permissionChecks, 0);
 });
 
 test('geocoding validates upstream results and maps failures', async () => {
@@ -230,6 +393,107 @@ test('event mapping preserves normalized categorization tags', () => {
     settings: null,
   });
   assert.deepEqual(payload.tags, ['🚀 launch']);
+});
+
+test('role removal publishes empty permissions when no modern role remains (no legacy fallback re-grant)', async () => {
+  const published = [];
+  const service = new EventRbacService(
+    {
+      eventRoleDefinition: {
+        async findUnique() {
+          return {
+            id: 'role-to-remove',
+            eventId: 'event-1',
+            key: 'custom',
+            name: 'Custom',
+            description: null,
+            color: null,
+            icon: null,
+            systemKey: null,
+            archivedAt: null,
+            permissions: [],
+            _count: { assignments: 1 },
+          };
+        },
+        async update() {
+          return {};
+        },
+      },
+      eventUserRoleAssignment: {
+        async deleteMany() {
+          return { count: 1 };
+        },
+        async findMany() {
+          return [];
+        },
+      },
+      eventRolePermission: { async deleteMany() {} },
+      eventPermissionDefinition: { async findMany() { return []; } },
+    },
+    logger,
+    { send: async (event) => published.push(event) },
+  );
+
+  const access = await service.removeRole(
+    { eventId: 'event-1', userId: 'user-1', roleId: 'role-to-remove' },
+    'actor-1',
+  );
+
+  assert.deepEqual(access.permissions, []);
+  assert.deepEqual(access.roles, []);
+  assert.equal(published.length, 1);
+  assert.deepEqual(published[0].payload.permissions, []);
+});
+
+test('role removal propagates Kafka publish failure', async () => {
+  const kafkaError = new Error('Kafka broker unreachable');
+  const service = new EventRbacService(
+    {
+      eventRoleDefinition: {
+        async findUnique() {
+          return {
+            id: 'role-to-remove',
+            eventId: 'event-1',
+            key: 'custom',
+            name: 'Custom',
+            description: null,
+            color: null,
+            icon: null,
+            systemKey: null,
+            archivedAt: null,
+            permissions: [],
+            _count: { assignments: 1 },
+          };
+        },
+      },
+      eventUserRoleAssignment: {
+        async deleteMany() {
+          return { count: 1 };
+        },
+        async findMany() {
+          return [];
+        },
+      },
+      eventRolePermission: { async deleteMany() {} },
+    },
+    logger,
+    {
+      send: async () => {
+        throw kafkaError;
+      },
+    },
+  );
+
+  await assert.rejects(
+    service.removeRole(
+      { eventId: 'event-1', userId: 'user-1', roleId: 'role-to-remove' },
+      'actor-1',
+    ),
+    (error) => {
+      assert.equal(error, kafkaError);
+      return true;
+    },
+  );
 });
 
 test('event mapping preserves invited-by options from settings', () => {

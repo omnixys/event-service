@@ -265,6 +265,8 @@ export type EventWhereInput = {
   analytics?: Prisma.XOR<Prisma.AnalyticsNullableScalarRelationFilter, Prisma.AnalyticsWhereInput> | null
   timelines?: Prisma.TimelineListRelationFilter
   roles?: Prisma.RoleListRelationFilter
+  roleDefinitions?: Prisma.EventRoleDefinitionListRelationFilter
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentListRelationFilter
   media?: Prisma.MediaListRelationFilter
   coverMedia?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
   logoMedia?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
@@ -288,6 +290,8 @@ export type EventOrderByWithRelationInput = {
   analytics?: Prisma.AnalyticsOrderByWithRelationInput
   timelines?: Prisma.TimelineOrderByRelationAggregateInput
   roles?: Prisma.RoleOrderByRelationAggregateInput
+  roleDefinitions?: Prisma.EventRoleDefinitionOrderByRelationAggregateInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentOrderByRelationAggregateInput
   media?: Prisma.MediaOrderByRelationAggregateInput
   coverMedia?: Prisma.MediaOrderByWithRelationInput
   logoMedia?: Prisma.MediaOrderByWithRelationInput
@@ -314,6 +318,8 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   analytics?: Prisma.XOR<Prisma.AnalyticsNullableScalarRelationFilter, Prisma.AnalyticsWhereInput> | null
   timelines?: Prisma.TimelineListRelationFilter
   roles?: Prisma.RoleListRelationFilter
+  roleDefinitions?: Prisma.EventRoleDefinitionListRelationFilter
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentListRelationFilter
   media?: Prisma.MediaListRelationFilter
   coverMedia?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
   logoMedia?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
@@ -370,6 +376,8 @@ export type EventCreateInput = {
   analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
@@ -392,6 +400,8 @@ export type EventUncheckedCreateInput = {
   analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
 }
 
@@ -410,6 +420,8 @@ export type EventUpdateInput = {
   analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
@@ -432,6 +444,8 @@ export type EventUncheckedUpdateInput = {
   analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
@@ -699,6 +713,34 @@ export type EventUpdateOneRequiredWithoutRolesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutRolesInput, Prisma.EventUpdateWithoutRolesInput>, Prisma.EventUncheckedUpdateWithoutRolesInput>
 }
 
+export type EventCreateNestedOneWithoutRoleDefinitionsInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutRoleDefinitionsInput, Prisma.EventUncheckedCreateWithoutRoleDefinitionsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutRoleDefinitionsInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneRequiredWithoutRoleDefinitionsNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutRoleDefinitionsInput, Prisma.EventUncheckedCreateWithoutRoleDefinitionsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutRoleDefinitionsInput
+  upsert?: Prisma.EventUpsertWithoutRoleDefinitionsInput
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutRoleDefinitionsInput, Prisma.EventUpdateWithoutRoleDefinitionsInput>, Prisma.EventUncheckedUpdateWithoutRoleDefinitionsInput>
+}
+
+export type EventCreateNestedOneWithoutUserRoleAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutUserRoleAssignmentsInput, Prisma.EventUncheckedCreateWithoutUserRoleAssignmentsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutUserRoleAssignmentsInput
+  connect?: Prisma.EventWhereUniqueInput
+}
+
+export type EventUpdateOneRequiredWithoutUserRoleAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutUserRoleAssignmentsInput, Prisma.EventUncheckedCreateWithoutUserRoleAssignmentsInput>
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutUserRoleAssignmentsInput
+  upsert?: Prisma.EventUpsertWithoutUserRoleAssignmentsInput
+  connect?: Prisma.EventWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.EventUpdateToOneWithWhereWithoutUserRoleAssignmentsInput, Prisma.EventUpdateWithoutUserRoleAssignmentsInput>, Prisma.EventUncheckedUpdateWithoutUserRoleAssignmentsInput>
+}
+
 export type EventCreateNestedOneWithoutMediaInput = {
   create?: Prisma.XOR<Prisma.EventCreateWithoutMediaInput, Prisma.EventUncheckedCreateWithoutMediaInput>
   connectOrCreate?: Prisma.EventCreateOrConnectWithoutMediaInput
@@ -811,6 +853,8 @@ export type EventCreateWithoutChildrenInput = {
   analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
@@ -832,6 +876,8 @@ export type EventUncheckedCreateWithoutChildrenInput = {
   analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
 }
 
@@ -854,6 +900,8 @@ export type EventCreateWithoutParentInput = {
   analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
@@ -875,6 +923,8 @@ export type EventUncheckedCreateWithoutParentInput = {
   analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
 }
 
@@ -913,6 +963,8 @@ export type EventUpdateWithoutChildrenInput = {
   analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
@@ -934,6 +986,8 @@ export type EventUncheckedUpdateWithoutChildrenInput = {
   analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
@@ -984,6 +1038,8 @@ export type EventCreateWithoutSettingsInput = {
   analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
@@ -1005,6 +1061,8 @@ export type EventUncheckedCreateWithoutSettingsInput = {
   analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
 }
 
@@ -1038,6 +1096,8 @@ export type EventUpdateWithoutSettingsInput = {
   analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
@@ -1059,6 +1119,8 @@ export type EventUncheckedUpdateWithoutSettingsInput = {
   analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
@@ -1076,6 +1138,8 @@ export type EventCreateWithoutAnalyticsInput = {
   settings?: Prisma.SettingsCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
@@ -1097,6 +1161,8 @@ export type EventUncheckedCreateWithoutAnalyticsInput = {
   settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
 }
 
@@ -1130,6 +1196,8 @@ export type EventUpdateWithoutAnalyticsInput = {
   settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
@@ -1151,6 +1219,8 @@ export type EventUncheckedUpdateWithoutAnalyticsInput = {
   settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
@@ -1168,6 +1238,8 @@ export type EventCreateWithoutTimelinesInput = {
   settings?: Prisma.SettingsCreateNestedOneWithoutEventInput
   analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
   roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
@@ -1189,6 +1261,8 @@ export type EventUncheckedCreateWithoutTimelinesInput = {
   settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput
   analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
 }
 
@@ -1222,6 +1296,8 @@ export type EventUpdateWithoutTimelinesInput = {
   settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput
   analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
   roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
@@ -1243,6 +1319,8 @@ export type EventUncheckedUpdateWithoutTimelinesInput = {
   settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput
   analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
@@ -1260,6 +1338,8 @@ export type EventCreateWithoutRolesInput = {
   settings?: Prisma.SettingsCreateNestedOneWithoutEventInput
   analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
@@ -1281,6 +1361,8 @@ export type EventUncheckedCreateWithoutRolesInput = {
   settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput
   analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
 }
 
@@ -1314,6 +1396,8 @@ export type EventUpdateWithoutRolesInput = {
   settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput
   analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
@@ -1335,6 +1419,208 @@ export type EventUncheckedUpdateWithoutRolesInput = {
   settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput
   analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
+  media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventCreateWithoutRoleDefinitionsInput = {
+  id?: string
+  name: string
+  owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
+  path?: string
+  depth?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  parent?: Prisma.EventCreateNestedOneWithoutChildrenInput
+  children?: Prisma.EventCreateNestedManyWithoutParentInput
+  settings?: Prisma.SettingsCreateNestedOneWithoutEventInput
+  analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
+  timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
+  roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
+  media?: Prisma.MediaCreateNestedManyWithoutEventInput
+  coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
+  logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+}
+
+export type EventUncheckedCreateWithoutRoleDefinitionsInput = {
+  id?: string
+  name: string
+  owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
+  parentId?: string | null
+  path?: string
+  depth?: number
+  coverMediaId?: string | null
+  logoMediaId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput
+  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput
+  analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
+  timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
+  media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutRoleDefinitionsInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutRoleDefinitionsInput, Prisma.EventUncheckedCreateWithoutRoleDefinitionsInput>
+}
+
+export type EventUpsertWithoutRoleDefinitionsInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutRoleDefinitionsInput, Prisma.EventUncheckedUpdateWithoutRoleDefinitionsInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutRoleDefinitionsInput, Prisma.EventUncheckedCreateWithoutRoleDefinitionsInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutRoleDefinitionsInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutRoleDefinitionsInput, Prisma.EventUncheckedUpdateWithoutRoleDefinitionsInput>
+}
+
+export type EventUpdateWithoutRoleDefinitionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  depth?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.EventUpdateManyWithoutParentNestedInput
+  settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput
+  analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
+  timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
+  media?: Prisma.MediaUpdateManyWithoutEventNestedInput
+  coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
+  logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+}
+
+export type EventUncheckedUpdateWithoutRoleDefinitionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  depth?: Prisma.IntFieldUpdateOperationsInput | number
+  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput
+  settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput
+  analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
+  timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
+  media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventCreateWithoutUserRoleAssignmentsInput = {
+  id?: string
+  name: string
+  owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
+  path?: string
+  depth?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  parent?: Prisma.EventCreateNestedOneWithoutChildrenInput
+  children?: Prisma.EventCreateNestedManyWithoutParentInput
+  settings?: Prisma.SettingsCreateNestedOneWithoutEventInput
+  analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
+  timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
+  roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  media?: Prisma.MediaCreateNestedManyWithoutEventInput
+  coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
+  logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+}
+
+export type EventUncheckedCreateWithoutUserRoleAssignmentsInput = {
+  id?: string
+  name: string
+  owner: string
+  tags?: Prisma.EventCreatetagsInput | string[]
+  parentId?: string | null
+  path?: string
+  depth?: number
+  coverMediaId?: string | null
+  logoMediaId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput
+  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput
+  analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
+  timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutUserRoleAssignmentsInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutUserRoleAssignmentsInput, Prisma.EventUncheckedCreateWithoutUserRoleAssignmentsInput>
+}
+
+export type EventUpsertWithoutUserRoleAssignmentsInput = {
+  update: Prisma.XOR<Prisma.EventUpdateWithoutUserRoleAssignmentsInput, Prisma.EventUncheckedUpdateWithoutUserRoleAssignmentsInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutUserRoleAssignmentsInput, Prisma.EventUncheckedCreateWithoutUserRoleAssignmentsInput>
+  where?: Prisma.EventWhereInput
+}
+
+export type EventUpdateToOneWithWhereWithoutUserRoleAssignmentsInput = {
+  where?: Prisma.EventWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutUserRoleAssignmentsInput, Prisma.EventUncheckedUpdateWithoutUserRoleAssignmentsInput>
+}
+
+export type EventUpdateWithoutUserRoleAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  depth?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.EventUpdateManyWithoutParentNestedInput
+  settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput
+  analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
+  timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  media?: Prisma.MediaUpdateManyWithoutEventNestedInput
+  coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
+  logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+}
+
+export type EventUncheckedUpdateWithoutUserRoleAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  owner?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  depth?: Prisma.IntFieldUpdateOperationsInput | number
+  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput
+  settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput
+  analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
+  timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
@@ -1353,6 +1639,8 @@ export type EventCreateWithoutMediaInput = {
   analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
 }
@@ -1374,6 +1662,8 @@ export type EventUncheckedCreateWithoutMediaInput = {
   analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
 }
 
 export type EventCreateOrConnectWithoutMediaInput = {
@@ -1396,6 +1686,8 @@ export type EventCreateWithoutCoverMediaInput = {
   analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
 }
@@ -1416,6 +1708,8 @@ export type EventUncheckedCreateWithoutCoverMediaInput = {
   analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
 }
 
@@ -1444,6 +1738,8 @@ export type EventCreateWithoutLogoMediaInput = {
   analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
 }
@@ -1464,6 +1760,8 @@ export type EventUncheckedCreateWithoutLogoMediaInput = {
   analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
   timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
   roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
   media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
 }
 
@@ -1503,6 +1801,8 @@ export type EventUpdateWithoutMediaInput = {
   analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
 }
@@ -1524,6 +1824,8 @@ export type EventUncheckedUpdateWithoutMediaInput = {
   analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
 }
 
 export type EventUpsertWithWhereUniqueWithoutCoverMediaInput = {
@@ -1585,6 +1887,8 @@ export type EventUpdateWithoutParentInput = {
   analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
@@ -1606,6 +1910,8 @@ export type EventUncheckedUpdateWithoutParentInput = {
   analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
@@ -1663,6 +1969,8 @@ export type EventUpdateWithoutCoverMediaInput = {
   analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
 }
@@ -1683,6 +1991,8 @@ export type EventUncheckedUpdateWithoutCoverMediaInput = {
   analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
@@ -1714,6 +2024,8 @@ export type EventUpdateWithoutLogoMediaInput = {
   analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
 }
@@ -1734,6 +2046,8 @@ export type EventUncheckedUpdateWithoutLogoMediaInput = {
   analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
   timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
   roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
 }
 
@@ -1759,6 +2073,8 @@ export type EventCountOutputType = {
   children: number
   timelines: number
   roles: number
+  roleDefinitions: number
+  userRoleAssignments: number
   media: number
 }
 
@@ -1766,6 +2082,8 @@ export type EventCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   children?: boolean | EventCountOutputTypeCountChildrenArgs
   timelines?: boolean | EventCountOutputTypeCountTimelinesArgs
   roles?: boolean | EventCountOutputTypeCountRolesArgs
+  roleDefinitions?: boolean | EventCountOutputTypeCountRoleDefinitionsArgs
+  userRoleAssignments?: boolean | EventCountOutputTypeCountUserRoleAssignmentsArgs
   media?: boolean | EventCountOutputTypeCountMediaArgs
 }
 
@@ -1803,6 +2121,20 @@ export type EventCountOutputTypeCountRolesArgs<ExtArgs extends runtime.Types.Ext
 /**
  * EventCountOutputType without action
  */
+export type EventCountOutputTypeCountRoleDefinitionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventRoleDefinitionWhereInput
+}
+
+/**
+ * EventCountOutputType without action
+ */
+export type EventCountOutputTypeCountUserRoleAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventUserRoleAssignmentWhereInput
+}
+
+/**
+ * EventCountOutputType without action
+ */
 export type EventCountOutputTypeCountMediaArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.MediaWhereInput
 }
@@ -1826,6 +2158,8 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   analytics?: boolean | Prisma.Event$analyticsArgs<ExtArgs>
   timelines?: boolean | Prisma.Event$timelinesArgs<ExtArgs>
   roles?: boolean | Prisma.Event$rolesArgs<ExtArgs>
+  roleDefinitions?: boolean | Prisma.Event$roleDefinitionsArgs<ExtArgs>
+  userRoleAssignments?: boolean | Prisma.Event$userRoleAssignmentsArgs<ExtArgs>
   media?: boolean | Prisma.Event$mediaArgs<ExtArgs>
   coverMedia?: boolean | Prisma.Event$coverMediaArgs<ExtArgs>
   logoMedia?: boolean | Prisma.Event$logoMediaArgs<ExtArgs>
@@ -1888,6 +2222,8 @@ export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   analytics?: boolean | Prisma.Event$analyticsArgs<ExtArgs>
   timelines?: boolean | Prisma.Event$timelinesArgs<ExtArgs>
   roles?: boolean | Prisma.Event$rolesArgs<ExtArgs>
+  roleDefinitions?: boolean | Prisma.Event$roleDefinitionsArgs<ExtArgs>
+  userRoleAssignments?: boolean | Prisma.Event$userRoleAssignmentsArgs<ExtArgs>
   media?: boolean | Prisma.Event$mediaArgs<ExtArgs>
   coverMedia?: boolean | Prisma.Event$coverMediaArgs<ExtArgs>
   logoMedia?: boolean | Prisma.Event$logoMediaArgs<ExtArgs>
@@ -1913,6 +2249,8 @@ export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     analytics: Prisma.$AnalyticsPayload<ExtArgs> | null
     timelines: Prisma.$TimelinePayload<ExtArgs>[]
     roles: Prisma.$RolePayload<ExtArgs>[]
+    roleDefinitions: Prisma.$EventRoleDefinitionPayload<ExtArgs>[]
+    userRoleAssignments: Prisma.$EventUserRoleAssignmentPayload<ExtArgs>[]
     media: Prisma.$MediaPayload<ExtArgs>[]
     coverMedia: Prisma.$MediaPayload<ExtArgs> | null
     logoMedia: Prisma.$MediaPayload<ExtArgs> | null
@@ -2329,6 +2667,8 @@ export interface Prisma__EventClient<T, Null = never, ExtArgs extends runtime.Ty
   analytics<T extends Prisma.Event$analyticsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$analyticsArgs<ExtArgs>>): Prisma.Prisma__AnalyticsClient<runtime.Types.Result.GetResult<Prisma.$AnalyticsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   timelines<T extends Prisma.Event$timelinesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$timelinesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TimelinePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   roles<T extends Prisma.Event$rolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$rolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  roleDefinitions<T extends Prisma.Event$roleDefinitionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$roleDefinitionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventRoleDefinitionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userRoleAssignments<T extends Prisma.Event$userRoleAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$userRoleAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventUserRoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   media<T extends Prisma.Event$mediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   coverMedia<T extends Prisma.Event$coverMediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$coverMediaArgs<ExtArgs>>): Prisma.Prisma__MediaClient<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   logoMedia<T extends Prisma.Event$logoMediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$logoMediaArgs<ExtArgs>>): Prisma.Prisma__MediaClient<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -2899,6 +3239,54 @@ export type Event$rolesArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   distinct?: Prisma.RoleScalarFieldEnum | Prisma.RoleScalarFieldEnum[]
+}
+
+/**
+ * Event.roleDefinitions
+ */
+export type Event$roleDefinitionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventRoleDefinition
+   */
+  select?: Prisma.EventRoleDefinitionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventRoleDefinition
+   */
+  omit?: Prisma.EventRoleDefinitionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventRoleDefinitionInclude<ExtArgs> | null
+  where?: Prisma.EventRoleDefinitionWhereInput
+  orderBy?: Prisma.EventRoleDefinitionOrderByWithRelationInput | Prisma.EventRoleDefinitionOrderByWithRelationInput[]
+  cursor?: Prisma.EventRoleDefinitionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventRoleDefinitionScalarFieldEnum | Prisma.EventRoleDefinitionScalarFieldEnum[]
+}
+
+/**
+ * Event.userRoleAssignments
+ */
+export type Event$userRoleAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventUserRoleAssignment
+   */
+  select?: Prisma.EventUserRoleAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventUserRoleAssignment
+   */
+  omit?: Prisma.EventUserRoleAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventUserRoleAssignmentInclude<ExtArgs> | null
+  where?: Prisma.EventUserRoleAssignmentWhereInput
+  orderBy?: Prisma.EventUserRoleAssignmentOrderByWithRelationInput | Prisma.EventUserRoleAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.EventUserRoleAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventUserRoleAssignmentScalarFieldEnum | Prisma.EventUserRoleAssignmentScalarFieldEnum[]
 }
 
 /**

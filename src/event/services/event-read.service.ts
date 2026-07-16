@@ -298,11 +298,21 @@ export class EventReadService {
         select: { eventId: true },
       });
 
-      if (directRoles.length === 0) {
+      const dynamicRoles = await this.prisma.eventUserRoleAssignment.findMany({
+        where: {
+          userId,
+          role: { archivedAt: null },
+        },
+        select: { eventId: true },
+      });
+
+      if (directRoles.length === 0 && dynamicRoles.length === 0) {
         return [];
       }
 
-      const eventIds = directRoles.map((r) => r.eventId);
+      const eventIds = [
+        ...new Set([...directRoles.map((r) => r.eventId), ...dynamicRoles.map((r) => r.eventId)]),
+      ];
 
       /**
        * 2. Load ONLY those events (no expansion!)
@@ -461,7 +471,22 @@ export class EventReadService {
         throw new EventNotFoundError(id);
       }
 
-      if (!isAdmin && event.roles.length === 0) {
+      const pathIds = this.getPathIds(event);
+
+      const hasDynamicAccess = isAdmin
+        ? true
+        : Boolean(
+            await this.prisma.eventUserRoleAssignment.findFirst({
+              where: {
+                userId,
+                eventId: { in: pathIds },
+                role: { archivedAt: null },
+              },
+              select: { id: true },
+            }),
+          );
+
+      if (!isAdmin && event.roles.length === 0 && !hasDynamicAccess && event.owner !== userId) {
         this.logger.warn('User tried to access event without role', {
           eventId: id,
           userId,
@@ -469,8 +494,6 @@ export class EventReadService {
 
         throw new EventAccessDeniedError(id, 'missing-event-role');
       }
-
-      const pathIds = this.getPathIds(event);
 
       for (const id of pathIds) {
         const role = await this.prisma.role.findUnique({

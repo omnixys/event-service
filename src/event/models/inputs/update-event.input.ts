@@ -1,9 +1,18 @@
 import {
   EventCategory,
+  EventVisibleTab,
   InvitationApprovalMode,
 } from '../../../prisma/generated/enums.js';
+import { SeatColorGroupInput } from './seat-color-group.input.js';
 import { Field, GraphQLISODateTime, InputType, Int } from '@nestjs/graphql';
-import { ArrayMaxSize, IsArray, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  ArrayMaxSize,
+  IsArray,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
 // @InputType()
 // export class UpdateEventInput extends PartialType(CreateEventInput) {
@@ -72,6 +81,18 @@ export class UpdateSettingsInput {
   @IsOptional()
   invitedByOptions?: string[];
 
+  @Field(() => [EventVisibleTab], { nullable: true })
+  @IsArray()
+  @ArrayMaxSize(10)
+  @IsOptional()
+  visibleTabs?: EventVisibleTab[];
+
+  @Field(() => [SeatColorGroupInput], { nullable: true })
+  @ValidateNested({ each: true })
+  @Type(() => SeatColorGroupInput)
+  @IsOptional()
+  seatColorGroups?: SeatColorGroupInput[];
+
   @Field(() => String, { nullable: true })
   dressCode?: string;
 
@@ -81,6 +102,9 @@ export class UpdateSettingsInput {
   @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()
   ticketReleaseAt?: Date | null;
+
+  @Field(() => Boolean, { nullable: true })
+  scheduleTicketRelease?: boolean;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()

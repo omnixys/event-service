@@ -1,4 +1,4 @@
-import { UserRoleType } from '../../prisma/generated/client.js';
+import { UserRoleType, SeatColorGroupMatchType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import {
   EventAccessDeniedError,
@@ -11,6 +11,7 @@ import { SeatAllocationExceededError } from '../errors/seat-allocation-exceeded.
 import { AssignUserRoleDTO } from '../models/inputs/assign-user-role.input.js';
 import { CreateEventInput } from '../models/inputs/create-event.input.js';
 import { RemoveUserFromEventInput } from '../models/inputs/remove-user-from-event.input.js';
+import type { SeatColorGroupInput } from '../models/inputs/seat-color-group.input.js';
 import {
   CreateTimelineInput,
   RemoveTimelineInput,
@@ -22,6 +23,7 @@ import { UpdateEventInput } from '../models/inputs/update-event.input.js';
 import { EventMapper } from '../models/mapper/event.mapper.js';
 import { SettingsCreateMapper } from '../models/mapper/settings.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
+import { EventRbacService } from './event-rbac.service.js';
 import { Injectable } from '@nestjs/common';
 import {
   EventRoleType,
@@ -31,6 +33,8 @@ import {
   type EventRoleAssignedDTO,
   type EventRoleRemovedDTO,
   type EventUpdatedDTO,
+  type EventVisibleTab,
+  type SeatColorGroupDTO,
 } from '@omnixys/contracts';
 import {
   KafkaProducerService,
@@ -41,6 +45,42 @@ import {
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
 
+const DEFAULT_SEAT_COLOR_STYLES = [
+  { background: '#e74c3c', border: '#c0392b', foreground: '#ffffff', legendIcon: '#e74c3c' },
+  { background: '#3498db', border: '#2980b9', foreground: '#ffffff', legendIcon: '#3498db' },
+  { background: '#2ecc71', border: '#27ae60', foreground: '#ffffff', legendIcon: '#2ecc71' },
+  { background: '#f39c12', border: '#e67e22', foreground: '#ffffff', legendIcon: '#f39c12' },
+  { background: '#9b59b6', border: '#8e44ad', foreground: '#ffffff', legendIcon: '#9b59b6' },
+  { background: '#1abc9c', border: '#16a085', foreground: '#ffffff', legendIcon: '#1abc9c' },
+  { background: '#e67e22', border: '#d35400', foreground: '#ffffff', legendIcon: '#e67e22' },
+  { background: '#2980b9', border: '#1a6fc4', foreground: '#ffffff', legendIcon: '#2980b9' },
+  { background: '#e91e63', border: '#c2185b', foreground: '#ffffff', legendIcon: '#e91e63' },
+  { background: '#00bcd4', border: '#00acc1', foreground: '#ffffff', legendIcon: '#00bcd4' },
+];
+
+const ALL_GROUP_STYLE = {
+  background: '#795548',
+  border: '#5d4037',
+  foreground: '#ffffff',
+  legendIcon: '#795548',
+};
+const NONE_GROUP_STYLE = {
+  background: '#9e9e9e',
+  border: '#757575',
+  foreground: '#ffffff',
+  legendIcon: '#9e9e9e',
+};
+
+type EventCreatedWithPlusOneApprovalDTO = EventCreatedDTO & {
+  requireApprovalForPlusOnes: boolean;
+  scheduleTicketRelease: boolean;
+};
+
+type EventUpdatedWithPlusOneApprovalDTO = EventUpdatedDTO & {
+  requireApprovalForPlusOnes: boolean;
+  scheduleTicketRelease: boolean;
+};
+
 @Injectable()
 export class EventWriteService {
   private readonly log;
@@ -49,8 +89,145 @@ export class EventWriteService {
     private readonly prisma: PrismaService,
     private readonly omnixyslog: OmnixysLogger,
     private readonly kafkaProducerService: KafkaProducerService,
+    private readonly rbacService: EventRbacService,
   ) {
     this.log = this.omnixyslog.log(this.constructor.name);
+  }
+
+  private inputToPrismaCreate(inputs: SeatColorGroupInput[]): Array<{
+    name: string;
+    style: Record<string, string>;
+    matchType: SeatColorGroupMatchType;
+    invitedByValues: string[];
+    priority: number;
+    order: number;
+    isOrphaned: boolean;
+  }> {
+    return inputs.map((g) => ({
+      name: g.name,
+      style: { ...g.style },
+      matchType: g.matchType,
+      invitedByValues: g.invitedByValues,
+      priority: g.priority,
+      order: g.order,
+      isOrphaned: false,
+    }));
+  }
+
+  private generateDefaultSeatColorGroups(invitedByOptions: string[]): Array<{
+    name: string;
+    style: Record<string, string>;
+    matchType: SeatColorGroupMatchType;
+    invitedByValues: string[];
+    priority: number;
+    order: number;
+    isOrphaned: boolean;
+  }> {
+    const groups: Array<{
+      name: string;
+      style: Record<string, string>;
+      matchType: SeatColorGroupMatchType;
+      invitedByValues: string[];
+      priority: number;
+      order: number;
+      isOrphaned: boolean;
+    }> = [];
+
+    invitedByOptions.forEach((option, index) => {
+      const style = DEFAULT_SEAT_COLOR_STYLES[index % DEFAULT_SEAT_COLOR_STYLES.length];
+      groups.push({
+        name: option,
+        style: { ...style },
+        matchType: SeatColorGroupMatchType.SINGLE,
+        invitedByValues: [option],
+        priority: index + 1,
+        order: index,
+        isOrphaned: false,
+      });
+    });
+
+    groups.push({
+      name: 'Alle',
+      style: { ...ALL_GROUP_STYLE },
+      matchType: SeatColorGroupMatchType.ALL,
+      invitedByValues: [...invitedByOptions],
+      priority: invitedByOptions.length + 1,
+      order: invitedByOptions.length,
+      isOrphaned: false,
+    });
+
+    groups.push({
+      name: 'Keine',
+      style: { ...NONE_GROUP_STYLE },
+      matchType: SeatColorGroupMatchType.NONE,
+      invitedByValues: [],
+      priority: invitedByOptions.length + 2,
+      order: invitedByOptions.length + 1,
+      isOrphaned: false,
+    });
+
+    return groups;
+  }
+
+  private prismaGroupsToDTOs(
+    groups: Array<{
+      id: string;
+      name: string;
+      style: unknown;
+      matchType: string;
+      invitedByValues: unknown;
+      priority: number;
+      order: number;
+      isOrphaned: boolean;
+    }>,
+  ): SeatColorGroupDTO[] {
+    return groups.map((g) => {
+      const style = g.style as {
+        background: string;
+        foreground: string;
+        border: string;
+        legendIcon: string;
+      };
+      return {
+        id: g.id,
+        name: g.name,
+        style: {
+          background: style.background,
+          foreground: style.foreground,
+          border: style.border,
+          legendIcon: style.legendIcon,
+        },
+        matchType: g.matchType as SeatColorGroupDTO['matchType'],
+        invitedByValues: g.invitedByValues as string[],
+        priority: g.priority,
+        order: g.order,
+        isOrphaned: g.isOrphaned,
+      };
+    });
+  }
+
+  private async loadEventPayload(eventId: string, actorId?: string): Promise<EventPayload> {
+    const event = await this.prisma.event.findUnique({
+      where: { id: eventId },
+      include: {
+        settings: {
+          include: { seatColorGroups: true },
+        },
+      },
+    });
+
+    if (!event) {
+      throw new EventNotFoundError(eventId);
+    }
+
+    const actorRole = actorId
+      ? await this.prisma.role.findUnique({
+          where: { userId_eventId: { userId: actorId, eventId } },
+          select: { role: true },
+        })
+      : null;
+
+    return EventMapper.toPayload(event, actorRole?.role ?? UserRoleType.ADMIN);
   }
 
   // ─────────────────────────────────────────────
@@ -120,6 +297,8 @@ export class EventWriteService {
             update: { role: UserRoleType.ADMIN },
           });
 
+          await this.rbacService.ensureSystemRoles(event.id, tx);
+
           /**
            * -------------------------------------------------------
            * 3. SETTINGS (PARENT)
@@ -130,9 +309,23 @@ export class EventWriteService {
                 data: {
                   eventId: event.id,
                   ...input.settings,
+                  ticketReleaseAt: input.settings.scheduleTicketRelease
+                    ? (input.settings.ticketReleaseAt ?? null)
+                    : null,
+                  seatColorGroups: {
+                    create: input.settings.seatColorGroups
+                      ? this.inputToPrismaCreate(input.settings.seatColorGroups)
+                      : this.generateDefaultSeatColorGroups(input.settings.invitedByOptions),
+                  },
                 },
+                include: { seatColorGroups: true },
               })
-            : parent?.settings;
+            : parent?.settings
+              ? await tx.settings.findUnique({
+                  where: { id: parent.settings.id },
+                  include: { seatColorGroups: true },
+                })
+              : undefined;
 
           /**
            * -------------------------------------------------------
@@ -234,6 +427,8 @@ export class EventWriteService {
                   },
                   update: { role: UserRoleType.ADMIN },
                 });
+
+                await this.rbacService.ensureSystemRoles(child.id, tx);
               }
             }
           }
@@ -267,23 +462,42 @@ export class EventWriteService {
         throw new Error('Event settings not found after creation');
       }
 
+      const eventCreatedPayload = {
+        eventId: result.id,
+        name: result.name,
+        endsAt: s.endsAt.toISOString(),
+        approvalMode: s.approvalMode,
+        maxSeats: s.maxSeats,
+        requireApprovalForPlusOnes: s.requireApprovalForPlusOnes,
+        startsAt: s.startsAt.toISOString(),
+        allowPublicRsvp: s.allowPublicRsvp,
+        allowPublicPlusOne: s.allowPublicPlusOne,
+        allowGuestSeatSelection: s.allowGuestSeatSelection,
+        scheduleTicketRelease: s.scheduleTicketRelease,
+        ticketReleaseAt: s.ticketReleaseAt?.toISOString(),
+        rsvpDeadline: s.rsvpDeadline?.toISOString(),
+        category: s.category,
+        visibleTabs: s.visibleTabs as unknown as EventVisibleTab[],
+        seatColorGroups: (s as Record<string, unknown>).seatColorGroups
+          ? this.prismaGroupsToDTOs(
+              (s as Record<string, unknown>).seatColorGroups as Array<{
+                id: string;
+                name: string;
+                style: unknown;
+                matchType: string;
+                invitedByValues: unknown;
+                priority: number;
+                order: number;
+                isOrphaned: boolean;
+              }>,
+            )
+          : undefined,
+        occurredAt: new Date().toISOString(),
+      } satisfies EventCreatedWithPlusOneApprovalDTO;
+
       void this.kafkaProducerService.send({
         topic: KafkaTopics.event.created,
-        payload: {
-          eventId: result.id,
-          name: result.name,
-          endsAt: s.endsAt.toISOString(),
-          approvalMode: s.approvalMode,
-          maxSeats: s.maxSeats,
-          startsAt: s.startsAt.toISOString(),
-          allowPublicRsvp: s.allowPublicRsvp,
-          allowPublicPlusOne: s.allowPublicPlusOne,
-          allowGuestSeatSelection: s.allowGuestSeatSelection,
-          ticketReleaseAt: s.ticketReleaseAt?.toISOString(),
-          rsvpDeadline: s.rsvpDeadline?.toISOString(),
-          category: s.category,
-          occurredAt: new Date().toISOString(),
-        } satisfies EventCreatedDTO,
+        payload: eventCreatedPayload,
         meta: this.meta(actorId, 'Create Event Settings'),
       });
 
@@ -326,6 +540,12 @@ export class EventWriteService {
 
       const allEventIds = [result.id, ...childIds];
       const now = new Date().toISOString();
+
+      await Promise.all(
+        allEventIds.map((eventId) =>
+          this.rbacService.publishCurrentAccess(eventId, actorId, actorId),
+        ),
+      );
 
       for (const eventId of allEventIds) {
         void this.kafkaProducerService.send({
@@ -418,10 +638,10 @@ export class EventWriteService {
         await tx.event.update({
           where: { id: input.eventId },
           data: {
-            ...(input.name !== undefined && {
+            ...(input.name != null && {
               name: input.name,
             }),
-            ...(input.tags !== undefined && {
+            ...(input.tags != null && {
               tags: normalizeTags(input.tags),
             }),
             ...parentData,
@@ -500,15 +720,107 @@ export class EventWriteService {
               ...(s.category !== undefined && {
                 category: s.category,
               }),
-              ...(s.ticketReleaseAt !== undefined && {
-                ticketReleaseAt: s.ticketReleaseAt ? new Date(s.ticketReleaseAt) : null,
+              ...(s.scheduleTicketRelease !== undefined && {
+                scheduleTicketRelease: s.scheduleTicketRelease,
+              }),
+              ...((s.ticketReleaseAt !== undefined || s.scheduleTicketRelease === false) && {
+                ticketReleaseAt:
+                  s.scheduleTicketRelease === false
+                    ? null
+                    : s.ticketReleaseAt
+                      ? new Date(s.ticketReleaseAt)
+                      : null,
               }),
 
               ...(s.invitedByOptions !== undefined && {
                 invitedByOptions: s.invitedByOptions,
               }),
+              ...(s.visibleTabs !== undefined && {
+                visibleTabs: s.visibleTabs,
+              }),
             },
           });
+
+          /**
+           * Handle seatColorGroups
+           */
+          if (s.seatColorGroups !== undefined) {
+            const settingsId = await tx.settings.findUnique({
+              where: { eventId: input.eventId },
+              select: { id: true },
+            });
+
+            if (settingsId) {
+              await tx.seatColorGroup.deleteMany({
+                where: { settingsId: settingsId.id },
+              });
+
+              if (s.seatColorGroups.length > 0) {
+                await tx.seatColorGroup.createMany({
+                  data: this.inputToPrismaCreate(s.seatColorGroups).map((g) => ({
+                    ...g,
+                    settingsId: settingsId.id,
+                  })),
+                });
+              }
+            }
+          } else if (s.invitedByOptions !== undefined) {
+            /**
+             * Auto-sync: invitedByOptions changed without explicit seatColorGroups
+             */
+            const existingSettings = await tx.settings.findUnique({
+              where: { eventId: input.eventId },
+              include: { seatColorGroups: true },
+            });
+
+            if (existingSettings?.seatColorGroups) {
+              const existing = existingSettings.seatColorGroups;
+              const oldOptions = existing
+                .filter((g) => g.matchType === SeatColorGroupMatchType.SINGLE)
+                .map((g) => (g.invitedByValues as string[])[0])
+                .filter((o): o is string => o != null);
+
+              const newOptions = s.invitedByOptions;
+              const addedOptions = newOptions.filter((o) => !oldOptions.includes(o));
+              const removedOptions = oldOptions.filter((o) => !newOptions.includes(o));
+
+              for (const option of addedOptions) {
+                const style =
+                  DEFAULT_SEAT_COLOR_STYLES[existing.length % DEFAULT_SEAT_COLOR_STYLES.length];
+                await tx.seatColorGroup.create({
+                  data: {
+                    settingsId: existingSettings.id,
+                    name: option,
+                    style: { ...style },
+                    matchType: SeatColorGroupMatchType.SINGLE,
+                    invitedByValues: [option],
+                    priority: existing.length + 1,
+                    order: existing.length,
+                    isOrphaned: false,
+                  },
+                });
+              }
+
+              if (removedOptions.length > 0) {
+                await tx.seatColorGroup.updateMany({
+                  where: {
+                    settingsId: existingSettings.id,
+                    matchType: SeatColorGroupMatchType.SINGLE,
+                    name: { in: removedOptions },
+                  },
+                  data: { isOrphaned: true },
+                });
+              }
+
+              const allGroup = existing.find((g) => g.matchType === SeatColorGroupMatchType.ALL);
+              if (allGroup) {
+                await tx.seatColorGroup.update({
+                  where: { id: allGroup.id },
+                  data: { invitedByValues: newOptions },
+                });
+              }
+            }
+          }
         }
 
         /**
@@ -517,7 +829,9 @@ export class EventWriteService {
         const updated = await tx.event.findUnique({
           where: { id: input.eventId },
           include: {
-            settings: true,
+            settings: {
+              include: { seatColorGroups: true },
+            },
             roles: true,
             timelines: true,
           },
@@ -548,23 +862,44 @@ export class EventWriteService {
       const updatedSettings = txResult.settings;
 
       if (updatedSettings) {
+        const seatColorGroups = (updatedSettings as Record<string, unknown>).seatColorGroups
+          ? this.prismaGroupsToDTOs(
+              (updatedSettings as Record<string, unknown>).seatColorGroups as Array<{
+                id: string;
+                name: string;
+                style: unknown;
+                matchType: string;
+                invitedByValues: unknown;
+                priority: number;
+                order: number;
+                isOrphaned: boolean;
+              }>,
+            )
+          : undefined;
+
+        const eventUpdatedPayload = {
+          eventId: input.eventId,
+          name: txResult.payload.name,
+          endsAt: updatedSettings.endsAt.toISOString(),
+          approvalMode: updatedSettings.approvalMode,
+          maxSeats: updatedSettings.maxSeats,
+          requireApprovalForPlusOnes: updatedSettings.requireApprovalForPlusOnes,
+          startsAt: updatedSettings.startsAt.toISOString(),
+          allowPublicRsvp: updatedSettings.allowPublicRsvp,
+          allowPublicPlusOne: updatedSettings.allowPublicPlusOne,
+          allowGuestSeatSelection: updatedSettings.allowGuestSeatSelection,
+          scheduleTicketRelease: updatedSettings.scheduleTicketRelease,
+          ticketReleaseAt: updatedSettings.ticketReleaseAt?.toISOString(),
+          rsvpDeadline: updatedSettings.rsvpDeadline?.toISOString(),
+          category: updatedSettings.category,
+          visibleTabs: updatedSettings.visibleTabs as unknown as EventVisibleTab[],
+          seatColorGroups,
+          occurredAt: new Date().toISOString(),
+        } satisfies EventUpdatedWithPlusOneApprovalDTO;
+
         void this.kafkaProducerService.send({
           topic: KafkaTopics.event.updated,
-          payload: {
-            eventId: input.eventId,
-            name: txResult.payload.name,
-            endsAt: updatedSettings.endsAt.toISOString(),
-            approvalMode: updatedSettings.approvalMode,
-            maxSeats: updatedSettings.maxSeats,
-            startsAt: updatedSettings.startsAt.toISOString(),
-            allowPublicRsvp: updatedSettings.allowPublicRsvp,
-            allowPublicPlusOne: updatedSettings.allowPublicPlusOne,
-            allowGuestSeatSelection: updatedSettings.allowGuestSeatSelection,
-            ticketReleaseAt: updatedSettings.ticketReleaseAt?.toISOString(),
-            rsvpDeadline: updatedSettings.rsvpDeadline?.toISOString(),
-            category: updatedSettings.category,
-            occurredAt: new Date().toISOString(),
-          } satisfies EventUpdatedDTO,
+          payload: eventUpdatedPayload,
           meta: this.meta(actorId, 'Update Event Settings'),
         });
       }
@@ -622,6 +957,7 @@ export class EventWriteService {
     /**
      * 2. Deduplicate users
      */
+
     const admins = [
       ...new Set(roles.filter((r) => r.role === UserRoleType.ADMIN).map((r) => r.userId)),
     ];
@@ -777,7 +1113,7 @@ export class EventWriteService {
    * Assigns a user to an event with the given role.
    * Uses UPSERT for atomic create/update logic.
    */
-  async assignUserToEvent(input: AssignUserRoleDTO): Promise<void> {
+  async assignUserToEvent(input: AssignUserRoleDTO): Promise<EventPayload> {
     return TraceRunner.run('[SERVICE] assignUserToEvent', async () => {
       this.log.info('Assign User to Event %o', { input });
       const { userId, eventId, eventRole: role } = input;
@@ -808,6 +1144,8 @@ export class EventWriteService {
         // }),
       ]);
 
+      await this.rbacService.syncLegacyRoleAssignment(eventId, userId, role, input.actorId);
+
       void this.kafkaProducerService.send({
         topic: KafkaTopics.event.roleAssigned,
         payload: {
@@ -819,6 +1157,8 @@ export class EventWriteService {
         } satisfies EventRoleAssignedDTO,
         meta: this.meta(input.actorId, 'Assign Event Role'),
       });
+
+      return this.loadEventPayload(eventId, input.actorId);
     });
   }
 
@@ -827,7 +1167,10 @@ export class EventWriteService {
    * - Prevents removing the event owner
    * - Atomic delete + audit log
    */
-  async removeUserFromEvent(input: RemoveUserFromEventInput, actorId: string): Promise<void> {
+  async removeUserFromEvent(
+    input: RemoveUserFromEventInput,
+    actorId: string,
+  ): Promise<EventPayload> {
     this.log.info('Remove User from Event %o', { actorId, input });
 
     const { userId: targetUserId, eventId } = input;
@@ -915,6 +1258,8 @@ export class EventWriteService {
       // }),
     ]);
 
+    await this.rbacService.removeAllRolesForUser(eventId, targetUserId, actorId);
+
     void this.kafkaProducerService.send({
       topic: KafkaTopics.event.roleRemoved,
       payload: {
@@ -926,6 +1271,8 @@ export class EventWriteService {
       } satisfies EventRoleRemovedDTO,
       meta: this.meta(actorId, 'Remove Event Role'),
     });
+
+    return this.loadEventPayload(eventId, actorId);
   }
 
   async transferEventOwnership(
@@ -989,6 +1336,19 @@ export class EventWriteService {
       //   },
       // }),
     ]);
+
+    await this.rbacService.syncLegacyRoleAssignment(
+      eventId,
+      newOwnerId,
+      UserRoleType.ADMIN,
+      actorId,
+    );
+    await this.rbacService.syncLegacyRoleAssignment(
+      eventId,
+      event.owner,
+      UserRoleType.ADMIN,
+      actorId,
+    );
 
     void this.kafkaProducerService.send({
       topic: KafkaTopics.event.ownerChanged,

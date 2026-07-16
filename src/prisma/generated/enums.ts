@@ -11,10 +11,20 @@
 export const UserRoleType = {
   ADMIN: 'ADMIN',
   SECURITY: 'SECURITY',
-  GUEST: 'GUEST'
+  GUEST: 'GUEST',
+  SUPPORT: 'SUPPORT'
 } as const
 
 export type UserRoleType = (typeof UserRoleType)[keyof typeof UserRoleType]
+
+
+export const EventSystemRoleKey = {
+  ADMIN: 'ADMIN',
+  SECURITY: 'SECURITY',
+  GUEST: 'GUEST'
+} as const
+
+export type EventSystemRoleKey = (typeof EventSystemRoleKey)[keyof typeof EventSystemRoleKey]
 
 
 export const EventCategory = {
@@ -36,6 +46,25 @@ export const MediaType = {
 } as const
 
 export type MediaType = (typeof MediaType)[keyof typeof MediaType]
+
+
+export const SeatColorGroupMatchType = {
+  SINGLE: 'SINGLE',
+  CUSTOM: 'CUSTOM',
+  ALL: 'ALL',
+  NONE: 'NONE'
+} as const
+
+export type SeatColorGroupMatchType = (typeof SeatColorGroupMatchType)[keyof typeof SeatColorGroupMatchType]
+
+
+export const EventVisibleTab = {
+  TIMELINE: 'TIMELINE',
+  DETAILS: 'DETAILS',
+  MAP: 'MAP'
+} as const
+
+export type EventVisibleTab = (typeof EventVisibleTab)[keyof typeof EventVisibleTab]
 
 
 export const InvitationApprovalMode = {

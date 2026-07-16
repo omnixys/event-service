@@ -40,6 +40,9 @@ model Event {
   timelines Timeline[]
   roles     Role[]
 
+  roleDefinitions     EventRoleDefinition[]
+  userRoleAssignments EventUserRoleAssignment[]
+
   media Media[] @relation("EventMedia")
 
   coverMedia Media? @relation("EventCover", fields: [coverMediaId], references: [id])
@@ -72,8 +75,9 @@ model Settings {
   rsvpDeadline               DateTime? @map("rsvp_deadline")
   allowSeatOverbooking       Boolean   @default(false) @map("allow_seat_overbooking")
 
-  publicRsvpWebsite String?  @map("public_rsvp_website")
-  invitedByOptions  String[] @default([]) @map("invited_by_options")
+  publicRsvpWebsite String?           @map("public_rsvp_website")
+  invitedByOptions  String[]          @default([]) @map("invited_by_options")
+  visibleTabs       EventVisibleTab[] @default([TIMELINE, DETAILS, MAP]) @map("visible_tabs")
 
   isActive Boolean @default(true) @map("is_active")
   isPublic Boolean @default(false) @map("is_public")
@@ -81,12 +85,15 @@ model Settings {
   dressCode   String? @map("dress_code")
   description String? @map("description")
 
-  ticketReleaseAt DateTime? @map("ticket_release_at")
+  scheduleTicketRelease Boolean   @default(false) @map("schedule_ticket_release")
+  ticketReleaseAt       DateTime? @map("ticket_release_at")
 
   startsAt DateTime @map("starts_at")
   endsAt   DateTime @map("ends_at")
 
   category EventCategory @default(GENERAL) @map("category")
+
+  seatColorGroups SeatColorGroup[]
 
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
@@ -181,8 +188,84 @@ enum UserRoleType {
   ADMIN
   SECURITY
   GUEST
+  SUPPORT
 
   @@map("user_role_type")
+}
+
+model EventRoleDefinition {
+  id          String              @id @default(uuid()) @map("id") @db.Uuid
+  eventId     String              @map("event_id") @db.Uuid
+  key         String              @map("key")
+  name        String              @map("name")
+  description String?             @map("description")
+  color       String?             @map("color")
+  icon        String?             @map("icon")
+  systemKey   EventSystemRoleKey? @map("system_key")
+  archivedAt  DateTime?           @map("archived_at")
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime?           @updatedAt @map("updated_at")
+
+  event       Event                     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  permissions EventRolePermission[]
+  assignments EventUserRoleAssignment[]
+
+  @@unique([eventId, key])
+  @@unique([eventId, systemKey])
+  @@index([eventId])
+  @@map("event_role")
+}
+
+model EventPermissionDefinition {
+  key               String    @id @map("key")
+  category          String    @map("category")
+  label             String    @map("label")
+  description       String    @map("description")
+  premiumFeatureKey String?   @map("premium_feature_key")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime? @updatedAt @map("updated_at")
+
+  roles EventRolePermission[]
+
+  @@map("event_permission")
+}
+
+model EventRolePermission {
+  roleId        String @map("role_id") @db.Uuid
+  permissionKey String @map("permission_key")
+
+  role       EventRoleDefinition       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission EventPermissionDefinition @relation(fields: [permissionKey], references: [key], onDelete: Restrict)
+
+  @@id([roleId, permissionKey])
+  @@index([permissionKey])
+  @@map("event_role_permission")
+}
+
+model EventUserRoleAssignment {
+  id         String    @id @default(uuid()) @map("id") @db.Uuid
+  eventId    String    @map("event_id") @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  roleId     String    @map("role_id") @db.Uuid
+  assignedBy String?   @map("assigned_by") @db.Uuid
+  createdAt  DateTime  @default(now()) @map("created_at")
+  updatedAt  DateTime? @updatedAt @map("updated_at")
+
+  event Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  role  EventRoleDefinition @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId, roleId])
+  @@index([eventId, userId])
+  @@index([roleId])
+  @@map("event_user_role")
+}
+
+enum EventSystemRoleKey {
+  ADMIN
+  SECURITY
+  GUEST
+
+  @@map("event_system_role_key")
 }
 
 enum EventCategory {
@@ -243,6 +326,48 @@ enum MediaType {
   GALLERY
 
   @@map("media_type")
+}
+
+//
+// ──────────────────────────────────────────────────────────
+// SEAT COLOR GROUPS
+// ──────────────────────────────────────────────────────────
+//
+model SeatColorGroup {
+  id         String   @id @default(uuid()) @map("id") @db.Uuid
+  settingsId String   @map("settings_id") @db.Uuid
+  settings   Settings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+
+  name            String                  @map("name")
+  style           Json                    @map("style")
+  matchType       SeatColorGroupMatchType @map("match_type")
+  invitedByValues Json                    @map("invited_by_values")
+  priority        Int                     @map("priority")
+  order           Int                     @map("order")
+  isOrphaned      Boolean                 @default(false) @map("is_orphaned")
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  @@index([settingsId])
+  @@map("seat_color_group")
+}
+
+enum SeatColorGroupMatchType {
+  SINGLE
+  CUSTOM
+  ALL
+  NONE
+
+  @@map("seat_color_group_match_type")
+}
+
+enum EventVisibleTab {
+  TIMELINE
+  DETAILS
+  MAP
+
+  @@map("event_visible_tab")
 }
 
 enum InvitationApprovalMode {

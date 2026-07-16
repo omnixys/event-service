@@ -388,8 +388,13 @@ export const ModelName = {
   Analytics: 'Analytics',
   Timeline: 'Timeline',
   Role: 'Role',
+  EventRoleDefinition: 'EventRoleDefinition',
+  EventPermissionDefinition: 'EventPermissionDefinition',
+  EventRolePermission: 'EventRolePermission',
+  EventUserRoleAssignment: 'EventUserRoleAssignment',
   Media: 'Media',
-  MediaVariant: 'MediaVariant'
+  MediaVariant: 'MediaVariant',
+  SeatColorGroup: 'SeatColorGroup'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "event" | "settings" | "analytics" | "timeline" | "role" | "media" | "mediaVariant"
+    modelProps: "event" | "settings" | "analytics" | "timeline" | "role" | "eventRoleDefinition" | "eventPermissionDefinition" | "eventRolePermission" | "eventUserRoleAssignment" | "media" | "mediaVariant" | "seatColorGroup"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -779,6 +784,302 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    EventRoleDefinition: {
+      payload: Prisma.$EventRoleDefinitionPayload<ExtArgs>
+      fields: Prisma.EventRoleDefinitionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EventRoleDefinitionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EventRoleDefinitionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload>
+        }
+        findFirst: {
+          args: Prisma.EventRoleDefinitionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EventRoleDefinitionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload>
+        }
+        findMany: {
+          args: Prisma.EventRoleDefinitionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload>[]
+        }
+        create: {
+          args: Prisma.EventRoleDefinitionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload>
+        }
+        createMany: {
+          args: Prisma.EventRoleDefinitionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EventRoleDefinitionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload>[]
+        }
+        delete: {
+          args: Prisma.EventRoleDefinitionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload>
+        }
+        update: {
+          args: Prisma.EventRoleDefinitionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload>
+        }
+        deleteMany: {
+          args: Prisma.EventRoleDefinitionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EventRoleDefinitionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EventRoleDefinitionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload>[]
+        }
+        upsert: {
+          args: Prisma.EventRoleDefinitionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRoleDefinitionPayload>
+        }
+        aggregate: {
+          args: Prisma.EventRoleDefinitionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEventRoleDefinition>
+        }
+        groupBy: {
+          args: Prisma.EventRoleDefinitionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventRoleDefinitionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EventRoleDefinitionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventRoleDefinitionCountAggregateOutputType> | number
+        }
+      }
+    }
+    EventPermissionDefinition: {
+      payload: Prisma.$EventPermissionDefinitionPayload<ExtArgs>
+      fields: Prisma.EventPermissionDefinitionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EventPermissionDefinitionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EventPermissionDefinitionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload>
+        }
+        findFirst: {
+          args: Prisma.EventPermissionDefinitionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EventPermissionDefinitionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload>
+        }
+        findMany: {
+          args: Prisma.EventPermissionDefinitionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload>[]
+        }
+        create: {
+          args: Prisma.EventPermissionDefinitionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload>
+        }
+        createMany: {
+          args: Prisma.EventPermissionDefinitionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EventPermissionDefinitionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload>[]
+        }
+        delete: {
+          args: Prisma.EventPermissionDefinitionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload>
+        }
+        update: {
+          args: Prisma.EventPermissionDefinitionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload>
+        }
+        deleteMany: {
+          args: Prisma.EventPermissionDefinitionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EventPermissionDefinitionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EventPermissionDefinitionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload>[]
+        }
+        upsert: {
+          args: Prisma.EventPermissionDefinitionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventPermissionDefinitionPayload>
+        }
+        aggregate: {
+          args: Prisma.EventPermissionDefinitionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEventPermissionDefinition>
+        }
+        groupBy: {
+          args: Prisma.EventPermissionDefinitionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventPermissionDefinitionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EventPermissionDefinitionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventPermissionDefinitionCountAggregateOutputType> | number
+        }
+      }
+    }
+    EventRolePermission: {
+      payload: Prisma.$EventRolePermissionPayload<ExtArgs>
+      fields: Prisma.EventRolePermissionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EventRolePermissionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EventRolePermissionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload>
+        }
+        findFirst: {
+          args: Prisma.EventRolePermissionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EventRolePermissionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload>
+        }
+        findMany: {
+          args: Prisma.EventRolePermissionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload>[]
+        }
+        create: {
+          args: Prisma.EventRolePermissionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload>
+        }
+        createMany: {
+          args: Prisma.EventRolePermissionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EventRolePermissionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload>[]
+        }
+        delete: {
+          args: Prisma.EventRolePermissionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload>
+        }
+        update: {
+          args: Prisma.EventRolePermissionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload>
+        }
+        deleteMany: {
+          args: Prisma.EventRolePermissionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EventRolePermissionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EventRolePermissionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload>[]
+        }
+        upsert: {
+          args: Prisma.EventRolePermissionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventRolePermissionPayload>
+        }
+        aggregate: {
+          args: Prisma.EventRolePermissionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEventRolePermission>
+        }
+        groupBy: {
+          args: Prisma.EventRolePermissionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventRolePermissionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EventRolePermissionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventRolePermissionCountAggregateOutputType> | number
+        }
+      }
+    }
+    EventUserRoleAssignment: {
+      payload: Prisma.$EventUserRoleAssignmentPayload<ExtArgs>
+      fields: Prisma.EventUserRoleAssignmentFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EventUserRoleAssignmentFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EventUserRoleAssignmentFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload>
+        }
+        findFirst: {
+          args: Prisma.EventUserRoleAssignmentFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EventUserRoleAssignmentFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload>
+        }
+        findMany: {
+          args: Prisma.EventUserRoleAssignmentFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload>[]
+        }
+        create: {
+          args: Prisma.EventUserRoleAssignmentCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload>
+        }
+        createMany: {
+          args: Prisma.EventUserRoleAssignmentCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EventUserRoleAssignmentCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload>[]
+        }
+        delete: {
+          args: Prisma.EventUserRoleAssignmentDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload>
+        }
+        update: {
+          args: Prisma.EventUserRoleAssignmentUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload>
+        }
+        deleteMany: {
+          args: Prisma.EventUserRoleAssignmentDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EventUserRoleAssignmentUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EventUserRoleAssignmentUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload>[]
+        }
+        upsert: {
+          args: Prisma.EventUserRoleAssignmentUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EventUserRoleAssignmentPayload>
+        }
+        aggregate: {
+          args: Prisma.EventUserRoleAssignmentAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEventUserRoleAssignment>
+        }
+        groupBy: {
+          args: Prisma.EventUserRoleAssignmentGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventUserRoleAssignmentGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EventUserRoleAssignmentCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EventUserRoleAssignmentCountAggregateOutputType> | number
+        }
+      }
+    }
     Media: {
       payload: Prisma.$MediaPayload<ExtArgs>
       fields: Prisma.MediaFieldRefs
@@ -927,6 +1228,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    SeatColorGroup: {
+      payload: Prisma.$SeatColorGroupPayload<ExtArgs>
+      fields: Prisma.SeatColorGroupFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.SeatColorGroupFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.SeatColorGroupFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload>
+        }
+        findFirst: {
+          args: Prisma.SeatColorGroupFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.SeatColorGroupFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload>
+        }
+        findMany: {
+          args: Prisma.SeatColorGroupFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload>[]
+        }
+        create: {
+          args: Prisma.SeatColorGroupCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload>
+        }
+        createMany: {
+          args: Prisma.SeatColorGroupCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.SeatColorGroupCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload>[]
+        }
+        delete: {
+          args: Prisma.SeatColorGroupDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload>
+        }
+        update: {
+          args: Prisma.SeatColorGroupUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload>
+        }
+        deleteMany: {
+          args: Prisma.SeatColorGroupDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.SeatColorGroupUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.SeatColorGroupUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload>[]
+        }
+        upsert: {
+          args: Prisma.SeatColorGroupUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$SeatColorGroupPayload>
+        }
+        aggregate: {
+          args: Prisma.SeatColorGroupAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateSeatColorGroup>
+        }
+        groupBy: {
+          args: Prisma.SeatColorGroupGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SeatColorGroupGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.SeatColorGroupCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.SeatColorGroupCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1001,10 +1376,12 @@ export const SettingsScalarFieldEnum = {
   allowSeatOverbooking: 'allowSeatOverbooking',
   publicRsvpWebsite: 'publicRsvpWebsite',
   invitedByOptions: 'invitedByOptions',
+  visibleTabs: 'visibleTabs',
   isActive: 'isActive',
   isPublic: 'isPublic',
   dressCode: 'dressCode',
   description: 'description',
+  scheduleTicketRelease: 'scheduleTicketRelease',
   ticketReleaseAt: 'ticketReleaseAt',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
@@ -1054,6 +1431,57 @@ export const RoleScalarFieldEnum = {
 export type RoleScalarFieldEnum = (typeof RoleScalarFieldEnum)[keyof typeof RoleScalarFieldEnum]
 
 
+export const EventRoleDefinitionScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  key: 'key',
+  name: 'name',
+  description: 'description',
+  color: 'color',
+  icon: 'icon',
+  systemKey: 'systemKey',
+  archivedAt: 'archivedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventRoleDefinitionScalarFieldEnum = (typeof EventRoleDefinitionScalarFieldEnum)[keyof typeof EventRoleDefinitionScalarFieldEnum]
+
+
+export const EventPermissionDefinitionScalarFieldEnum = {
+  key: 'key',
+  category: 'category',
+  label: 'label',
+  description: 'description',
+  premiumFeatureKey: 'premiumFeatureKey',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventPermissionDefinitionScalarFieldEnum = (typeof EventPermissionDefinitionScalarFieldEnum)[keyof typeof EventPermissionDefinitionScalarFieldEnum]
+
+
+export const EventRolePermissionScalarFieldEnum = {
+  roleId: 'roleId',
+  permissionKey: 'permissionKey'
+} as const
+
+export type EventRolePermissionScalarFieldEnum = (typeof EventRolePermissionScalarFieldEnum)[keyof typeof EventRolePermissionScalarFieldEnum]
+
+
+export const EventUserRoleAssignmentScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  userId: 'userId',
+  roleId: 'roleId',
+  assignedBy: 'assignedBy',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type EventUserRoleAssignmentScalarFieldEnum = (typeof EventUserRoleAssignmentScalarFieldEnum)[keyof typeof EventUserRoleAssignmentScalarFieldEnum]
+
+
 export const MediaScalarFieldEnum = {
   id: 'id',
   key: 'key',
@@ -1082,12 +1510,36 @@ export const MediaVariantScalarFieldEnum = {
 export type MediaVariantScalarFieldEnum = (typeof MediaVariantScalarFieldEnum)[keyof typeof MediaVariantScalarFieldEnum]
 
 
+export const SeatColorGroupScalarFieldEnum = {
+  id: 'id',
+  settingsId: 'settingsId',
+  name: 'name',
+  style: 'style',
+  matchType: 'matchType',
+  invitedByValues: 'invitedByValues',
+  priority: 'priority',
+  order: 'order',
+  isOrphaned: 'isOrphaned',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SeatColorGroupScalarFieldEnum = (typeof SeatColorGroupScalarFieldEnum)[keyof typeof SeatColorGroupScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1104,6 +1556,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1176,6 +1637,20 @@ export type ListEnumInvitationApprovalModeFieldRefInput<$PrismaModel> = FieldRef
 
 
 /**
+ * Reference to a field of type 'EventVisibleTab[]'
+ */
+export type ListEnumEventVisibleTabFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventVisibleTab[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EventVisibleTab'
+ */
+export type EnumEventVisibleTabFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventVisibleTab'>
+    
+
+
+/**
  * Reference to a field of type 'EventCategory'
  */
 export type EnumEventCategoryFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventCategory'>
@@ -1204,6 +1679,20 @@ export type ListEnumUserRoleTypeFieldRefInput<$PrismaModel> = FieldRefInputType<
 
 
 /**
+ * Reference to a field of type 'EventSystemRoleKey'
+ */
+export type EnumEventSystemRoleKeyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventSystemRoleKey'>
+    
+
+
+/**
+ * Reference to a field of type 'EventSystemRoleKey[]'
+ */
+export type ListEnumEventSystemRoleKeyFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventSystemRoleKey[]'>
+    
+
+
+/**
  * Reference to a field of type 'MediaType'
  */
 export type EnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType'>
@@ -1214,6 +1703,34 @@ export type EnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Prisma
  * Reference to a field of type 'MediaType[]'
  */
 export type ListEnumMediaTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MediaType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
+ * Reference to a field of type 'SeatColorGroupMatchType'
+ */
+export type EnumSeatColorGroupMatchTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SeatColorGroupMatchType'>
+    
+
+
+/**
+ * Reference to a field of type 'SeatColorGroupMatchType[]'
+ */
+export type ListEnumSeatColorGroupMatchTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SeatColorGroupMatchType[]'>
     
 
 
@@ -1345,8 +1862,13 @@ export type GlobalOmitConfig = {
   analytics?: Prisma.AnalyticsOmit
   timeline?: Prisma.TimelineOmit
   role?: Prisma.RoleOmit
+  eventRoleDefinition?: Prisma.EventRoleDefinitionOmit
+  eventPermissionDefinition?: Prisma.EventPermissionDefinitionOmit
+  eventRolePermission?: Prisma.EventRolePermissionOmit
+  eventUserRoleAssignment?: Prisma.EventUserRoleAssignmentOmit
   media?: Prisma.MediaOmit
   mediaVariant?: Prisma.MediaVariantOmit
+  seatColorGroup?: Prisma.SeatColorGroupOmit
 }
 
 /* Types for Logging */
