@@ -23,6 +23,7 @@
     "node": ">=24.10.0",
     "pnpm": ">=10.33.0"
   },
+  
   "scripts": {
     "clean": "rm -rf dist tsconfig.build.tsbuildinfo",
     "build": "pnpm run clean && nest build",
