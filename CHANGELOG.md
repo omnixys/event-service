@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.0.1](https://github.com/omnixys/event-service/compare/v3.0.0...v3.0.1) (2026-07-17)
+
+### Deps
+
+* **Deps:** Update package.json ([](https://github.com/omnixys/event-service/commit/8c44b19baa351fb9a4452b4f833973d0d0ed6029))
+
 ## [3.0.0](https://github.com/omnixys/event-service/compare/v2.1.0...v3.0.0) (2026-07-16)
 
 ### New
