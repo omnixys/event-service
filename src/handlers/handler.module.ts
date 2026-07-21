@@ -20,11 +20,12 @@ import { EventModule } from '../event/event.module.js';
 import { AuthenticationHandler } from './authentication.handler.js';
 import { MediaHandler } from './media.handler.js';
 import { MilestoneHandler } from './milestone.handler.js';
+import { UserProjectionHandler } from './user-projection.handler.js';
 import { Module } from '@nestjs/common';
 
 @Module({
   imports: [AdminModule, EventModule],
-  providers: [AuthenticationHandler, MediaHandler, MilestoneHandler],
-  exports: [AuthenticationHandler, MediaHandler, MilestoneHandler],
+  providers: [AuthenticationHandler, MediaHandler, MilestoneHandler, UserProjectionHandler],
+  exports: [AuthenticationHandler, MediaHandler, MilestoneHandler, UserProjectionHandler],
 })
 export class HandlerModule {}

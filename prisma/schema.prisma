@@ -177,7 +177,8 @@ model Role {
   eventId String       @map("event_id") @db.Uuid
   role    UserRoleType @map("role")
 
-  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  event       Event           @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userProject UserProjection? @relation("UserProjectionRoles", fields: [userId], references: [id])
 
   @@unique([userId, eventId])
   @@index([eventId])
@@ -368,6 +369,28 @@ enum EventVisibleTab {
   MAP
 
   @@map("event_visible_tab")
+}
+
+//
+// ──────────────────────────────────────────────────────────
+// USER PROJECTION (cached user data from User-Service)
+// ──────────────────────────────────────────────────────────
+//
+model UserProjection {
+  id           String   @id @map("id") @db.Uuid
+  username     String   @map("username")
+  displayName  String?  @map("display_name")
+  firstName    String?  @map("first_name")
+  lastName     String?  @map("last_name")
+  email        String?  @map("email")
+  primaryPhone String?  @map("primary_phone")
+  avatarUrl    String?  @map("avatar_url")
+  locale       String?  @map("locale")
+  lastSynced   DateTime @default(now()) @map("last_synced")
+
+  userEventRoles Role[] @relation("UserProjectionRoles")
+
+  @@map("user_projection")
 }
 
 enum InvitationApprovalMode {
