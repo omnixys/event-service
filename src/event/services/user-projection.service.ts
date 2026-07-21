@@ -1,11 +1,12 @@
 import { env } from '../../config/env.js';
+import type { UserProjection } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
-import { Injectable, OnModuleInit } from '@nestjs/common';
-import { OmnixysLogger } from '@omnixys/logger';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
-import { promisify } from 'node:util';
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { OmnixysLogger } from '@omnixys/logger';
 import { fileURLToPath } from 'node:url';
+import { promisify } from 'node:util';
 
 interface UserProjectionData {
   id: string;
@@ -47,8 +48,11 @@ export class UserProjectionService implements OnModuleInit {
     if (!UserServiceClient) {
       throw new Error('Failed to load gRPC UserService client from proto definition');
     }
-    const client = new UserServiceClient(env.GRPC_USER_SERVICE_URL, grpc.credentials.createInsecure());
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const client = new UserServiceClient(
+      env.GRPC_USER_SERVICE_URL,
+      grpc.credentials.createInsecure(),
+    );
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     this.getUsersByIds = promisify((client as any).GetUsersByIds.bind(client));
     this.log.info('gRPC UserService client initialized', {
       target: env.GRPC_USER_SERVICE_URL,
@@ -57,7 +61,9 @@ export class UserProjectionService implements OnModuleInit {
 
   async ensureUsers(userIds: string[]): Promise<void> {
     const uniqueIds = [...new Set(userIds)];
-    if (uniqueIds.length === 0) return;
+    if (uniqueIds.length === 0) {
+      return;
+    }
 
     const existing = await this.prisma.userProjection.findMany({
       where: { id: { in: uniqueIds } },
@@ -66,7 +72,9 @@ export class UserProjectionService implements OnModuleInit {
     const existingSet = new Set(existing.map((u) => u.id));
     const missingIds = uniqueIds.filter((id) => !existingSet.has(id));
 
-    if (missingIds.length === 0) return;
+    if (missingIds.length === 0) {
+      return;
+    }
 
     this.log.debug('Fetching missing user projections via gRPC', {
       count: missingIds.length,
@@ -109,13 +117,13 @@ export class UserProjectionService implements OnModuleInit {
     }
   }
 
-  async findByUserId(userId: string) {
+  async findByUserId(userId: string): Promise<UserProjection | null> {
     return this.prisma.userProjection.findUnique({
       where: { id: userId },
     });
   }
 
-  async findByIds(userIds: string[]) {
+  async findByIds(userIds: string[]): Promise<UserProjection[]> {
     return this.prisma.userProjection.findMany({
       where: { id: { in: userIds } },
     });
