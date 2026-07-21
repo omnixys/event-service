@@ -1,34 +1,11 @@
 import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { EventStaffPayload } from '../models/payloads/event-staff.payload.js';
-import { HttpService } from '@nestjs/axios';
+import { UserProjectionService } from './user-projection.service.js';
+import { EventRbacService } from './event-rbac.service.js';
 import { Injectable } from '@nestjs/common';
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
-import { firstValueFrom } from 'rxjs';
-
-interface UserServiceUser {
-  id: string;
-  username: string;
-  personalInfo?: {
-    firstName?: string;
-    lastName?: string;
-    email?: string;
-    phoneNumbers?: Array<{
-      number: string;
-      type?: string;
-      label?: string;
-      isPrimary?: boolean;
-    }>;
-  };
-}
-
-interface UserServiceResponse {
-  data?: {
-    getUserList?: UserServiceUser[];
-  };
-  errors?: Array<{ message: string }>;
-}
 
 @Injectable()
 export class EventStaffService {
@@ -36,13 +13,14 @@ export class EventStaffService {
 
   constructor(
     private readonly prisma: PrismaService,
-    private readonly http: HttpService,
+    private readonly userProjectionService: UserProjectionService,
+    private readonly rbacService: EventRbacService,
     private readonly omnixysLogger: OmnixysLogger,
   ) {
     this.logger = this.omnixysLogger.log(this.constructor.name);
   }
 
-  async getStaff(eventId: string, authToken?: string): Promise<EventStaffPayload[]> {
+  async getStaff(eventId: string, _authToken?: string): Promise<EventStaffPayload[]> {
     return TraceRunner.run('[SERVICE] getEventStaff', async () => {
       this.logger.debug('Fetching staff for event', { eventId });
 
@@ -67,92 +45,50 @@ export class EventStaffService {
       }
 
       const userIds = Array.from(grouped.keys());
-      const userDetails = await this.fetchUserDetails(userIds, authToken);
-      const userMap = new Map(userDetails.map((u) => [u.id, u]));
 
-      return Array.from(grouped.entries()).map(([userId, roles]) => {
-        const user = userMap.get(userId);
-        return {
+      await this.userProjectionService.ensureUsers(userIds);
+
+      const projections = await this.userProjectionService.findByIds(userIds);
+      const userMap = new Map(projections.map((u) => [u.id, u]));
+
+      const results: EventStaffPayload[] = [];
+
+      for (const [userId, roles] of grouped.entries()) {
+        let permissions: string[] = [];
+        try {
+          const access = await this.rbacService.getAccessForUser(userId, eventId);
+          permissions = [...access.permissions];
+        } catch {
+          this.logger.debug('Could not resolve permissions via RBAC, falling back to empty', { userId, eventId });
+        }
+
+        const projection = userMap.get(userId);
+        results.push({
           userId,
           roles,
-          permissions: [],
-          personalInfo: user?.personalInfo
+          permissions,
+          personalInfo: projection
             ? {
-                firstName: user.personalInfo.firstName,
-                lastName: user.personalInfo.lastName,
+                firstName: projection.firstName ?? undefined,
+                lastName: projection.lastName ?? undefined,
               }
             : undefined,
-          email: user?.personalInfo?.email,
-          phoneNumbers: user?.personalInfo?.phoneNumbers?.map((p) => ({
-            number: p.number,
-            type: p.type,
-            label: p.label,
-            isPrimary: p.isPrimary,
-          })),
-          username: user?.username,
-        } satisfies EventStaffPayload;
-      });
-    });
-  }
-
-  private async fetchUserDetails(
-    userIds: string[],
-    authToken?: string,
-  ): Promise<UserServiceUser[]> {
-    if (userIds.length === 0) {
-      return [];
-    }
-
-    try {
-      const query = {
-        query: `
-          query GetStaffUsers($userIds: [ID!]!) {
-            getUserList(userIds: $userIds) {
-              id
-              username
-              personalInfo {
-                firstName
-                lastName
-                email
-                phoneNumbers {
-                  number
-                  type
-                  label
-                  isPrimary
-                }
-              }
-            }
-          }
-        `,
-        variables: { userIds },
-      };
-
-      const response = await firstValueFrom(
-        this.http.post<UserServiceResponse>(
-          process.env.USER_SERVICE_URI ?? 'http://localhost:7001/graphql',
-          query,
-          {
-            headers: {
-              'content-type': 'application/json',
-              ...(authToken ? { cookie: `access_token=${authToken}` } : {}),
-            },
-          },
-        ),
-      );
-
-      if (response.data.errors) {
-        this.logger.warn('User service returned errors', {
-          errors: response.data.errors,
+          email: projection?.email ?? undefined,
+          phoneNumbers: projection?.primaryPhone
+            ? [
+                {
+                  number: projection.primaryPhone,
+                  type: undefined,
+                  label: undefined,
+                  isPrimary: true,
+                },
+              ]
+            : undefined,
+          username: projection?.username ?? undefined,
         });
-        return [];
       }
 
-      return response.data.data?.getUserList ?? [];
-    } catch (error) {
-      this.logger.error('Failed to fetch user details from user service', {
-        error,
-      });
-      return [];
-    }
+      return results;
+    });
   }
 }
