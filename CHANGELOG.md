@@ -3,6 +3,33 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.1.0](https://github.com/omnixys/event-service/compare/v3.0.1...v3.1.0) (2026-07-24)
+
+### Deps
+
+* **Deps:** remove obsolete/redundant dependencies ([](https://github.com/omnixys/event-service/commit/bac75724e37b942c27fdf44a0bebd84cd2335d61))
+
+### Event
+
+* **Event:** resolve staff permissions via RBAC instead of returning empty array ([](https://github.com/omnixys/event-service/commit/0dfae9ea17e18ec885101d6639b48890fbcd4867))
+
+### Log
+
+* **Log:** remove logstream dep ([](https://github.com/omnixys/event-service/commit/fac1f643a5e5dbfc5339a8f34ab144e4e238b451))
+
+### Logger
+
+* **Logger:** remove Kafka log transport config ([](https://github.com/omnixys/event-service/commit/04f752a5097513e37556833432d37ddf3658e52f))
+
+### Other
+
+* **Other:** resolve lint errors in user-projection.service ([](https://github.com/omnixys/event-service/commit/03f7dc06f8e45cd4b0af840dfa9704defd9c60d5))
+* **Other:** fix(fix):Update package.json ([](https://github.com/omnixys/event-service/commit/57e5d1a756b3b398566e429c2734de0316745704))
+
+### Prisma
+
+* **Prisma:** add user projection table ([](https://github.com/omnixys/event-service/commit/659270b6fdd3e7a09c539111387e5cbf2fcdfbfb))
+
 ## [3.0.1](https://github.com/omnixys/event-service/compare/v3.0.0...v3.0.1) (2026-07-17)
 
 ### Deps
