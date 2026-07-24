@@ -16,10 +16,10 @@ import { EventReadService } from './services/event-read.service.js';
 import { EventStaffService } from './services/event-staff.service.js';
 import { EventWriteService } from './services/event-write.service.js';
 import { GeocodingService } from './services/geocoding.service.js';
-import { UserProjectionService } from './services/user-projection.service.js';
 import { ImageService } from './services/image.service.js';
 import { MediaProcessingService } from './services/media-processing.service.js';
 import { MediaService } from './services/media.service.js';
+import { UserProjectionService } from './services/user-projection.service.js';
 import { Module } from '@nestjs/common';
 import { registerEnumType } from '@nestjs/graphql';
 import {

@@ -190,6 +190,8 @@ enum UserRoleType {
   SECURITY
   GUEST
   SUPPORT
+  DRIVER
+  USHER
 
   @@map("user_role_type")
 }
@@ -265,6 +267,8 @@ enum EventSystemRoleKey {
   ADMIN
   SECURITY
   GUEST
+  DRIVER
+  USHER
 
   @@map("event_system_role_key")
 }

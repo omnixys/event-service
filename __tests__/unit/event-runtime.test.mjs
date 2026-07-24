@@ -1,4 +1,5 @@
 import { Readable } from 'node:stream';
+import { readFile } from 'node:fs/promises';
 import { ContextAccessor } from '@omnixys/context';
 import { KafkaTopics } from '@omnixys/kafka';
 import assert from 'node:assert/strict';
@@ -6,10 +7,13 @@ import test from 'node:test';
 import { of, throwError } from 'rxjs';
 import { BaseGraphQLError } from '../../dist/event/errors/base-graphql.error.js';
 import { GeocodingUnavailableError } from '../../dist/event/errors/geocoding-unavailable.error.js';
+import { EventMutationResolver } from '../../dist/event/resolvers/event-mutation.resolver.js';
 import { EventMapper } from '../../dist/event/models/mapper/event.mapper.js';
 import { MediaUploadController } from '../../dist/event/controller/media-upload.controller.js';
 import { GeocodingService } from '../../dist/event/services/geocoding.service.js';
 import { EventRbacService } from '../../dist/event/services/event-rbac.service.js';
+import { EventWriteService } from '../../dist/event/services/event-write.service.js';
+import { UserProjectionService } from '../../dist/event/services/user-projection.service.js';
 import { MediaProcessingService } from '../../dist/event/services/media-processing.service.js';
 import { MediaHandler } from '../../dist/handlers/media.handler.js';
 import { MilestoneHandler } from '../../dist/handlers/milestone.handler.js';
@@ -52,6 +56,43 @@ test('event domain errors capture canonical diagnostic identifiers', () => {
       assert.deepEqual(error.metadata, { eventId: 'event-1' });
     },
   );
+});
+
+test('createEvent forwards only sanitized actor claims to the write service', async () => {
+  const calls = [];
+  const resolver = new EventMutationResolver({
+    async createEvent(input, actor) {
+      calls.push({ input, actor });
+      return { id: 'event-1' };
+    },
+  });
+
+  await resolver.createEvent(
+    { name: 'Sanitized actor' },
+    {
+      id: 'actor-1',
+      username: 'caleb',
+      firstName: 'Caleb',
+      lastName: 'Omnixys',
+      email: 'caleb@omnixys.com',
+      access_token: 'must-not-leak',
+      refresh_token: 'must-not-leak',
+      raw: { sub: 'actor-1', token: 'must-not-leak' },
+    },
+  );
+
+  assert.deepEqual(calls, [
+    {
+      input: { name: 'Sanitized actor' },
+      actor: {
+        id: 'actor-1',
+        username: 'caleb',
+        firstName: 'Caleb',
+        lastName: 'Omnixys',
+        email: 'caleb@omnixys.com',
+      },
+    },
+  ]);
 });
 
 test('default event RBAC permissions preserve legacy equivalence and guest self-service split', () => {
@@ -125,6 +166,248 @@ test('current owner access is published for root and child events', async () => 
       },
     ],
   );
+});
+
+test('authenticated actor projection is written before the event transaction creates a role', async () => {
+  const operations = [];
+  const transactionClient = {
+    event: {
+      async create() {
+        operations.push('event');
+        throw new Error('stop after ordering assertion');
+      },
+    },
+  };
+  const prisma = {
+    async $transaction(callback) {
+      return callback(transactionClient);
+    },
+  };
+  const projection = {
+    async upsertAuthenticatedUser(actor, client) {
+      assert.equal(client, transactionClient);
+      assert.deepEqual(actor, {
+        id: 'actor-1',
+        username: 'caleb',
+        firstName: 'Caleb',
+        lastName: 'Omnixys',
+        email: 'caleb@omnixys.com',
+      });
+      operations.push('projection');
+    },
+  };
+  const service = new EventWriteService(
+    prisma,
+    logger,
+    { send: async () => {} },
+    {},
+    projection,
+  );
+
+  await assert.rejects(
+    service.createEvent(
+      { name: 'Projection ordering' },
+      {
+        id: 'actor-1',
+        username: 'caleb',
+        firstName: 'Caleb',
+        lastName: 'Omnixys',
+        email: 'caleb@omnixys.com',
+      },
+    ),
+    /stop after ordering assertion/,
+  );
+  assert.deepEqual(operations, ['projection', 'event']);
+});
+
+test('authenticated user projection falls back to the user id and remains an upsert', async () => {
+  const calls = [];
+  const service = new UserProjectionService(
+    {},
+    logger,
+  );
+  const client = {
+    userProjection: {
+      async upsert(args) {
+        calls.push(args);
+        return { id: args.where.id, ...args.create };
+      },
+    },
+  };
+
+  await service.upsertAuthenticatedUser(
+    { id: 'actor-1', username: '', firstName: 'Caleb', lastName: 'Omnixys' },
+    client,
+  );
+  await service.upsertAuthenticatedUser(
+    { id: 'actor-1', username: 'caleb', firstName: 'Caleb', lastName: 'Updated' },
+    client,
+  );
+
+  assert.equal(calls[0].create.username, 'actor-1');
+  assert.equal(calls[0].create.displayName, 'Caleb Omnixys');
+  assert.equal(calls[1].where.id, 'actor-1');
+  assert.equal(calls[1].update.username, 'caleb');
+  assert.equal(calls[1].update.displayName, 'Caleb Updated');
+});
+
+test('strict user projection lookup maps an unknown target to USER_NOT_FOUND', async () => {
+  const service = new UserProjectionService(
+    {
+      userProjection: {
+        async findMany() {
+          return [];
+        },
+        async upsert() {
+          throw new Error('upsert must not run without a returned user');
+        },
+      },
+    },
+    logger,
+  );
+  service.getUsersByIds = async () => ({ users: [] });
+
+  await assert.rejects(service.requireUsers(['missing-user']), (error) => {
+    assert.equal(error.code, 'USER_NOT_FOUND');
+    assert.equal(error.metadata.userId, 'missing-user');
+    return true;
+  });
+});
+
+test('legacy role assignment requires the target projection before writing the role', async () => {
+  const operations = [];
+  const service = new EventWriteService(
+    {
+      event: {
+        async findUnique() {
+          return { id: 'event-1' };
+        },
+      },
+      role: {
+        async upsert() {
+          operations.push('role');
+        },
+      },
+      async $transaction(promises) {
+        await Promise.all(promises);
+      },
+    },
+    logger,
+    { send: async () => {} },
+    {
+      async syncLegacyRoleAssignment() {},
+    },
+    {
+      async requireUsers(userIds) {
+        assert.deepEqual(userIds, ['target-1']);
+        operations.push('projection');
+      },
+    },
+  );
+  service.loadEventPayload = async () => ({ id: 'event-1' });
+
+  await service.assignUserToEvent({
+    eventId: 'event-1',
+    userId: 'target-1',
+    eventRole: 'GUEST',
+    actorId: 'admin-1',
+  });
+
+  assert.deepEqual(operations, ['projection', 'role']);
+});
+
+test('modern RBAC assignment requires the target projection before writing the assignment', async () => {
+  const operations = [];
+  const service = new EventRbacService(
+    {
+      eventUserRoleAssignment: {
+        async upsert() {
+          operations.push('assignment');
+        },
+      },
+    },
+    logger,
+    { send: async () => {} },
+    {
+      async requireUsers(userIds) {
+        assert.deepEqual(userIds, ['target-1']);
+        operations.push('projection');
+      },
+    },
+  );
+  service.getRoleOrThrow = async () => ({
+    id: 'role-1',
+    eventId: 'event-1',
+    archivedAt: null,
+  });
+  service.getAccessForUser = async () => ({
+    eventId: 'event-1',
+    userId: 'target-1',
+    roles: [],
+    permissions: [],
+  });
+  service.publishAccessChanged = async () => {};
+
+  await service.assignRole(
+    { eventId: 'event-1', roleId: 'role-1', userId: 'target-1' },
+    'admin-1',
+  );
+
+  assert.deepEqual(operations, ['projection', 'assignment']);
+});
+
+test('ownership transfer requires both owner projections before writing roles', async () => {
+  const operations = [];
+  const service = new EventWriteService(
+    {
+      event: {
+        async findUnique() {
+          return { owner: 'owner-1' };
+        },
+        async update() {
+          operations.push('owner-update');
+        },
+      },
+      role: {
+        async upsert() {
+          operations.push('role');
+        },
+      },
+      async $transaction(promises) {
+        await Promise.all(promises);
+      },
+    },
+    logger,
+    { send: async () => {} },
+    {
+      async syncLegacyRoleAssignment() {},
+    },
+    {
+      async requireUsers(userIds) {
+        assert.deepEqual(userIds, ['new-owner-1', 'owner-1']);
+        operations.push('projection');
+      },
+    },
+  );
+
+  await service.transferEventOwnership('event-1', 'new-owner-1', 'owner-1');
+
+  assert.equal(operations[0], 'projection');
+  assert.equal(operations.filter((operation) => operation === 'role').length, 2);
+  assert.ok(operations.includes('owner-update'));
+});
+
+test('user projection migration is repeatable and backfills legacy role users before the FK', async () => {
+  const sql = await readFile(
+    new URL('../../prisma/migrations/20260723003000_add_user_projection_fk/migration.sql', import.meta.url),
+    'utf8',
+  );
+
+  assert.match(sql, /CREATE TABLE IF NOT EXISTS "user_projection"/);
+  assert.match(sql, /SELECT DISTINCT "user_id", "user_id"::text/);
+  assert.match(sql, /ON CONFLICT \("id"\) DO NOTHING/);
+  assert.match(sql, /IF NOT EXISTS/);
+  assert.ok(sql.indexOf('INSERT INTO "user_projection"') < sql.indexOf('ADD CONSTRAINT'));
 });
 
 test('role mutations authorize against the resolved role event', async () => {

@@ -23,6 +23,7 @@ import {
   EventPermissionPayload,
   EventRoleDefinitionPayload,
 } from '../models/payloads/event-rbac.payload.js';
+import { UserProjectionService } from './user-projection.service.js';
 import { Injectable } from '@nestjs/common';
 import {
   EVENT_PERMISSION_DEFINITIONS,
@@ -109,6 +110,7 @@ export class EventRbacService {
     private readonly prisma: PrismaService,
     private readonly omnixysLogger: OmnixysLogger,
     private readonly kafkaProducerService: KafkaProducerService,
+    private readonly userProjectionService: UserProjectionService,
   ) {
     this.logger = this.omnixysLogger.log(this.constructor.name);
   }
@@ -366,6 +368,8 @@ export class EventRbacService {
         roleId: input.roleId,
       });
     }
+
+    await this.userProjectionService.requireUsers([input.userId]);
 
     await this.prisma.eventUserRoleAssignment.upsert({
       where: {

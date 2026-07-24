@@ -28,7 +28,9 @@ export class UserProjectionHandler {
     _context: IKafkaEventContext,
   ): Promise<void> {
     return TraceRunner.run('[HANDLER] user.changed.projection', async () => {
-      this.logger.debug('User projection update received', { userId: payload.id });
+      this.logger.debug('User projection update received', {
+        userId: payload.id,
+      });
 
       await this.userProjectionService.upsertFromKafka(payload);
     });

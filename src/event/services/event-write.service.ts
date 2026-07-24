@@ -24,6 +24,10 @@ import { EventMapper } from '../models/mapper/event.mapper.js';
 import { SettingsCreateMapper } from '../models/mapper/settings.mapper.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { EventRbacService } from './event-rbac.service.js';
+import {
+  type AuthenticatedUserProjection,
+  UserProjectionService,
+} from './user-projection.service.js';
 import { Injectable } from '@nestjs/common';
 import {
   EventRoleType,
@@ -90,6 +94,7 @@ export class EventWriteService {
     private readonly omnixyslog: OmnixysLogger,
     private readonly kafkaProducerService: KafkaProducerService,
     private readonly rbacService: EventRbacService,
+    private readonly userProjectionService: UserProjectionService,
   ) {
     this.log = this.omnixyslog.log(this.constructor.name);
   }
@@ -234,8 +239,12 @@ export class EventWriteService {
   // CREATE EVENT
   // ─────────────────────────────────────────────
 
-  async createEvent(input: CreateEventInput, actorId: string): Promise<EventPayload> {
+  async createEvent(
+    input: CreateEventInput,
+    actor: AuthenticatedUserProjection,
+  ): Promise<EventPayload> {
     return TraceRunner.run('[SERVICE] createEvent', async () => {
+      const actorId = actor.id;
       this.log.info('Creating event [actor=%s, name=%s]', actorId, input.name);
 
       let parent = null;
@@ -259,6 +268,8 @@ export class EventWriteService {
 
       const { event: result, settings: createSettings } = await this.prisma.$transaction(
         async (tx) => {
+          await this.userProjectionService.upsertAuthenticatedUser(actor, tx);
+
           /**
            * -------------------------------------------------------
            * 1. CREATE ROOT EVENT
@@ -1128,6 +1139,8 @@ export class EventWriteService {
         throw new EventNotFoundError(input.eventId);
       }
 
+      await this.userProjectionService.requireUsers([userId]);
+
       await this.prisma.$transaction([
         this.prisma.role.upsert({
           where: { userId_eventId: { userId, eventId } },
@@ -1303,6 +1316,8 @@ export class EventWriteService {
         userId: newOwnerId,
       });
     }
+
+    await this.userProjectionService.requireUsers([newOwnerId, event.owner]);
 
     await this.prisma.$transaction([
       // 1️⃣ new owner gets ADMIN rights

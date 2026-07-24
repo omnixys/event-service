@@ -50,7 +50,13 @@ export class EventMutationResolver {
     @Args('input') input: CreateEventInput,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload> {
-    return this.writeService.createEvent(input, currentUser.id);
+    return this.writeService.createEvent(input, {
+      id: currentUser.id,
+      username: currentUser.username,
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
+      email: currentUser.email,
+    });
   }
 
   @Mutation(() => EventPayload)

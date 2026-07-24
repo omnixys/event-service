@@ -1,6 +1,7 @@
 import { env } from '../../config/env.js';
-import type { UserProjection } from '../../prisma/generated/client.js';
+import type { Prisma, UserProjection } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
+import { EventUserNotFoundError } from '../errors/event-domain.error.js';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { Injectable, OnModuleInit } from '@nestjs/common';
@@ -8,7 +9,7 @@ import { OmnixysLogger } from '@omnixys/logger';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
 
-interface UserProjectionData {
+export interface UserProjectionData {
   id: string;
   username: string;
   displayName?: string | null;
@@ -19,6 +20,16 @@ interface UserProjectionData {
   avatarUrl?: string | null;
   locale?: string | null;
 }
+
+export interface AuthenticatedUserProjection {
+  id: string;
+  username?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  email?: string | null;
+}
+
+type UserProjectionClient = Prisma.TransactionClient | PrismaService;
 
 @Injectable()
 export class UserProjectionService implements OnModuleInit {
@@ -60,6 +71,57 @@ export class UserProjectionService implements OnModuleInit {
   }
 
   async ensureUsers(userIds: string[]): Promise<void> {
+    try {
+      await this.syncMissingUsers(userIds);
+    } catch (error) {
+      this.log.error('gRPC fetch for user projections failed', { error });
+    }
+  }
+
+  async requireUsers(userIds: string[]): Promise<UserProjection[]> {
+    const uniqueIds = [...new Set(userIds)];
+    await this.syncMissingUsers(uniqueIds);
+
+    const users = await this.findByIds(uniqueIds);
+    const foundIds = new Set(users.map(({ id }) => id));
+    const missingUserId = uniqueIds.find((id) => !foundIds.has(id));
+    if (missingUserId) {
+      throw new EventUserNotFoundError(missingUserId);
+    }
+    return users;
+  }
+
+  async upsertAuthenticatedUser(
+    user: AuthenticatedUserProjection,
+    client: UserProjectionClient = this.prisma,
+  ): Promise<UserProjection> {
+    const candidateUsername = user.username?.trim();
+    const hasUsername = typeof candidateUsername === 'string' && candidateUsername.length > 0;
+    const username = hasUsername ? candidateUsername : user.id;
+    const displayName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || null;
+
+    return client.userProjection.upsert({
+      where: { id: user.id },
+      create: {
+        id: user.id,
+        username,
+        displayName,
+        firstName: user.firstName ?? null,
+        lastName: user.lastName ?? null,
+        email: user.email ?? null,
+      },
+      update: {
+        username,
+        displayName,
+        firstName: user.firstName ?? null,
+        lastName: user.lastName ?? null,
+        email: user.email ?? null,
+        lastSynced: new Date(),
+      },
+    });
+  }
+
+  private async syncMissingUsers(userIds: string[]): Promise<void> {
     const uniqueIds = [...new Set(userIds)];
     if (uniqueIds.length === 0) {
       return;
@@ -80,41 +142,37 @@ export class UserProjectionService implements OnModuleInit {
       count: missingIds.length,
     });
 
-    try {
-      const { users } = await this.getUsersByIds({ ids: missingIds });
+    const { users } = await this.getUsersByIds({ ids: missingIds });
 
-      for (const user of users) {
-        await this.prisma.userProjection.upsert({
-          where: { id: user.id },
-          create: {
-            id: user.id,
-            username: user.username,
-            displayName: user.displayName ?? null,
-            firstName: user.firstName ?? null,
-            lastName: user.lastName ?? null,
-            email: user.email ?? null,
-            primaryPhone: user.primaryPhone ?? null,
-            avatarUrl: user.avatarUrl ?? null,
-            locale: user.locale ?? null,
-          },
-          update: {
-            username: user.username,
-            displayName: user.displayName ?? null,
-            firstName: user.firstName ?? null,
-            lastName: user.lastName ?? null,
-            email: user.email ?? null,
-            primaryPhone: user.primaryPhone ?? null,
-            avatarUrl: user.avatarUrl ?? null,
-            locale: user.locale ?? null,
-            lastSynced: new Date(),
-          },
-        });
-      }
-
-      this.log.info('User projections synced', { count: users.length });
-    } catch (error) {
-      this.log.error('gRPC fetch for user projections failed', { error });
+    for (const user of users) {
+      await this.prisma.userProjection.upsert({
+        where: { id: user.id },
+        create: {
+          id: user.id,
+          username: user.username,
+          displayName: user.displayName ?? null,
+          firstName: user.firstName ?? null,
+          lastName: user.lastName ?? null,
+          email: user.email ?? null,
+          primaryPhone: user.primaryPhone ?? null,
+          avatarUrl: user.avatarUrl ?? null,
+          locale: user.locale ?? null,
+        },
+        update: {
+          username: user.username,
+          displayName: user.displayName ?? null,
+          firstName: user.firstName ?? null,
+          lastName: user.lastName ?? null,
+          email: user.email ?? null,
+          primaryPhone: user.primaryPhone ?? null,
+          avatarUrl: user.avatarUrl ?? null,
+          locale: user.locale ?? null,
+          lastSynced: new Date(),
+        },
+      });
     }
+
+    this.log.info('User projections synced', { count: users.length });
   }
 
   async findByUserId(userId: string): Promise<UserProjection | null> {

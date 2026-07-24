@@ -4,6 +4,7 @@ import {
   EventClosedException,
   EventNotFoundException,
   FrameworkException,
+  UserNotFoundException,
 } from '@omnixys/contracts';
 
 export class EventNotFoundError extends EventNotFoundException {
@@ -49,6 +50,12 @@ export class EventMemberNotFoundError extends BaseGraphQLError {
       eventId,
       userId,
     });
+  }
+}
+
+export class EventUserNotFoundError extends UserNotFoundException {
+  constructor(userId: string) {
+    super(userId, currentErrorOptions());
   }
 }
 

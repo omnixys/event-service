@@ -1,8 +1,8 @@
 import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { EventStaffPayload } from '../models/payloads/event-staff.payload.js';
-import { UserProjectionService } from './user-projection.service.js';
 import { EventRbacService } from './event-rbac.service.js';
+import { UserProjectionService } from './user-projection.service.js';
 import { Injectable } from '@nestjs/common';
 import { OmnixysLogger } from '@omnixys/logger';
 import { TraceRunner } from '@omnixys/observability';
@@ -59,7 +59,10 @@ export class EventStaffService {
           const access = await this.rbacService.getAccessForUser(userId, eventId);
           permissions = [...access.permissions];
         } catch {
-          this.logger.debug('Could not resolve permissions via RBAC, falling back to empty', { userId, eventId });
+          this.logger.debug('Could not resolve permissions via RBAC, falling back to empty', {
+            userId,
+            eventId,
+          });
         }
 
         const projection = userMap.get(userId);
