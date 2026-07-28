@@ -62,7 +62,7 @@ interface RoleRecord {
 }
 
 const SYSTEM_ROLE_META: Record<
-  PrismaEventSystemRoleKey,
+  ContractEventSystemRoleKey,
   {
     key: string;
     name: string;
@@ -499,7 +499,7 @@ export class EventRbacService {
     await this.seedPermissionCatalog(client);
 
     for (const [systemKey, meta] of Object.entries(SYSTEM_ROLE_META) as Array<
-      [PrismaEventSystemRoleKey, (typeof SYSTEM_ROLE_META)[PrismaEventSystemRoleKey]]
+      [ContractEventSystemRoleKey, (typeof SYSTEM_ROLE_META)[ContractEventSystemRoleKey]]
     >) {
       const role = await client.eventRoleDefinition.upsert({
         where: {

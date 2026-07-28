@@ -12,7 +12,9 @@ export const UserRoleType = {
   ADMIN: 'ADMIN',
   SECURITY: 'SECURITY',
   GUEST: 'GUEST',
-  SUPPORT: 'SUPPORT'
+  SUPPORT: 'SUPPORT',
+  DRIVER: 'DRIVER',
+  USHER: 'USHER'
 } as const
 
 export type UserRoleType = (typeof UserRoleType)[keyof typeof UserRoleType]
@@ -21,7 +23,9 @@ export type UserRoleType = (typeof UserRoleType)[keyof typeof UserRoleType]
 export const EventSystemRoleKey = {
   ADMIN: 'ADMIN',
   SECURITY: 'SECURITY',
-  GUEST: 'GUEST'
+  GUEST: 'GUEST',
+  DRIVER: 'DRIVER',
+  USHER: 'USHER'
 } as const
 
 export type EventSystemRoleKey = (typeof EventSystemRoleKey)[keyof typeof EventSystemRoleKey]

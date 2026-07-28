@@ -20,6 +20,9 @@ function mapToEventRoleType(role: UserRoleType | undefined): EventRoleType | nul
       return 'GUEST' as EventRoleType;
     case UserRoleType.SUPPORT:
       return 'SUPPORT' as EventRoleType;
+    case UserRoleType.DRIVER:
+    case UserRoleType.USHER:
+      return null;
     default:
       return null;
   }
