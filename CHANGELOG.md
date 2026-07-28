@@ -3,6 +3,21 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.2.0](https://github.com/omnixys/event-service/compare/v3.1.0...v3.2.0) (2026-07-28)
+
+### Event
+
+* **Event:** add logging to event-access, media, and media-processing services ([](https://github.com/omnixys/event-service/commit/90a7d70e6913b9c218c3676b4401089c7d348957))
+* **Event:** add structured logging to EventMutationResolver ([](https://github.com/omnixys/event-service/commit/1eae8fb837114ac6979bbabcee2704e0d80af7f3))
+
+### Log
+
+* **Log:** resolve build errors in media and event-access services ([](https://github.com/omnixys/event-service/commit/4e27f959d1f36047168e131c325b7027017e0c42))
+
+### Prisma
+
+* **Prisma:** add generated prisma files ([](https://github.com/omnixys/event-service/commit/2e8cd3102fe2cda94f078e82ff19342e4f69641a))
+
 ## [3.1.0](https://github.com/omnixys/event-service/compare/v3.0.1...v3.1.0) (2026-07-24)
 
 ### Deps
