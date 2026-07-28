@@ -20,6 +20,7 @@ import {
   Mutation,
   Resolver,
 } from '@nestjs/graphql';
+import { OmnixysLogger } from '@omnixys/logger';
 import { EventPermissionKey, RealmRoleType } from '@omnixys/contracts';
 import {
   CookieAuthGuard,
@@ -41,7 +42,13 @@ export class TransferInput {
 
 @Resolver(() => Event)
 export class EventMutationResolver {
-  constructor(private readonly writeService: EventWriteService) {}
+  private readonly log;
+  constructor(
+    private readonly writeService: EventWriteService,
+    logger: OmnixysLogger,
+  ) {
+    this.log = logger.log(this.constructor.name);
+  }
 
   @Mutation(() => EventPayload)
   @UseGuards(CookieAuthGuard, RoleGuard)
@@ -50,6 +57,7 @@ export class EventMutationResolver {
     @Args('input') input: CreateEventInput,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload> {
+    this.log.debug('createEvent: name=%s | actorId=%s', input.name, currentUser.id);
     return this.writeService.createEvent(input, {
       id: currentUser.id,
       username: currentUser.username,
@@ -67,6 +75,7 @@ export class EventMutationResolver {
     @Args('input') input: UpdateEventInput,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload> {
+    this.log.debug('updateEvent: eventId=%s | actorId=%s', input.eventId, currentUser.id);
     return this.writeService.updateEvent(input, currentUser.id);
   }
 
@@ -78,6 +87,7 @@ export class EventMutationResolver {
     @Args('id', { type: () => ID }) id: string,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<boolean> {
+    this.log.debug('deleteEvent: eventId=%s | actorId=%s', id, currentUser.id);
     return this.writeService.deleteEvent(id, currentUser.id);
   }
 
@@ -89,6 +99,7 @@ export class EventMutationResolver {
     @Args('input') input: AssignUserRoleInput,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload> {
+    this.log.debug('assignUserToEvent: eventId=%s | userId=%s | role=%s', input.eventId, input.userId, input.eventRole);
     return this.writeService.assignUserToEvent({
       ...input,
       actorId: currentUser.id,
@@ -103,6 +114,7 @@ export class EventMutationResolver {
     @Args('input') input: RemoveUserFromEventInput,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload> {
+    this.log.debug('removeUserFromEvent: eventId=%s | userId=%s', input.eventId, input.userId);
     return this.writeService.removeUserFromEvent(input, currentUser.id);
   }
 
@@ -114,6 +126,7 @@ export class EventMutationResolver {
     @CurrentUser() user: CurrentUserData,
   ) {
     const { newOwnerId, eventId } = input;
+    this.log.debug('transferEventOwnership: eventId=%s | newOwnerId=%s | actorId=%s', eventId, newOwnerId, user.id);
     await this.writeService.transferEventOwnership(
       eventId,
       newOwnerId,
@@ -130,6 +143,7 @@ export class EventMutationResolver {
     @Args('eventId', { type: () => ID }) eventId: string,
     @CurrentUser() user: CurrentUserData,
   ) {
+    this.log.debug('activateEvent: eventId=%s | actorId=%s', eventId, user.id);
     return this.writeService.activateEvent(eventId, user.id);
   }
 
@@ -141,6 +155,7 @@ export class EventMutationResolver {
     @Args('eventId', { type: () => ID }) eventId: string,
     @CurrentUser() user: CurrentUserData,
   ) {
+    this.log.debug('deactivateEvent: eventId=%s | actorId=%s', eventId, user.id);
     return this.writeService.deactivateEvent(eventId, user.id);
   }
 
@@ -154,6 +169,7 @@ export class EventMutationResolver {
     timelineInputs: CreateTimelineInput[],
     @CurrentUser() user: CurrentUserData,
   ) {
+    this.log.debug('addTimeLines: eventId=%s | count=%d', eventId, timelineInputs.length);
     return this.writeService.addTimelines(eventId, timelineInputs, user.id);
   }
 
