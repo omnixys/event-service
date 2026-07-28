@@ -95,7 +95,11 @@ export class MediaProcessingService {
       select: { id: true, key: true },
     });
     if (media?.key !== key) {
-      this.logger.warning('media_key_mismatch', { mediaId, expectedKey: key, actualKey: media?.key });
+      this.logger.warn('media_key_mismatch', {
+        mediaId,
+        expectedKey: key,
+        actualKey: media?.key,
+      });
       throw new EventMediaNotFoundError(mediaId);
     }
 

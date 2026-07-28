@@ -3,16 +3,17 @@ import { PrismaService } from '../../prisma/prisma.service.js';
 import { EventMediaNotFoundError } from '../errors/event-domain.error.js';
 import { CreateMediaDto } from '../models/dto/media.dto.js';
 import { Injectable, Inject } from '@nestjs/common';
+import { OmnixysLogger } from '@omnixys/logger';
 import { FILE_STORAGE } from '@omnixys/media';
 import type { FileStorage } from '@omnixys/media';
-import { getLogger } from '@omnixys/logger';
-
-const logger = getLogger(MediaService.name);
 
 @Injectable()
 export class MediaService {
+  private readonly logger;
+
   constructor(
     private readonly prisma: PrismaService,
+    private readonly omnixysLogger: OmnixysLogger,
 
     /**
      * WHY:
@@ -20,10 +21,16 @@ export class MediaService {
      */
     @Inject(FILE_STORAGE)
     private readonly storage: FileStorage,
-  ) {}
+  ) {
+    this.logger = this.omnixysLogger.log(this.constructor.name);
+  }
 
   async create(dto: CreateMediaDto): Promise<Media> {
-    logger.info('media_create', { eventId: dto.eventId, type: dto.type, filename: dto.filename });
+    this.logger.info('media_create', {
+      eventId: dto.eventId,
+      type: dto.type,
+      filename: dto.filename,
+    });
     const media = await this.prisma.media.create({
       data: {
         key: dto.key,
@@ -59,7 +66,7 @@ export class MediaService {
       });
     }
 
-    logger.info('media_create_success', { mediaId: media.id, eventId: dto.eventId });
+    this.logger.info('media_create_success', { mediaId: media.id, eventId: dto.eventId });
     return media;
   }
 
@@ -69,7 +76,7 @@ export class MediaService {
     });
 
     if (!media) {
-      logger.warning('media_delete_not_found', { mediaId: id });
+      this.logger.warn('media_delete_not_found', { mediaId: id });
       throw new EventMediaNotFoundError(id);
     }
 
@@ -77,14 +84,14 @@ export class MediaService {
      * WHY:
      * Always delete storage first to avoid orphan files
      */
-    logger.info('media_delete', { mediaId: id, key: media.key, eventId: media.eventId });
+    this.logger.info('media_delete', { mediaId: id, key: media.key, eventId: media.eventId });
     await this.storage.delete({ key: media.key });
 
     await this.prisma.media.delete({
       where: { id },
     });
 
-    logger.info('media_delete_success', { mediaId: id });
+    this.logger.info('media_delete_success', { mediaId: id });
     return { success: true };
   }
 

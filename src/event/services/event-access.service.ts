@@ -3,10 +3,8 @@ import { PrismaService } from '../../prisma/prisma.service.js';
 import { EventRbacService } from './event-rbac.service.js';
 import { Injectable } from '@nestjs/common';
 import type { EventPermissionKey, EventRoleType } from '@omnixys/contracts';
+import { OmnixysLogger } from '@omnixys/logger';
 import { EventPermissionResolver, EventRoleResolver } from '@omnixys/security';
-import { getLogger } from '@omnixys/logger';
-
-const logger = getLogger(EventAccessService.name);
 
 function mapToEventRoleType(role: UserRoleType | undefined): EventRoleType | null {
   if (!role) {
@@ -29,11 +27,15 @@ function mapToEventRoleType(role: UserRoleType | undefined): EventRoleType | nul
 
 @Injectable()
 export class EventAccessService extends EventRoleResolver implements EventPermissionResolver {
+  private readonly logger;
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly rbacService: EventRbacService,
+    private readonly omnixysLogger: OmnixysLogger,
   ) {
     super();
+    this.logger = this.omnixysLogger.log(this.constructor.name);
   }
 
   async getRoleForUser(userId: string, eventId: string): Promise<EventRoleType | null> {
@@ -42,18 +44,18 @@ export class EventAccessService extends EventRoleResolver implements EventPermis
     });
 
     if (!event) {
-      logger.debug('event_not_found_for_role_check', { userId, eventId });
+      this.logger.debug('event_not_found_for_role_check', { userId, eventId });
       return null;
     }
 
     // Owner shortcut: event owner always has ADMIN access
     if (event.owner === userId) {
-      logger.debug('user_is_owner_admin', { userId, eventId });
+      this.logger.debug('user_is_owner_admin', { userId, eventId });
       return 'ADMIN' as EventRoleType;
     }
 
     const role = await this.resolveRole(eventId, userId);
-    logger.debug('role_resolved', { userId, eventId, role: role ?? 'none' });
+    this.logger.debug('role_resolved', { userId, eventId, role: role ?? 'none' });
     return mapToEventRoleType(role);
   }
 
