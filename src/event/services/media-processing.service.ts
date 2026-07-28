@@ -95,9 +95,11 @@ export class MediaProcessingService {
       select: { id: true, key: true },
     });
     if (media?.key !== key) {
+      this.logger.warning('media_key_mismatch', { mediaId, expectedKey: key, actualKey: media?.key });
       throw new EventMediaNotFoundError(mediaId);
     }
 
+    this.logger.info('process_from_storage', { mediaId, key });
     const buffer = await this.storage.get({ key });
     return this.processImage(mediaId, buffer);
   }

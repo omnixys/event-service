@@ -4,6 +4,9 @@ import { EventRbacService } from './event-rbac.service.js';
 import { Injectable } from '@nestjs/common';
 import type { EventPermissionKey, EventRoleType } from '@omnixys/contracts';
 import { EventPermissionResolver, EventRoleResolver } from '@omnixys/security';
+import { getLogger } from '@omnixys/logger';
+
+const logger = getLogger(EventAccessService.name);
 
 function mapToEventRoleType(role: UserRoleType | undefined): EventRoleType | null {
   if (!role) {
@@ -39,15 +42,18 @@ export class EventAccessService extends EventRoleResolver implements EventPermis
     });
 
     if (!event) {
+      logger.debug('event_not_found_for_role_check', { userId, eventId });
       return null;
     }
 
     // Owner shortcut: event owner always has ADMIN access
     if (event.owner === userId) {
+      logger.debug('user_is_owner_admin', { userId, eventId });
       return 'ADMIN' as EventRoleType;
     }
 
     const role = await this.resolveRole(eventId, userId);
+    logger.debug('role_resolved', { userId, eventId, role: role ?? 'none' });
     return mapToEventRoleType(role);
   }
 
