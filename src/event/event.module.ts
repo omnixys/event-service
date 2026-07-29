@@ -1,3 +1,4 @@
+import { AnalyticsModule } from '../analytics/analytics.module.js';
 import { CoreHttpModule } from '../core/http.module.js';
 import { ScalarsModule } from '../core/scalars/scalar.module.js';
 import { UserRoleType } from '../prisma/generated/client.js';
@@ -35,7 +36,7 @@ registerEnumType(UserRoleType, {
 });
 
 @Module({
-  imports: [PrismaModule, ScalarsModule, CoreHttpModule],
+  imports: [PrismaModule, ScalarsModule, CoreHttpModule, AnalyticsModule],
   controllers: [MediaUploadController],
   providers: [
     EventAdminQueryResolver,

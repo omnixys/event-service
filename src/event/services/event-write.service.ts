@@ -1,3 +1,4 @@
+import { AnalyticsOutboxService } from '../../analytics/analytics-outbox.service.js';
 import { UserRoleType, SeatColorGroupMatchType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import {
@@ -95,6 +96,7 @@ export class EventWriteService {
     private readonly kafkaProducerService: KafkaProducerService,
     private readonly rbacService: EventRbacService,
     private readonly userProjectionService: UserProjectionService,
+    private readonly analyticsOutbox: AnalyticsOutboxService,
   ) {
     this.log = this.omnixyslog.log(this.constructor.name);
   }
@@ -455,6 +457,18 @@ export class EventWriteService {
               type: 'event-created',
               timestamp: new Date(),
               label: 'Event created',
+            },
+          });
+
+          await this.analyticsOutbox.enqueue(tx, 'event.created.v1', {
+            eventName: 'EventCreated',
+            aggregateId: event.id,
+            aggregateType: 'event',
+            subjectId: actorId,
+            properties: {
+              category: parentSettings?.category ?? 'GENERAL',
+              childCount: childIds.length,
+              hasParent: Boolean(input.parentId),
             },
           });
 
@@ -864,6 +878,16 @@ export class EventWriteService {
         //   },
         // });
 
+        await this.analyticsOutbox.enqueue(tx, 'event.updated.v1', {
+          eventName: 'EventUpdated',
+          aggregateId: updated.id,
+          aggregateType: 'event',
+          subjectId: actorId,
+          properties: {
+            changedFields: Object.keys(input).filter((field) => field !== 'eventId'),
+          },
+        });
+
         return {
           payload: EventMapper.toPayload(updated, UserRoleType.ADMIN),
           settings: updated.settings,
@@ -1028,8 +1052,19 @@ export class EventWriteService {
     /**
      * 4. Delete from DB (cascade handles children relations)
      */
-    await this.prisma.event.deleteMany({
-      where: { id: { in: eventIds } },
+    await this.prisma.$transaction(async (tx) => {
+      await tx.event.deleteMany({
+        where: { id: { in: eventIds } },
+      });
+      for (const eventId of eventIds) {
+        await this.analyticsOutbox.enqueue(tx, 'event.deleted.v1', {
+          eventName: 'EventDeleted',
+          aggregateId: eventId,
+          aggregateType: 'event',
+          subjectId: actorId,
+          properties: {},
+        });
+      }
     });
 
     this.log.debug('Events deleted events=%o. |actorId=%s', eventIds, actorId);
@@ -1381,20 +1416,27 @@ export class EventWriteService {
   async activateEvent(eventId: string, actorId: string): Promise<boolean> {
     this.log.info('Activate Event %o', { actorId, eventId });
 
-    await this.prisma.$transaction([
-      this.prisma.settings.update({
+    await this.prisma.$transaction(async (tx) => {
+      await tx.settings.update({
         where: { eventId },
         data: { isActive: true },
-      }),
-      this.prisma.timeline.create({
+      });
+      await tx.timeline.create({
         data: {
           eventId,
           type: 'event-activated',
           timestamp: new Date(),
           label: 'Event activated',
         },
-      }),
-    ]);
+      });
+      await this.analyticsOutbox.enqueue(tx, 'event.activated.v1', {
+        eventName: 'EventActivated',
+        aggregateId: eventId,
+        aggregateType: 'event',
+        subjectId: actorId,
+        properties: {},
+      });
+    });
 
     // await this.prisma.eventAuditLog.create({
     //   data: {
@@ -1409,20 +1451,27 @@ export class EventWriteService {
 
   async deactivateEvent(eventId: string, actorId: string): Promise<boolean> {
     this.log.info('Deactivate Event %o', { actorId, eventId });
-    await this.prisma.$transaction([
-      this.prisma.settings.update({
+    await this.prisma.$transaction(async (tx) => {
+      await tx.settings.update({
         where: { eventId },
         data: { isActive: false },
-      }),
-      this.prisma.timeline.create({
+      });
+      await tx.timeline.create({
         data: {
           eventId,
           type: 'event-deactivated',
           timestamp: new Date(),
           label: 'Event deactivated',
         },
-      }),
-    ]);
+      });
+      await this.analyticsOutbox.enqueue(tx, 'event.deactivated.v1', {
+        eventName: 'EventDeactivated',
+        aggregateId: eventId,
+        aggregateType: 'event',
+        subjectId: actorId,
+        properties: {},
+      });
+    });
 
     // await this.prisma.eventAuditLog.create({
     //   data: {
