@@ -26,6 +26,7 @@ import { Module } from '@nestjs/common';
 import { ValkeyModule } from '@omnixys/cache';
 import { ContextModule } from '@omnixys/context';
 import { OmnixysGraphQLModule } from '@omnixys/graphql';
+import { OmnixysHttpModule } from '@omnixys/http';
 import { KafkaModule } from '@omnixys/kafka';
 import { LoggerModule } from '@omnixys/logger';
 import { StorageModule } from '@omnixys/media';
@@ -55,6 +56,7 @@ const {
 @Module({
   imports: [
     ContextModule.forRoot(),
+    OmnixysHttpModule.forRoot({ serviceName: SERVICE }),
 
     StorageModule.forRoot({
       region: STORAGE_REGION,

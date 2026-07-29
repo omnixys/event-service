@@ -53,7 +53,7 @@ test('event domain errors capture canonical diagnostic identifiers', () => {
       assert.equal(error.traceId, 'trace-event');
       assert.equal(error.actorId, 'actor-event');
       assert.equal(error.tenantId, 'tenant-event');
-      assert.deepEqual(error.metadata, { eventId: 'event-1' });
+      assert.deepEqual(error.metadata, {});
     },
   );
 });
@@ -65,7 +65,7 @@ test('createEvent forwards only sanitized actor claims to the write service', as
       calls.push({ input, actor });
       return { id: 'event-1' };
     },
-  });
+  }, logger);
 
   await resolver.createEvent(
     { name: 'Sanitized actor' },
