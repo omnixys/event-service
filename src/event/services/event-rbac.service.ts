@@ -1,3 +1,4 @@
+import { env } from '../../config/env.js';
 import {
   EventSystemRoleKey as PrismaEventSystemRoleKey,
   type Prisma,
@@ -36,14 +37,14 @@ import {
   getDefaultPermissionsForEventRole,
   getDefaultPermissionsForSystemRole,
   uniqueEventPermissions,
-} from '@omnixys/contracts';
+} from '@omnixys/contracts-ts';
 import {
   KafkaProducerService,
   KafkaTopics,
   type EventType,
   type KafkaMetaInfo,
-} from '@omnixys/kafka';
-import { OmnixysLogger } from '@omnixys/logger';
+} from '@omnixys/kafka-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
 
 type RbacClient = Prisma.TransactionClient | PrismaService;
 
@@ -810,7 +811,7 @@ export class EventRbacService {
     const type: EventType = 'EVENT';
     return {
       actorId,
-      tenantId: 'omnixys',
+      tenantId: env.DEFAULT_TENANT_ID,
       service: 'event-service',
       operation,
       version: '2',

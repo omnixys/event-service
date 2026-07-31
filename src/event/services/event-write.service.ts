@@ -1,4 +1,5 @@
 import { AnalyticsOutboxService } from '../../analytics/analytics-outbox.service.js';
+import { env } from '../../config/env.js';
 import { UserRoleType, SeatColorGroupMatchType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import {
@@ -40,15 +41,15 @@ import {
   type EventUpdatedDTO,
   type EventVisibleTab,
   type SeatColorGroupDTO,
-} from '@omnixys/contracts';
+} from '@omnixys/contracts-ts';
 import {
   KafkaProducerService,
   KafkaTopics,
   type EventType,
   type KafkaMetaInfo,
-} from '@omnixys/kafka';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
+} from '@omnixys/kafka-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
 
 const DEFAULT_SEAT_COLOR_STYLES = [
   { background: '#e74c3c', border: '#c0392b', foreground: '#ffffff', legendIcon: '#e74c3c' },
@@ -540,7 +541,7 @@ export class EventWriteService {
           operation: 'Create Event',
           version: '1',
           actorId,
-          tenantId: 'omnixys',
+          tenantId: env.DEFAULT_TENANT_ID,
         },
       });
 
@@ -558,7 +559,7 @@ export class EventWriteService {
             operation: 'Create Event Address',
             version: '1',
             actorId,
-            tenantId: 'omnixys',
+            tenantId: env.DEFAULT_TENANT_ID,
           },
         });
       }
@@ -1039,7 +1040,7 @@ export class EventWriteService {
           operation: 'Delete Event Address',
           version: '1',
           actorId,
-          tenantId: 'omnixys',
+          tenantId: env.DEFAULT_TENANT_ID,
         },
       }),
       this.kafkaProducerService.send({
@@ -1105,7 +1106,7 @@ export class EventWriteService {
     const type: EventType = 'EVENT';
     return {
       actorId,
-      tenantId: 'omnixys',
+      tenantId: env.DEFAULT_TENANT_ID,
       service: 'event-service',
       operation,
       version: '1',
