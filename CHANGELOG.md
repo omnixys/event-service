@@ -3,6 +3,25 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.3.0](https://github.com/omnixys/event-service/compare/v3.2.0...v3.3.0) (2026-08-03)
+
+### Analytics
+
+* **Analytics:** publish event lifecycle facts via outbox ([](https://github.com/omnixys/event-service/commit/d99c118f6d3f76bf153b258b8152a8f86ee7a397))
+
+### Config
+
+* **Config:** require and validate DEFAULT_TENANT_ID ([](https://github.com/omnixys/event-service/commit/ef040db20a3546c62fd9139634bea6cc778effce))
+* **Config:** support trusted proxy address policy ([](https://github.com/omnixys/event-service/commit/4fc8371f254d89a70bae927b3ad8acec6eb56a29))
+
+### Errors
+
+* **Errors:** adopt secure event error handling ([](https://github.com/omnixys/event-service/commit/cb46802e4c0b3cb53162e21555b326281dcf225d))
+
+### Tenant
+
+* **Tenant:** use DEFAULT_TENANT_ID instead of hardcoded 'omnixys' ([](https://github.com/omnixys/event-service/commit/178810c41a5c722eb2af849539bf9288d38361af))
+
 ## [3.2.0](https://github.com/omnixys/event-service/compare/v3.1.0...v3.2.0) (2026-07-28)
 
 ### Event
