@@ -15,7 +15,7 @@ import {
 import { EventRbacService } from '../services/event-rbac.service.js';
 import { UseGuards } from '@nestjs/common';
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { EventPermissionKey, RealmRoleType } from '@omnixys/contracts';
+import { EventPermissionKey, RealmRoleType } from '@omnixys/contracts-ts';
 import {
   CookieAuthGuard,
   CurrentUser,
@@ -24,7 +24,7 @@ import {
   EventPermissions,
   RoleGuard,
   Roles,
-} from '@omnixys/security';
+} from '@omnixys/security-ts';
 
 @Resolver()
 @UseGuards(CookieAuthGuard, RoleGuard)

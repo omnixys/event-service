@@ -5,7 +5,7 @@ import {
   CookieAuthGuard,
   CurrentUser,
   CurrentUserData,
-} from '@omnixys/security';
+} from '@omnixys/security-ts';
 
 import { EventStaffPayload } from '../models/payloads/event-staff.payload.js';
 import { EventStaffService } from '../services/event-staff.service.js';

@@ -20,23 +20,23 @@ import { Injectable } from '@nestjs/common';
 import { InvalidEventTokenError } from '../event/errors/event-domain.error.js';
 import { EventWriteService } from '../event/services/event-write.service.js';
 import { UserRoleType } from '../prisma/generated/client.js';
-import { ValkeyKey, ValkeyService } from '@omnixys/cache';
+import { ValkeyKey, ValkeyService } from '@omnixys/cache-ts';
 import {
   CreateUserWithInvitationIdDTO,
   GuestEventKey,
   GuestSignUpTokenPayload,
   UserIdDTO,
-} from '@omnixys/contracts';
+} from '@omnixys/contracts-ts';
 import {
   IKafkaEventContext,
   KAFKA_HEADERS,
   KafkaEvent,
   KafkaEventHandler,
   KafkaTopics,
-} from '@omnixys/kafka';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
-import { EncryptionService } from '@omnixys/security';
+} from '@omnixys/kafka-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
+import { EncryptionService } from '@omnixys/security-ts';
 
 /**
  * Kafka event handler responsible for useristrative commands such as

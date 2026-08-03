@@ -5,7 +5,7 @@ import {
   EventNotFoundException,
   FrameworkException,
   UserNotFoundException,
-} from '@omnixys/contracts';
+} from '@omnixys/contracts-ts';
 
 export class EventNotFoundError extends EventNotFoundException {
   constructor(eventId?: string) {

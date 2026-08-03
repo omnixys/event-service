@@ -14,8 +14,8 @@ import { UserEventRoleMapper } from '../models/mapper/user-event-role.mapper.js'
 import { EventTreePayload } from '../models/payloads/event-tree.payload.js';
 import { EventPayload } from '../models/payloads/event.payload.js';
 import { Injectable } from '@nestjs/common';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
 
 @Injectable()
 export class EventReadService {
@@ -495,18 +495,20 @@ export class EventReadService {
         throw new EventAccessDeniedError(id, 'missing-event-role');
       }
 
-      for (const id of pathIds) {
-        const role = await this.prisma.role.findUnique({
-          where: {
-            userId_eventId: {
-              userId,
-              eventId: id,
+      if (!isAdmin) {
+        for (const id of pathIds) {
+          const role = await this.prisma.role.findUnique({
+            where: {
+              userId_eventId: {
+                userId,
+                eventId: id,
+              },
             },
-          },
-        });
+          });
 
-        if (role) {
-          return { event, role: role.role };
+          if (role) {
+            return { event, role: role.role };
+          }
         }
       }
 

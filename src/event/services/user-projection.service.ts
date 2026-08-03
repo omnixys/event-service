@@ -5,9 +5,11 @@ import { EventUserNotFoundError } from '../errors/event-domain.error.js';
 import * as grpc from '@grpc/grpc-js';
 import * as protoLoader from '@grpc/proto-loader';
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { OmnixysLogger } from '@omnixys/logger';
+import { OmnixysLogger } from '@omnixys/logger-ts';
 import { fileURLToPath } from 'node:url';
 import { promisify } from 'node:util';
+
+const { GRPC_USER_SERVICE_URL } = env;
 
 export interface UserProjectionData {
   id: string;
@@ -44,7 +46,7 @@ export class UserProjectionService implements OnModuleInit {
   }
 
   async onModuleInit(): Promise<void> {
-    const pkgPath = fileURLToPath(import.meta.resolve('@omnixys/grpc/proto'));
+    const pkgPath = fileURLToPath(import.meta.resolve('@omnixys/grpc-ts/proto'));
     const packageDefinition = protoLoader.loadSync(pkgPath, {
       keepCase: false,
       longs: String,
@@ -59,14 +61,11 @@ export class UserProjectionService implements OnModuleInit {
     if (!UserServiceClient) {
       throw new Error('Failed to load gRPC UserService client from proto definition');
     }
-    const client = new UserServiceClient(
-      env.GRPC_USER_SERVICE_URL,
-      grpc.credentials.createInsecure(),
-    );
+    const client = new UserServiceClient(GRPC_USER_SERVICE_URL, grpc.credentials.createInsecure());
     // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
     this.getUsersByIds = promisify((client as any).GetUsersByIds.bind(client));
     this.log.info('gRPC UserService client initialized', {
-      target: env.GRPC_USER_SERVICE_URL,
+      target: GRPC_USER_SERVICE_URL,
     });
   }
 

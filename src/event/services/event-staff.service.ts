@@ -4,8 +4,8 @@ import { EventStaffPayload } from '../models/payloads/event-staff.payload.js';
 import { EventRbacService } from './event-rbac.service.js';
 import { UserProjectionService } from './user-projection.service.js';
 import { Injectable } from '@nestjs/common';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
 
 @Injectable()
 export class EventStaffService {

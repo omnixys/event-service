@@ -1,9 +1,9 @@
 import { MediaProcessingService } from '../event/services/media-processing.service.js';
 import { Injectable } from '@nestjs/common';
-import type { EventMediaUploadedDTO } from '@omnixys/contracts';
-import { KafkaEvent, KafkaEventHandler, KafkaTopics } from '@omnixys/kafka';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
+import type { EventMediaUploadedDTO } from '@omnixys/contracts-ts';
+import { KafkaEvent, KafkaEventHandler, KafkaTopics } from '@omnixys/kafka-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
 
 @KafkaEventHandler('event-media')
 @Injectable()

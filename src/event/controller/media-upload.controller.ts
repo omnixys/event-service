@@ -16,17 +16,17 @@ import { FastifyRequest } from 'fastify';
 
 import { EventAccessService } from '../services/event-access.service.js';
 import { MediaService } from '../services/media.service.js';
-import { FILE_STORAGE } from '@omnixys/media';
-import type { FileStorage } from '@omnixys/media';
+import { FILE_STORAGE } from '@omnixys/media-ts';
+import type { FileStorage } from '@omnixys/media-ts';
 
 import { MediaType } from '../../prisma/generated/client.js';
 import { UserRoleType } from '../../prisma/generated/client.js';
-import { ContextAccessor } from '@omnixys/context';
-import type { EventMediaUploadedDTO } from '@omnixys/contracts';
-import { KafkaProducerService, KafkaTopics } from '@omnixys/kafka';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
-import { CookieAuthGuard, CurrentUser, CurrentUserData } from '@omnixys/security';
+import { ContextAccessor } from '@omnixys/context-ts';
+import type { EventMediaUploadedDTO } from '@omnixys/contracts-ts';
+import { KafkaProducerService, KafkaTopics } from '@omnixys/kafka-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
+import { CookieAuthGuard, CurrentUser, CurrentUserData } from '@omnixys/security-ts';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 

@@ -9,13 +9,13 @@ import { EventAccessService } from '../services/event-access.service.js';
 import { MediaService } from '../services/media.service.js';
 import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { FILE_STORAGE } from '@omnixys/media';
-import type { FileStorage } from '@omnixys/media';
+import { FILE_STORAGE } from '@omnixys/media-ts';
+import type { FileStorage } from '@omnixys/media-ts';
 import {
   CookieAuthGuard,
   CurrentUser,
   type CurrentUserData,
-} from '@omnixys/security';
+} from '@omnixys/security-ts';
 
 @Resolver()
 export class MediaResolver {

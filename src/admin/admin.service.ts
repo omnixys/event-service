@@ -17,7 +17,7 @@
 
 /* eslint-disable no-process-exit */
 import { Injectable } from '@nestjs/common';
-import { OmnixysLogger } from '@omnixys/logger';
+import { OmnixysLogger } from '@omnixys/logger-ts';
 
 @Injectable()
 export class AdminService {

@@ -3,9 +3,9 @@ import { PrismaService } from '../../prisma/prisma.service.js';
 import { EventMediaNotFoundError } from '../errors/event-domain.error.js';
 import { CreateMediaDto } from '../models/dto/media.dto.js';
 import { Injectable, Inject } from '@nestjs/common';
-import { OmnixysLogger } from '@omnixys/logger';
-import { FILE_STORAGE } from '@omnixys/media';
-import type { FileStorage } from '@omnixys/media';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { FILE_STORAGE } from '@omnixys/media-ts';
+import type { FileStorage } from '@omnixys/media-ts';
 
 @Injectable()
 export class MediaService {

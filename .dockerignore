@@ -1,12 +1,8 @@
-.git
-.github
-.env
-.env.*
-.npmrc
-.secrets
 node_modules
 dist
+.git
+.gitignore
+.env
+*.md
 coverage
-log
-*.log
-tsconfig.build.tsbuildinfo
+__tests__

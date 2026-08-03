@@ -51,6 +51,8 @@ import {
 import { OmnixysLogger } from '@omnixys/logger-ts';
 import { TraceRunner } from '@omnixys/observability-ts';
 
+const { DEFAULT_TENANT_ID } = env;
+
 const DEFAULT_SEAT_COLOR_STYLES = [
   { background: '#e74c3c', border: '#c0392b', foreground: '#ffffff', legendIcon: '#e74c3c' },
   { background: '#3498db', border: '#2980b9', foreground: '#ffffff', legendIcon: '#3498db' },
@@ -541,7 +543,7 @@ export class EventWriteService {
           operation: 'Create Event',
           version: '1',
           actorId,
-          tenantId: env.DEFAULT_TENANT_ID,
+          tenantId: DEFAULT_TENANT_ID,
         },
       });
 
@@ -559,7 +561,7 @@ export class EventWriteService {
             operation: 'Create Event Address',
             version: '1',
             actorId,
-            tenantId: env.DEFAULT_TENANT_ID,
+            tenantId: DEFAULT_TENANT_ID,
           },
         });
       }
@@ -1040,7 +1042,7 @@ export class EventWriteService {
           operation: 'Delete Event Address',
           version: '1',
           actorId,
-          tenantId: env.DEFAULT_TENANT_ID,
+          tenantId: DEFAULT_TENANT_ID,
         },
       }),
       this.kafkaProducerService.send({
@@ -1106,7 +1108,7 @@ export class EventWriteService {
     const type: EventType = 'EVENT';
     return {
       actorId,
-      tenantId: env.DEFAULT_TENANT_ID,
+      tenantId: DEFAULT_TENANT_ID,
       service: 'event-service',
       operation,
       version: '1',

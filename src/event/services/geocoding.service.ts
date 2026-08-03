@@ -3,9 +3,11 @@ import { GeocodingUnavailableError } from '../errors/geocoding-unavailable.error
 import type { GeocodeResultPayload } from '../models/payloads/geocode-result.payload.js';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
 import { firstValueFrom } from 'rxjs';
+
+const { GEOCODING_URL, GEOCODING_COUNTRY_CODES } = env;
 
 interface NominatimResult {
   readonly lat?: unknown;
@@ -32,12 +34,12 @@ export class GeocodingService {
 
       try {
         const response = await firstValueFrom(
-          this.http.get<unknown>(env.GEOCODING_URL, {
+          this.http.get<unknown>(GEOCODING_URL, {
             params: {
               format: 'json',
               addressdetails: 1,
               limit: 1,
-              countrycodes: env.GEOCODING_COUNTRY_CODES,
+              countrycodes: GEOCODING_COUNTRY_CODES,
               q: address,
             },
             headers: {

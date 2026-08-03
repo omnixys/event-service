@@ -46,6 +46,8 @@ import {
 } from '@omnixys/kafka-ts';
 import { OmnixysLogger } from '@omnixys/logger-ts';
 
+const { DEFAULT_TENANT_ID } = env;
+
 type RbacClient = Prisma.TransactionClient | PrismaService;
 
 interface RoleRecord {
@@ -811,7 +813,7 @@ export class EventRbacService {
     const type: EventType = 'EVENT';
     return {
       actorId,
-      tenantId: env.DEFAULT_TENANT_ID,
+      tenantId: DEFAULT_TENANT_ID,
       service: 'event-service',
       operation,
       version: '2',

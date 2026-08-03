@@ -32,8 +32,8 @@ import {
   FastifyAdapter,
   type NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { OmnixysLogger } from '@omnixys/logger';
-import { registerFastifyTracing } from '@omnixys/observability';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { registerFastifyTracing } from '@omnixys/observability-ts';
 import { join } from 'path';
 import 'reflect-metadata';
 

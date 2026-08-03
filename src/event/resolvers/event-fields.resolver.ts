@@ -10,7 +10,7 @@ import { UserRolePayload } from '../models/payloads/user-role.entity.js';
 import { EventRbacService } from '../services/event-rbac.service.js';
 import { EventReadService } from '../services/event-read.service.js';
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
-import { CurrentUser, type CurrentUserData } from '@omnixys/security';
+import { CurrentUser, type CurrentUserData } from '@omnixys/security-ts';
 
 @Resolver(() => EventPayload)
 export class EventFieldsResolver {

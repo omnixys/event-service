@@ -1,6 +1,6 @@
 import { CreateSettingsInput } from './create-settings.input.js';
 import { Field, ID, InputType } from '@nestjs/graphql';
-import { EventAddressInput } from '@omnixys/graphql';
+import { EventAddressInput } from '@omnixys/graphql-ts';
 import { Type } from 'class-transformer';
 import {
   ArrayMaxSize,

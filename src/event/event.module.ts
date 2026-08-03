@@ -28,7 +28,7 @@ import {
   EventPermissionResolver,
   EventRoleGuard,
   EventRoleResolver,
-} from '@omnixys/security';
+} from '@omnixys/security-ts';
 
 registerEnumType(UserRoleType, {
   name: 'UserRoleType',

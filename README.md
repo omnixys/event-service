@@ -43,10 +43,10 @@ src/
 └── main.ts        Fastify bootstrap and graceful shutdown
 ```
 
-Framework ownership is delegated to `@omnixys/context`, `@omnixys/logger`,
-`@omnixys/observability`, `@omnixys/security`, `@omnixys/cache`,
-`@omnixys/kafka`, `@omnixys/graphql`, `@omnixys/contracts`, and
-`@omnixys/media`.
+Framework ownership is delegated to `@omnixys/context-ts`, `@omnixys/logger-ts`,
+`@omnixys/observability-ts`, `@omnixys/security-ts`, `@omnixys/cache-ts`,
+`@omnixys/kafka-ts`, `@omnixys/graphql-ts`, `@omnixys/contracts-ts`, and
+`@omnixys/media-ts`.
 
 ## Request flow
 
@@ -134,7 +134,7 @@ safe.
 
 ## Custom exceptions
 
-GraphQL errors are mapped by `@omnixys/graphql` and expose stable codes and
+GraphQL errors are mapped by `@omnixys/graphql-ts` and expose stable codes and
 diagnostic identifiers. Event-specific codes include:
 
 - `EVENT_NOT_FOUND`
@@ -152,7 +152,7 @@ Error metadata never contains access tokens, cookies, or storage credentials.
 ## Logging, metrics, and tracing
 
 HTTP, GraphQL, Kafka, database, external geocoding, and media-processing
-lifecycle points use `@omnixys/logger`. Every log contains `requestId`; use it
+lifecycle points use `@omnixys/logger-ts`. Every log contains `requestId`; use it
 as the primary Grafana filter to follow one request across services. Trace and
 span identifiers come from OpenTelemetry through the canonical context.
 
@@ -209,7 +209,7 @@ Valkey, Keycloak, and object-storage endpoints.
 ## Development and contribution
 
 Use additive GraphQL and Kafka contract evolution. Update
-`@omnixys/contracts` before producers and consumers, add migrations for schema
+`@omnixys/contracts-ts` before producers and consumers, add migrations for schema
 changes, and include focused unit/integration coverage. Do not edit generated
 Prisma files manually.
 

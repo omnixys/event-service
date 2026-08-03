@@ -1,14 +1,14 @@
 import { UserProjectionService } from '../event/services/user-projection.service.js';
 import { Injectable } from '@nestjs/common';
-import { UserProjectionChangedDTO } from '@omnixys/contracts';
+import { UserProjectionChangedDTO } from '@omnixys/contracts-ts';
 import {
   IKafkaEventContext,
   KafkaEvent,
   KafkaEventHandler,
   KafkaTopics,
-} from '@omnixys/kafka';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
+} from '@omnixys/kafka-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
 
 @KafkaEventHandler('user')
 @Injectable()

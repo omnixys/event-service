@@ -2,9 +2,9 @@ import { UserRoleType } from '../../prisma/generated/client.js';
 import { PrismaService } from '../../prisma/prisma.service.js';
 import { EventRbacService } from './event-rbac.service.js';
 import { Injectable } from '@nestjs/common';
-import type { EventPermissionKey, EventRoleType } from '@omnixys/contracts';
-import { OmnixysLogger } from '@omnixys/logger';
-import { EventPermissionResolver, EventRoleResolver } from '@omnixys/security';
+import type { EventPermissionKey, EventRoleType } from '@omnixys/contracts-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { EventPermissionResolver, EventRoleResolver } from '@omnixys/security-ts';
 
 function mapToEventRoleType(role: UserRoleType | undefined): EventRoleType | null {
   if (!role) {

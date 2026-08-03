@@ -5,7 +5,7 @@ import {
   CookieAuthGuard,
   CurrentUser,
   CurrentUserData,
-} from '@omnixys/security';
+} from '@omnixys/security-ts';
 
 import { EventAuthenticationRequiredError } from '../errors/event-domain.error.js';
 import { GeocodeAddressInput } from '../models/inputs/geocode-address.input.js';
@@ -14,8 +14,8 @@ import { EventPayload } from '../models/payloads/event.payload.js';
 import { GeocodeResultPayload } from '../models/payloads/geocode-result.payload.js';
 import { EventReadService } from '../services/event-read.service.js';
 import { GeocodingService } from '../services/geocoding.service.js';
-import { OmnixysLogger } from '@omnixys/logger';
-import { TraceRunner } from '@omnixys/observability';
+import { OmnixysLogger } from '@omnixys/logger-ts';
+import { TraceRunner } from '@omnixys/observability-ts';
 
 @Resolver(() => EventPayload)
 export class EventQueryResolver {

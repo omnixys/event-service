@@ -1,8 +1,8 @@
 import { EventWriteService } from '../event/services/event-write.service.js';
 import { Injectable } from '@nestjs/common';
-import type { EventMilestoneRecordedDTO } from '@omnixys/contracts';
-import { KafkaEvent, KafkaEventHandler, KafkaTopics } from '@omnixys/kafka';
-import { OmnixysLogger } from '@omnixys/logger';
+import type { EventMilestoneRecordedDTO } from '@omnixys/contracts-ts';
+import { KafkaEvent, KafkaEventHandler, KafkaTopics } from '@omnixys/kafka-ts';
+import { OmnixysLogger } from '@omnixys/logger-ts';
 
 @KafkaEventHandler('event-milestones')
 @Injectable()
