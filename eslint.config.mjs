@@ -46,6 +46,7 @@ export default tseslint.config(
       './prisma.config.ts',
       './prisma/seed.ts',
       'release.config.js',
+      'src/prisma/generated/**',
     ],
   },
 
