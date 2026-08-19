@@ -3,6 +3,20 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.3.1](https://github.com/omnixys/event-service/compare/v3.3.0...v3.3.1) (2026-08-19)
+
+### Agent
+
+* **Agent:** add repository development instructions ([](https://github.com/omnixys/event-service/commit/fb7c2150310ea6228a1a187383bcafe23fe0c399))
+
+### Build
+
+* **Build:** replace invalid rateLimit skip with allowList and fix lint/format config ([](https://github.com/omnixys/event-service/commit/54be46aab71f9a178fe08e715870798f1e631c44))
+
+### Event
+
+* **Event:** exclude health endpoints from rate-limit and bump version ([](https://github.com/omnixys/event-service/commit/8d23379acccbc69141a2840f65fe19161bbebe1a))
+
 ## [3.3.0](https://github.com/omnixys/event-service/compare/v3.2.0...v3.3.0) (2026-08-03)
 
 ### Analytics
