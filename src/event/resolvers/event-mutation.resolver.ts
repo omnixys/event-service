@@ -73,7 +73,7 @@ export class EventMutationResolver {
 
   @Mutation(() => EventPayload)
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.EditEvent)
   async updateEvent(
     @Args('input') input: UpdateEventInput,
@@ -89,7 +89,7 @@ export class EventMutationResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.DeleteEvent)
   async deleteEvent(
     @Args('id', { type: () => ID }) id: string,
@@ -100,7 +100,7 @@ export class EventMutationResolver {
   }
 
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.ManageRoles)
   @Mutation(() => EventPayload)
   async assignUserToEvent(
@@ -121,7 +121,7 @@ export class EventMutationResolver {
 
   @Mutation(() => EventPayload)
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.ManageRoles)
   async removeUserFromEvent(
     @Args('input') input: RemoveUserFromEventInput,
@@ -136,7 +136,7 @@ export class EventMutationResolver {
   }
 
   @UseGuards(CookieAuthGuard, RoleGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @Mutation(() => Boolean)
   async transferEventOwnership(
     @Args('input') input: TransferInput,
@@ -158,7 +158,7 @@ export class EventMutationResolver {
   }
 
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.ManageEventSettings)
   @Mutation(() => Boolean)
   async activateEvent(
@@ -170,7 +170,7 @@ export class EventMutationResolver {
   }
 
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.ManageEventSettings)
   @Mutation(() => Boolean)
   async deactivateEvent(
@@ -186,7 +186,7 @@ export class EventMutationResolver {
   }
 
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.ManageTimeline)
   @Mutation(() => EventPayload)
   async addTimeLines(
@@ -204,7 +204,7 @@ export class EventMutationResolver {
   }
 
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.ManageTimeline)
   @Mutation(() => EventPayload)
   async updateTimeLines(
@@ -217,7 +217,7 @@ export class EventMutationResolver {
   }
 
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.ManageTimeline)
   @Mutation(() => EventPayload)
   async removeTimeLines(
@@ -230,7 +230,7 @@ export class EventMutationResolver {
   }
 
   @UseGuards(CookieAuthGuard, RoleGuard, EventPermissionGuard)
-  @Roles(RealmRoleType.USER)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
   @EventPermissions(EventPermissionKey.ManageTimeline)
   @Mutation(() => EventPayload)
   async setTimelines(

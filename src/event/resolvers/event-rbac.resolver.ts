@@ -28,7 +28,7 @@ import {
 
 @Resolver()
 @UseGuards(CookieAuthGuard, RoleGuard)
-@Roles(RealmRoleType.USER)
+@Roles(RealmRoleType.USER, RealmRoleType.ADMIN)
 export class EventRbacResolver {
   constructor(private readonly rbacService: EventRbacService) {}
 
