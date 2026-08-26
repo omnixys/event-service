@@ -3,6 +3,13 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.4.1](https://github.com/omnixys/event-service/compare/v3.4.0...v3.4.1) (2026-08-26)
+
+### Deps
+
+* **Deps:** update logger to 3.2.6 ([](https://github.com/omnixys/event-service/commit/5ba2f05f14d99827b3029d351d8ab68f87304dcf))
+* **Deps:** update shared TypeScript packages ([](https://github.com/omnixys/event-service/commit/9782d7f3e2e47fb79fef3a67c9f007423548d3e0))
+
 ## [3.4.0](https://github.com/omnixys/event-service/compare/v3.3.3...v3.4.0) (2026-08-26)
 
 ### Deps
