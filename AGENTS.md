@@ -10,7 +10,7 @@
 Omnixys Event Service – event domain (events, layout, catalog, admin, analytics).
 
 - Repository path: `services/event` (relative to the Omnixys root)
-- Package: `event-service` (version: 3.3.0)
+- Package: `event-service` (version: 3.4.0)
 - Runtime: Node >=25.8.2 (pnpm >=10.33.0)
 - Kind: Service
 
