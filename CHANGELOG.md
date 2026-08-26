@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.4.4](https://github.com/omnixys/event-service/compare/v3.4.3...v3.4.4) (2026-08-26)
+
+### Build
+
+* **Build:** fix build errors ([](https://github.com/omnixys/event-service/commit/971f7c5e4a03aae5c3c2309a85dc254b8a2cbede))
+
 ## [3.4.3](https://github.com/omnixys/event-service/compare/v3.4.2...v3.4.3) (2026-08-26)
 
 ### Build
