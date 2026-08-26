@@ -3,6 +3,20 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.4.0](https://github.com/omnixys/event-service/compare/v3.3.3...v3.4.0) (2026-08-26)
+
+### Deps
+
+* **Deps:** update omnixys ts packages ([](https://github.com/omnixys/event-service/commit/f9517c5f227759914ac80ade189fe39e108c1b0c))
+
+### Event
+
+* **Event:** allow admin realm role for rbac resolvers ([](https://github.com/omnixys/event-service/commit/46956e411ae4de14cf62c2ffaf19db995fc93aec))
+
+### Otel
+
+* **Otel:** add otel logs ([](https://github.com/omnixys/event-service/commit/4b55257be94ad070fd137d453cf3be54672b6dbb))
+
 ## [3.3.3](https://github.com/omnixys/event-service/compare/v3.3.2...v3.3.3) (2026-08-23)
 
 ### Logger
