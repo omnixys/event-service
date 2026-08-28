@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [3.4.5](https://github.com/omnixys/event-service/compare/v3.4.4...v3.4.5) (2026-08-28)
+
+### Deps
+
+* **Deps:** update contracts-ts ([](https://github.com/omnixys/event-service/commit/f4a7d96ce5eed0802895e68dec211b69dfdd13ca))
+
 ## [3.4.4](https://github.com/omnixys/event-service/compare/v3.4.3...v3.4.4) (2026-08-26)
 
 ### Build
