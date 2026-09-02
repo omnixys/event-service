@@ -251,7 +251,7 @@ export type EventWhereInput = {
   NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[]
   id?: Prisma.UuidFilter<"Event"> | string
   name?: Prisma.StringFilter<"Event"> | string
-  owner?: Prisma.StringFilter<"Event"> | string
+  owner?: Prisma.UuidFilter<"Event"> | string
   tags?: Prisma.StringNullableListFilter<"Event">
   parentId?: Prisma.UuidNullableFilter<"Event"> | string | null
   path?: Prisma.StringFilter<"Event"> | string
@@ -271,6 +271,7 @@ export type EventWhereInput = {
   media?: Prisma.MediaListRelationFilter
   coverMedia?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
   logoMedia?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
+  ownerUser?: Prisma.XOR<Prisma.UserProjectionNullableScalarRelationFilter, Prisma.UserProjectionWhereInput> | null
 }
 
 export type EventOrderByWithRelationInput = {
@@ -296,6 +297,7 @@ export type EventOrderByWithRelationInput = {
   media?: Prisma.MediaOrderByRelationAggregateInput
   coverMedia?: Prisma.MediaOrderByWithRelationInput
   logoMedia?: Prisma.MediaOrderByWithRelationInput
+  ownerUser?: Prisma.UserProjectionOrderByWithRelationInput
 }
 
 export type EventWhereUniqueInput = Prisma.AtLeast<{
@@ -304,7 +306,7 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.EventWhereInput[]
   NOT?: Prisma.EventWhereInput | Prisma.EventWhereInput[]
   name?: Prisma.StringFilter<"Event"> | string
-  owner?: Prisma.StringFilter<"Event"> | string
+  owner?: Prisma.UuidFilter<"Event"> | string
   tags?: Prisma.StringNullableListFilter<"Event">
   parentId?: Prisma.UuidNullableFilter<"Event"> | string | null
   path?: Prisma.StringFilter<"Event"> | string
@@ -324,6 +326,7 @@ export type EventWhereUniqueInput = Prisma.AtLeast<{
   media?: Prisma.MediaListRelationFilter
   coverMedia?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
   logoMedia?: Prisma.XOR<Prisma.MediaNullableScalarRelationFilter, Prisma.MediaWhereInput> | null
+  ownerUser?: Prisma.XOR<Prisma.UserProjectionNullableScalarRelationFilter, Prisma.UserProjectionWhereInput> | null
 }, "id">
 
 export type EventOrderByWithAggregationInput = {
@@ -351,7 +354,7 @@ export type EventScalarWhereWithAggregatesInput = {
   NOT?: Prisma.EventScalarWhereWithAggregatesInput | Prisma.EventScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Event"> | string
   name?: Prisma.StringWithAggregatesFilter<"Event"> | string
-  owner?: Prisma.StringWithAggregatesFilter<"Event"> | string
+  owner?: Prisma.UuidWithAggregatesFilter<"Event"> | string
   tags?: Prisma.StringNullableListFilter<"Event">
   parentId?: Prisma.UuidNullableWithAggregatesFilter<"Event"> | string | null
   path?: Prisma.StringWithAggregatesFilter<"Event"> | string
@@ -365,7 +368,6 @@ export type EventScalarWhereWithAggregatesInput = {
 export type EventCreateInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -382,6 +384,7 @@ export type EventCreateInput = {
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateInput = {
@@ -409,7 +412,6 @@ export type EventUncheckedCreateInput = {
 export type EventUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -426,6 +428,7 @@ export type EventUpdateInput = {
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateInput = {
@@ -467,7 +470,6 @@ export type EventCreateManyInput = {
 export type EventUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -840,10 +842,51 @@ export type EventUncheckedUpdateManyWithoutLogoMediaNestedInput = {
   deleteMany?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[]
 }
 
+export type EventCreateNestedManyWithoutOwnerUserInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutOwnerUserInput, Prisma.EventUncheckedCreateWithoutOwnerUserInput> | Prisma.EventCreateWithoutOwnerUserInput[] | Prisma.EventUncheckedCreateWithoutOwnerUserInput[]
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutOwnerUserInput | Prisma.EventCreateOrConnectWithoutOwnerUserInput[]
+  createMany?: Prisma.EventCreateManyOwnerUserInputEnvelope
+  connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+}
+
+export type EventUncheckedCreateNestedManyWithoutOwnerUserInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutOwnerUserInput, Prisma.EventUncheckedCreateWithoutOwnerUserInput> | Prisma.EventCreateWithoutOwnerUserInput[] | Prisma.EventUncheckedCreateWithoutOwnerUserInput[]
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutOwnerUserInput | Prisma.EventCreateOrConnectWithoutOwnerUserInput[]
+  createMany?: Prisma.EventCreateManyOwnerUserInputEnvelope
+  connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+}
+
+export type EventUpdateManyWithoutOwnerUserNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutOwnerUserInput, Prisma.EventUncheckedCreateWithoutOwnerUserInput> | Prisma.EventCreateWithoutOwnerUserInput[] | Prisma.EventUncheckedCreateWithoutOwnerUserInput[]
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutOwnerUserInput | Prisma.EventCreateOrConnectWithoutOwnerUserInput[]
+  upsert?: Prisma.EventUpsertWithWhereUniqueWithoutOwnerUserInput | Prisma.EventUpsertWithWhereUniqueWithoutOwnerUserInput[]
+  createMany?: Prisma.EventCreateManyOwnerUserInputEnvelope
+  set?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+  disconnect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+  delete?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+  connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+  update?: Prisma.EventUpdateWithWhereUniqueWithoutOwnerUserInput | Prisma.EventUpdateWithWhereUniqueWithoutOwnerUserInput[]
+  updateMany?: Prisma.EventUpdateManyWithWhereWithoutOwnerUserInput | Prisma.EventUpdateManyWithWhereWithoutOwnerUserInput[]
+  deleteMany?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[]
+}
+
+export type EventUncheckedUpdateManyWithoutOwnerUserNestedInput = {
+  create?: Prisma.XOR<Prisma.EventCreateWithoutOwnerUserInput, Prisma.EventUncheckedCreateWithoutOwnerUserInput> | Prisma.EventCreateWithoutOwnerUserInput[] | Prisma.EventUncheckedCreateWithoutOwnerUserInput[]
+  connectOrCreate?: Prisma.EventCreateOrConnectWithoutOwnerUserInput | Prisma.EventCreateOrConnectWithoutOwnerUserInput[]
+  upsert?: Prisma.EventUpsertWithWhereUniqueWithoutOwnerUserInput | Prisma.EventUpsertWithWhereUniqueWithoutOwnerUserInput[]
+  createMany?: Prisma.EventCreateManyOwnerUserInputEnvelope
+  set?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+  disconnect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+  delete?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+  connect?: Prisma.EventWhereUniqueInput | Prisma.EventWhereUniqueInput[]
+  update?: Prisma.EventUpdateWithWhereUniqueWithoutOwnerUserInput | Prisma.EventUpdateWithWhereUniqueWithoutOwnerUserInput[]
+  updateMany?: Prisma.EventUpdateManyWithWhereWithoutOwnerUserInput | Prisma.EventUpdateManyWithWhereWithoutOwnerUserInput[]
+  deleteMany?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[]
+}
+
 export type EventCreateWithoutChildrenInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -859,6 +902,7 @@ export type EventCreateWithoutChildrenInput = {
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutChildrenInput = {
@@ -890,7 +934,6 @@ export type EventCreateOrConnectWithoutChildrenInput = {
 export type EventCreateWithoutParentInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -906,6 +949,7 @@ export type EventCreateWithoutParentInput = {
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutParentInput = {
@@ -953,7 +997,6 @@ export type EventUpdateToOneWithWhereWithoutChildrenInput = {
 export type EventUpdateWithoutChildrenInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -969,6 +1012,7 @@ export type EventUpdateWithoutChildrenInput = {
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutChildrenInput = {
@@ -1014,7 +1058,7 @@ export type EventScalarWhereInput = {
   NOT?: Prisma.EventScalarWhereInput | Prisma.EventScalarWhereInput[]
   id?: Prisma.UuidFilter<"Event"> | string
   name?: Prisma.StringFilter<"Event"> | string
-  owner?: Prisma.StringFilter<"Event"> | string
+  owner?: Prisma.UuidFilter<"Event"> | string
   tags?: Prisma.StringNullableListFilter<"Event">
   parentId?: Prisma.UuidNullableFilter<"Event"> | string | null
   path?: Prisma.StringFilter<"Event"> | string
@@ -1028,7 +1072,6 @@ export type EventScalarWhereInput = {
 export type EventCreateWithoutSettingsInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -1044,6 +1087,7 @@ export type EventCreateWithoutSettingsInput = {
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutSettingsInput = {
@@ -1086,7 +1130,6 @@ export type EventUpdateToOneWithWhereWithoutSettingsInput = {
 export type EventUpdateWithoutSettingsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1102,6 +1145,7 @@ export type EventUpdateWithoutSettingsInput = {
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutSettingsInput = {
@@ -1128,7 +1172,6 @@ export type EventUncheckedUpdateWithoutSettingsInput = {
 export type EventCreateWithoutAnalyticsInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -1144,6 +1187,7 @@ export type EventCreateWithoutAnalyticsInput = {
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutAnalyticsInput = {
@@ -1186,7 +1230,6 @@ export type EventUpdateToOneWithWhereWithoutAnalyticsInput = {
 export type EventUpdateWithoutAnalyticsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1202,6 +1245,7 @@ export type EventUpdateWithoutAnalyticsInput = {
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutAnalyticsInput = {
@@ -1228,7 +1272,6 @@ export type EventUncheckedUpdateWithoutAnalyticsInput = {
 export type EventCreateWithoutTimelinesInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -1244,6 +1287,7 @@ export type EventCreateWithoutTimelinesInput = {
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutTimelinesInput = {
@@ -1286,7 +1330,6 @@ export type EventUpdateToOneWithWhereWithoutTimelinesInput = {
 export type EventUpdateWithoutTimelinesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1302,6 +1345,7 @@ export type EventUpdateWithoutTimelinesInput = {
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutTimelinesInput = {
@@ -1328,7 +1372,6 @@ export type EventUncheckedUpdateWithoutTimelinesInput = {
 export type EventCreateWithoutRolesInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -1344,6 +1387,7 @@ export type EventCreateWithoutRolesInput = {
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutRolesInput = {
@@ -1386,7 +1430,6 @@ export type EventUpdateToOneWithWhereWithoutRolesInput = {
 export type EventUpdateWithoutRolesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1402,6 +1445,7 @@ export type EventUpdateWithoutRolesInput = {
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutRolesInput = {
@@ -1428,7 +1472,6 @@ export type EventUncheckedUpdateWithoutRolesInput = {
 export type EventCreateWithoutRoleDefinitionsInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -1444,6 +1487,7 @@ export type EventCreateWithoutRoleDefinitionsInput = {
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutRoleDefinitionsInput = {
@@ -1486,7 +1530,6 @@ export type EventUpdateToOneWithWhereWithoutRoleDefinitionsInput = {
 export type EventUpdateWithoutRoleDefinitionsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1502,6 +1545,7 @@ export type EventUpdateWithoutRoleDefinitionsInput = {
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutRoleDefinitionsInput = {
@@ -1528,7 +1572,6 @@ export type EventUncheckedUpdateWithoutRoleDefinitionsInput = {
 export type EventCreateWithoutUserRoleAssignmentsInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -1544,6 +1587,7 @@ export type EventCreateWithoutUserRoleAssignmentsInput = {
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutUserRoleAssignmentsInput = {
@@ -1586,7 +1630,6 @@ export type EventUpdateToOneWithWhereWithoutUserRoleAssignmentsInput = {
 export type EventUpdateWithoutUserRoleAssignmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1602,6 +1645,7 @@ export type EventUpdateWithoutUserRoleAssignmentsInput = {
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutUserRoleAssignmentsInput = {
@@ -1628,7 +1672,6 @@ export type EventUncheckedUpdateWithoutUserRoleAssignmentsInput = {
 export type EventCreateWithoutMediaInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -1644,6 +1687,7 @@ export type EventCreateWithoutMediaInput = {
   userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutMediaInput = {
@@ -1675,7 +1719,6 @@ export type EventCreateOrConnectWithoutMediaInput = {
 export type EventCreateWithoutCoverMediaInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -1691,6 +1734,7 @@ export type EventCreateWithoutCoverMediaInput = {
   userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutCoverMediaInput = {
@@ -1727,7 +1771,6 @@ export type EventCreateManyCoverMediaInputEnvelope = {
 export type EventCreateWithoutLogoMediaInput = {
   id?: string
   name: string
-  owner: string
   tags?: Prisma.EventCreatetagsInput | string[]
   path?: string
   depth?: number
@@ -1743,6 +1786,7 @@ export type EventCreateWithoutLogoMediaInput = {
   userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
   media?: Prisma.MediaCreateNestedManyWithoutEventInput
   coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
+  ownerUser?: Prisma.UserProjectionCreateNestedOneWithoutOwnedEventsInput
 }
 
 export type EventUncheckedCreateWithoutLogoMediaInput = {
@@ -1790,7 +1834,6 @@ export type EventUpdateToOneWithWhereWithoutMediaInput = {
 export type EventUpdateWithoutMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1806,6 +1849,7 @@ export type EventUpdateWithoutMediaInput = {
   userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutMediaInput = {
@@ -1861,6 +1905,74 @@ export type EventUpdateManyWithWhereWithoutLogoMediaInput = {
   data: Prisma.XOR<Prisma.EventUpdateManyMutationInput, Prisma.EventUncheckedUpdateManyWithoutLogoMediaInput>
 }
 
+export type EventCreateWithoutOwnerUserInput = {
+  id?: string
+  name: string
+  tags?: Prisma.EventCreatetagsInput | string[]
+  path?: string
+  depth?: number
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  parent?: Prisma.EventCreateNestedOneWithoutChildrenInput
+  children?: Prisma.EventCreateNestedManyWithoutParentInput
+  settings?: Prisma.SettingsCreateNestedOneWithoutEventInput
+  analytics?: Prisma.AnalyticsCreateNestedOneWithoutEventInput
+  timelines?: Prisma.TimelineCreateNestedManyWithoutEventInput
+  roles?: Prisma.RoleCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutEventInput
+  media?: Prisma.MediaCreateNestedManyWithoutEventInput
+  coverMedia?: Prisma.MediaCreateNestedOneWithoutCoverForInput
+  logoMedia?: Prisma.MediaCreateNestedOneWithoutLogoForInput
+}
+
+export type EventUncheckedCreateWithoutOwnerUserInput = {
+  id?: string
+  name: string
+  tags?: Prisma.EventCreatetagsInput | string[]
+  parentId?: string | null
+  path?: string
+  depth?: number
+  coverMediaId?: string | null
+  logoMediaId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  children?: Prisma.EventUncheckedCreateNestedManyWithoutParentInput
+  settings?: Prisma.SettingsUncheckedCreateNestedOneWithoutEventInput
+  analytics?: Prisma.AnalyticsUncheckedCreateNestedOneWithoutEventInput
+  timelines?: Prisma.TimelineUncheckedCreateNestedManyWithoutEventInput
+  roles?: Prisma.RoleUncheckedCreateNestedManyWithoutEventInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedCreateNestedManyWithoutEventInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutEventInput
+  media?: Prisma.MediaUncheckedCreateNestedManyWithoutEventInput
+}
+
+export type EventCreateOrConnectWithoutOwnerUserInput = {
+  where: Prisma.EventWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventCreateWithoutOwnerUserInput, Prisma.EventUncheckedCreateWithoutOwnerUserInput>
+}
+
+export type EventCreateManyOwnerUserInputEnvelope = {
+  data: Prisma.EventCreateManyOwnerUserInput | Prisma.EventCreateManyOwnerUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type EventUpsertWithWhereUniqueWithoutOwnerUserInput = {
+  where: Prisma.EventWhereUniqueInput
+  update: Prisma.XOR<Prisma.EventUpdateWithoutOwnerUserInput, Prisma.EventUncheckedUpdateWithoutOwnerUserInput>
+  create: Prisma.XOR<Prisma.EventCreateWithoutOwnerUserInput, Prisma.EventUncheckedCreateWithoutOwnerUserInput>
+}
+
+export type EventUpdateWithWhereUniqueWithoutOwnerUserInput = {
+  where: Prisma.EventWhereUniqueInput
+  data: Prisma.XOR<Prisma.EventUpdateWithoutOwnerUserInput, Prisma.EventUncheckedUpdateWithoutOwnerUserInput>
+}
+
+export type EventUpdateManyWithWhereWithoutOwnerUserInput = {
+  where: Prisma.EventScalarWhereInput
+  data: Prisma.XOR<Prisma.EventUpdateManyMutationInput, Prisma.EventUncheckedUpdateManyWithoutOwnerUserInput>
+}
+
 export type EventCreateManyParentInput = {
   id?: string
   name: string
@@ -1877,7 +1989,6 @@ export type EventCreateManyParentInput = {
 export type EventUpdateWithoutParentInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1893,6 +2004,7 @@ export type EventUpdateWithoutParentInput = {
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutParentInput = {
@@ -1958,7 +2070,6 @@ export type EventCreateManyLogoMediaInput = {
 export type EventUpdateWithoutCoverMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -1974,6 +2085,7 @@ export type EventUpdateWithoutCoverMediaInput = {
   userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutCoverMediaInput = {
@@ -2013,7 +2125,6 @@ export type EventUncheckedUpdateManyWithoutCoverMediaInput = {
 export type EventUpdateWithoutLogoMediaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  owner?: Prisma.StringFieldUpdateOperationsInput | string
   tags?: Prisma.EventUpdatetagsInput | string[]
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
@@ -2029,6 +2140,7 @@ export type EventUpdateWithoutLogoMediaInput = {
   userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
   media?: Prisma.MediaUpdateManyWithoutEventNestedInput
   coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
+  ownerUser?: Prisma.UserProjectionUpdateOneWithoutOwnedEventsNestedInput
 }
 
 export type EventUncheckedUpdateWithoutLogoMediaInput = {
@@ -2061,6 +2173,74 @@ export type EventUncheckedUpdateManyWithoutLogoMediaInput = {
   path?: Prisma.StringFieldUpdateOperationsInput | string
   depth?: Prisma.IntFieldUpdateOperationsInput | number
   coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type EventCreateManyOwnerUserInput = {
+  id?: string
+  name: string
+  tags?: Prisma.EventCreatetagsInput | string[]
+  parentId?: string | null
+  path?: string
+  depth?: number
+  coverMediaId?: string | null
+  logoMediaId?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+}
+
+export type EventUpdateWithoutOwnerUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  depth?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  parent?: Prisma.EventUpdateOneWithoutChildrenNestedInput
+  children?: Prisma.EventUpdateManyWithoutParentNestedInput
+  settings?: Prisma.SettingsUpdateOneWithoutEventNestedInput
+  analytics?: Prisma.AnalyticsUpdateOneWithoutEventNestedInput
+  timelines?: Prisma.TimelineUpdateManyWithoutEventNestedInput
+  roles?: Prisma.RoleUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutEventNestedInput
+  media?: Prisma.MediaUpdateManyWithoutEventNestedInput
+  coverMedia?: Prisma.MediaUpdateOneWithoutCoverForNestedInput
+  logoMedia?: Prisma.MediaUpdateOneWithoutLogoForNestedInput
+}
+
+export type EventUncheckedUpdateWithoutOwnerUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  depth?: Prisma.IntFieldUpdateOperationsInput | number
+  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  children?: Prisma.EventUncheckedUpdateManyWithoutParentNestedInput
+  settings?: Prisma.SettingsUncheckedUpdateOneWithoutEventNestedInput
+  analytics?: Prisma.AnalyticsUncheckedUpdateOneWithoutEventNestedInput
+  timelines?: Prisma.TimelineUncheckedUpdateManyWithoutEventNestedInput
+  roles?: Prisma.RoleUncheckedUpdateManyWithoutEventNestedInput
+  roleDefinitions?: Prisma.EventRoleDefinitionUncheckedUpdateManyWithoutEventNestedInput
+  userRoleAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutEventNestedInput
+  media?: Prisma.MediaUncheckedUpdateManyWithoutEventNestedInput
+}
+
+export type EventUncheckedUpdateManyWithoutOwnerUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  tags?: Prisma.EventUpdatetagsInput | string[]
+  parentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  path?: Prisma.StringFieldUpdateOperationsInput | string
+  depth?: Prisma.IntFieldUpdateOperationsInput | number
+  coverMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoMediaId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -2164,6 +2344,7 @@ export type EventSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   media?: boolean | Prisma.Event$mediaArgs<ExtArgs>
   coverMedia?: boolean | Prisma.Event$coverMediaArgs<ExtArgs>
   logoMedia?: boolean | Prisma.Event$logoMediaArgs<ExtArgs>
+  ownerUser?: boolean | Prisma.Event$ownerUserArgs<ExtArgs>
   _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["event"]>
 
@@ -2182,6 +2363,7 @@ export type EventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   parent?: boolean | Prisma.Event$parentArgs<ExtArgs>
   coverMedia?: boolean | Prisma.Event$coverMediaArgs<ExtArgs>
   logoMedia?: boolean | Prisma.Event$logoMediaArgs<ExtArgs>
+  ownerUser?: boolean | Prisma.Event$ownerUserArgs<ExtArgs>
 }, ExtArgs["result"]["event"]>
 
 export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2199,6 +2381,7 @@ export type EventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   parent?: boolean | Prisma.Event$parentArgs<ExtArgs>
   coverMedia?: boolean | Prisma.Event$coverMediaArgs<ExtArgs>
   logoMedia?: boolean | Prisma.Event$logoMediaArgs<ExtArgs>
+  ownerUser?: boolean | Prisma.Event$ownerUserArgs<ExtArgs>
 }, ExtArgs["result"]["event"]>
 
 export type EventSelectScalar = {
@@ -2228,17 +2411,20 @@ export type EventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   media?: boolean | Prisma.Event$mediaArgs<ExtArgs>
   coverMedia?: boolean | Prisma.Event$coverMediaArgs<ExtArgs>
   logoMedia?: boolean | Prisma.Event$logoMediaArgs<ExtArgs>
+  ownerUser?: boolean | Prisma.Event$ownerUserArgs<ExtArgs>
   _count?: boolean | Prisma.EventCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type EventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parent?: boolean | Prisma.Event$parentArgs<ExtArgs>
   coverMedia?: boolean | Prisma.Event$coverMediaArgs<ExtArgs>
   logoMedia?: boolean | Prisma.Event$logoMediaArgs<ExtArgs>
+  ownerUser?: boolean | Prisma.Event$ownerUserArgs<ExtArgs>
 }
 export type EventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   parent?: boolean | Prisma.Event$parentArgs<ExtArgs>
   coverMedia?: boolean | Prisma.Event$coverMediaArgs<ExtArgs>
   logoMedia?: boolean | Prisma.Event$logoMediaArgs<ExtArgs>
+  ownerUser?: boolean | Prisma.Event$ownerUserArgs<ExtArgs>
 }
 
 export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2255,6 +2441,7 @@ export type $EventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     media: Prisma.$MediaPayload<ExtArgs>[]
     coverMedia: Prisma.$MediaPayload<ExtArgs> | null
     logoMedia: Prisma.$MediaPayload<ExtArgs> | null
+    ownerUser: Prisma.$UserProjectionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2673,6 +2860,7 @@ export interface Prisma__EventClient<T, Null = never, ExtArgs extends runtime.Ty
   media<T extends Prisma.Event$mediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$mediaArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   coverMedia<T extends Prisma.Event$coverMediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$coverMediaArgs<ExtArgs>>): Prisma.Prisma__MediaClient<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   logoMedia<T extends Prisma.Event$logoMediaArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$logoMediaArgs<ExtArgs>>): Prisma.Prisma__MediaClient<runtime.Types.Result.GetResult<Prisma.$MediaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  ownerUser<T extends Prisma.Event$ownerUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Event$ownerUserArgs<ExtArgs>>): Prisma.Prisma__UserProjectionClient<runtime.Types.Result.GetResult<Prisma.$UserProjectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3350,6 +3538,25 @@ export type Event$logoMediaArgs<ExtArgs extends runtime.Types.Extensions.Interna
    */
   include?: Prisma.MediaInclude<ExtArgs> | null
   where?: Prisma.MediaWhereInput
+}
+
+/**
+ * Event.ownerUser
+ */
+export type Event$ownerUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserProjection
+   */
+  select?: Prisma.UserProjectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserProjection
+   */
+  omit?: Prisma.UserProjectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserProjectionInclude<ExtArgs> | null
+  where?: Prisma.UserProjectionWhereInput
 }
 
 /**

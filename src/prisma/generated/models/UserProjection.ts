@@ -223,6 +223,9 @@ export type UserProjectionWhereInput = {
   locale?: Prisma.StringNullableFilter<"UserProjection"> | string | null
   lastSynced?: Prisma.DateTimeFilter<"UserProjection"> | Date | string
   userEventRoles?: Prisma.RoleListRelationFilter
+  ownedEvents?: Prisma.EventListRelationFilter
+  userAssignments?: Prisma.EventUserRoleAssignmentListRelationFilter
+  assignedBy?: Prisma.EventUserRoleAssignmentListRelationFilter
 }
 
 export type UserProjectionOrderByWithRelationInput = {
@@ -237,6 +240,9 @@ export type UserProjectionOrderByWithRelationInput = {
   locale?: Prisma.SortOrderInput | Prisma.SortOrder
   lastSynced?: Prisma.SortOrder
   userEventRoles?: Prisma.RoleOrderByRelationAggregateInput
+  ownedEvents?: Prisma.EventOrderByRelationAggregateInput
+  userAssignments?: Prisma.EventUserRoleAssignmentOrderByRelationAggregateInput
+  assignedBy?: Prisma.EventUserRoleAssignmentOrderByRelationAggregateInput
 }
 
 export type UserProjectionWhereUniqueInput = Prisma.AtLeast<{
@@ -254,6 +260,9 @@ export type UserProjectionWhereUniqueInput = Prisma.AtLeast<{
   locale?: Prisma.StringNullableFilter<"UserProjection"> | string | null
   lastSynced?: Prisma.DateTimeFilter<"UserProjection"> | Date | string
   userEventRoles?: Prisma.RoleListRelationFilter
+  ownedEvents?: Prisma.EventListRelationFilter
+  userAssignments?: Prisma.EventUserRoleAssignmentListRelationFilter
+  assignedBy?: Prisma.EventUserRoleAssignmentListRelationFilter
 }, "id">
 
 export type UserProjectionOrderByWithAggregationInput = {
@@ -300,6 +309,9 @@ export type UserProjectionCreateInput = {
   locale?: string | null
   lastSynced?: Date | string
   userEventRoles?: Prisma.RoleCreateNestedManyWithoutUserProjectInput
+  ownedEvents?: Prisma.EventCreateNestedManyWithoutOwnerUserInput
+  userAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutUserInput
+  assignedBy?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutAssignedByUserInput
 }
 
 export type UserProjectionUncheckedCreateInput = {
@@ -314,6 +326,9 @@ export type UserProjectionUncheckedCreateInput = {
   locale?: string | null
   lastSynced?: Date | string
   userEventRoles?: Prisma.RoleUncheckedCreateNestedManyWithoutUserProjectInput
+  ownedEvents?: Prisma.EventUncheckedCreateNestedManyWithoutOwnerUserInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput
 }
 
 export type UserProjectionUpdateInput = {
@@ -328,6 +343,9 @@ export type UserProjectionUpdateInput = {
   locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userEventRoles?: Prisma.RoleUpdateManyWithoutUserProjectNestedInput
+  ownedEvents?: Prisma.EventUpdateManyWithoutOwnerUserNestedInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutUserNestedInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUpdateManyWithoutAssignedByUserNestedInput
 }
 
 export type UserProjectionUncheckedUpdateInput = {
@@ -342,6 +360,9 @@ export type UserProjectionUncheckedUpdateInput = {
   locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   userEventRoles?: Prisma.RoleUncheckedUpdateManyWithoutUserProjectNestedInput
+  ownedEvents?: Prisma.EventUncheckedUpdateManyWithoutOwnerUserNestedInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput
 }
 
 export type UserProjectionCreateManyInput = {
@@ -427,6 +448,22 @@ export type UserProjectionMinOrderByAggregateInput = {
   lastSynced?: Prisma.SortOrder
 }
 
+export type UserProjectionCreateNestedOneWithoutOwnedEventsInput = {
+  create?: Prisma.XOR<Prisma.UserProjectionCreateWithoutOwnedEventsInput, Prisma.UserProjectionUncheckedCreateWithoutOwnedEventsInput>
+  connectOrCreate?: Prisma.UserProjectionCreateOrConnectWithoutOwnedEventsInput
+  connect?: Prisma.UserProjectionWhereUniqueInput
+}
+
+export type UserProjectionUpdateOneWithoutOwnedEventsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserProjectionCreateWithoutOwnedEventsInput, Prisma.UserProjectionUncheckedCreateWithoutOwnedEventsInput>
+  connectOrCreate?: Prisma.UserProjectionCreateOrConnectWithoutOwnedEventsInput
+  upsert?: Prisma.UserProjectionUpsertWithoutOwnedEventsInput
+  disconnect?: Prisma.UserProjectionWhereInput | boolean
+  delete?: Prisma.UserProjectionWhereInput | boolean
+  connect?: Prisma.UserProjectionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserProjectionUpdateToOneWithWhereWithoutOwnedEventsInput, Prisma.UserProjectionUpdateWithoutOwnedEventsInput>, Prisma.UserProjectionUncheckedUpdateWithoutOwnedEventsInput>
+}
+
 export type UserProjectionCreateNestedOneWithoutUserEventRolesInput = {
   create?: Prisma.XOR<Prisma.UserProjectionCreateWithoutUserEventRolesInput, Prisma.UserProjectionUncheckedCreateWithoutUserEventRolesInput>
   connectOrCreate?: Prisma.UserProjectionCreateOrConnectWithoutUserEventRolesInput
@@ -443,6 +480,118 @@ export type UserProjectionUpdateOneWithoutUserEventRolesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserProjectionUpdateToOneWithWhereWithoutUserEventRolesInput, Prisma.UserProjectionUpdateWithoutUserEventRolesInput>, Prisma.UserProjectionUncheckedUpdateWithoutUserEventRolesInput>
 }
 
+export type UserProjectionCreateNestedOneWithoutUserAssignmentsInput = {
+  create?: Prisma.XOR<Prisma.UserProjectionCreateWithoutUserAssignmentsInput, Prisma.UserProjectionUncheckedCreateWithoutUserAssignmentsInput>
+  connectOrCreate?: Prisma.UserProjectionCreateOrConnectWithoutUserAssignmentsInput
+  connect?: Prisma.UserProjectionWhereUniqueInput
+}
+
+export type UserProjectionCreateNestedOneWithoutAssignedByInput = {
+  create?: Prisma.XOR<Prisma.UserProjectionCreateWithoutAssignedByInput, Prisma.UserProjectionUncheckedCreateWithoutAssignedByInput>
+  connectOrCreate?: Prisma.UserProjectionCreateOrConnectWithoutAssignedByInput
+  connect?: Prisma.UserProjectionWhereUniqueInput
+}
+
+export type UserProjectionUpdateOneWithoutUserAssignmentsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserProjectionCreateWithoutUserAssignmentsInput, Prisma.UserProjectionUncheckedCreateWithoutUserAssignmentsInput>
+  connectOrCreate?: Prisma.UserProjectionCreateOrConnectWithoutUserAssignmentsInput
+  upsert?: Prisma.UserProjectionUpsertWithoutUserAssignmentsInput
+  disconnect?: Prisma.UserProjectionWhereInput | boolean
+  delete?: Prisma.UserProjectionWhereInput | boolean
+  connect?: Prisma.UserProjectionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserProjectionUpdateToOneWithWhereWithoutUserAssignmentsInput, Prisma.UserProjectionUpdateWithoutUserAssignmentsInput>, Prisma.UserProjectionUncheckedUpdateWithoutUserAssignmentsInput>
+}
+
+export type UserProjectionUpdateOneWithoutAssignedByNestedInput = {
+  create?: Prisma.XOR<Prisma.UserProjectionCreateWithoutAssignedByInput, Prisma.UserProjectionUncheckedCreateWithoutAssignedByInput>
+  connectOrCreate?: Prisma.UserProjectionCreateOrConnectWithoutAssignedByInput
+  upsert?: Prisma.UserProjectionUpsertWithoutAssignedByInput
+  disconnect?: Prisma.UserProjectionWhereInput | boolean
+  delete?: Prisma.UserProjectionWhereInput | boolean
+  connect?: Prisma.UserProjectionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserProjectionUpdateToOneWithWhereWithoutAssignedByInput, Prisma.UserProjectionUpdateWithoutAssignedByInput>, Prisma.UserProjectionUncheckedUpdateWithoutAssignedByInput>
+}
+
+export type UserProjectionCreateWithoutOwnedEventsInput = {
+  id: string
+  username: string
+  displayName?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
+  primaryPhone?: string | null
+  avatarUrl?: string | null
+  locale?: string | null
+  lastSynced?: Date | string
+  userEventRoles?: Prisma.RoleCreateNestedManyWithoutUserProjectInput
+  userAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutUserInput
+  assignedBy?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutAssignedByUserInput
+}
+
+export type UserProjectionUncheckedCreateWithoutOwnedEventsInput = {
+  id: string
+  username: string
+  displayName?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
+  primaryPhone?: string | null
+  avatarUrl?: string | null
+  locale?: string | null
+  lastSynced?: Date | string
+  userEventRoles?: Prisma.RoleUncheckedCreateNestedManyWithoutUserProjectInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput
+}
+
+export type UserProjectionCreateOrConnectWithoutOwnedEventsInput = {
+  where: Prisma.UserProjectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserProjectionCreateWithoutOwnedEventsInput, Prisma.UserProjectionUncheckedCreateWithoutOwnedEventsInput>
+}
+
+export type UserProjectionUpsertWithoutOwnedEventsInput = {
+  update: Prisma.XOR<Prisma.UserProjectionUpdateWithoutOwnedEventsInput, Prisma.UserProjectionUncheckedUpdateWithoutOwnedEventsInput>
+  create: Prisma.XOR<Prisma.UserProjectionCreateWithoutOwnedEventsInput, Prisma.UserProjectionUncheckedCreateWithoutOwnedEventsInput>
+  where?: Prisma.UserProjectionWhereInput
+}
+
+export type UserProjectionUpdateToOneWithWhereWithoutOwnedEventsInput = {
+  where?: Prisma.UserProjectionWhereInput
+  data: Prisma.XOR<Prisma.UserProjectionUpdateWithoutOwnedEventsInput, Prisma.UserProjectionUncheckedUpdateWithoutOwnedEventsInput>
+}
+
+export type UserProjectionUpdateWithoutOwnedEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userEventRoles?: Prisma.RoleUpdateManyWithoutUserProjectNestedInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutUserNestedInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUpdateManyWithoutAssignedByUserNestedInput
+}
+
+export type UserProjectionUncheckedUpdateWithoutOwnedEventsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userEventRoles?: Prisma.RoleUncheckedUpdateManyWithoutUserProjectNestedInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput
+}
+
 export type UserProjectionCreateWithoutUserEventRolesInput = {
   id: string
   username: string
@@ -454,6 +603,9 @@ export type UserProjectionCreateWithoutUserEventRolesInput = {
   avatarUrl?: string | null
   locale?: string | null
   lastSynced?: Date | string
+  ownedEvents?: Prisma.EventCreateNestedManyWithoutOwnerUserInput
+  userAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutUserInput
+  assignedBy?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutAssignedByUserInput
 }
 
 export type UserProjectionUncheckedCreateWithoutUserEventRolesInput = {
@@ -467,6 +619,9 @@ export type UserProjectionUncheckedCreateWithoutUserEventRolesInput = {
   avatarUrl?: string | null
   locale?: string | null
   lastSynced?: Date | string
+  ownedEvents?: Prisma.EventUncheckedCreateNestedManyWithoutOwnerUserInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput
 }
 
 export type UserProjectionCreateOrConnectWithoutUserEventRolesInput = {
@@ -496,6 +651,9 @@ export type UserProjectionUpdateWithoutUserEventRolesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedEvents?: Prisma.EventUpdateManyWithoutOwnerUserNestedInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutUserNestedInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUpdateManyWithoutAssignedByUserNestedInput
 }
 
 export type UserProjectionUncheckedUpdateWithoutUserEventRolesInput = {
@@ -509,6 +667,169 @@ export type UserProjectionUncheckedUpdateWithoutUserEventRolesInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  ownedEvents?: Prisma.EventUncheckedUpdateManyWithoutOwnerUserNestedInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput
+}
+
+export type UserProjectionCreateWithoutUserAssignmentsInput = {
+  id: string
+  username: string
+  displayName?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
+  primaryPhone?: string | null
+  avatarUrl?: string | null
+  locale?: string | null
+  lastSynced?: Date | string
+  userEventRoles?: Prisma.RoleCreateNestedManyWithoutUserProjectInput
+  ownedEvents?: Prisma.EventCreateNestedManyWithoutOwnerUserInput
+  assignedBy?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutAssignedByUserInput
+}
+
+export type UserProjectionUncheckedCreateWithoutUserAssignmentsInput = {
+  id: string
+  username: string
+  displayName?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
+  primaryPhone?: string | null
+  avatarUrl?: string | null
+  locale?: string | null
+  lastSynced?: Date | string
+  userEventRoles?: Prisma.RoleUncheckedCreateNestedManyWithoutUserProjectInput
+  ownedEvents?: Prisma.EventUncheckedCreateNestedManyWithoutOwnerUserInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput
+}
+
+export type UserProjectionCreateOrConnectWithoutUserAssignmentsInput = {
+  where: Prisma.UserProjectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserProjectionCreateWithoutUserAssignmentsInput, Prisma.UserProjectionUncheckedCreateWithoutUserAssignmentsInput>
+}
+
+export type UserProjectionCreateWithoutAssignedByInput = {
+  id: string
+  username: string
+  displayName?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
+  primaryPhone?: string | null
+  avatarUrl?: string | null
+  locale?: string | null
+  lastSynced?: Date | string
+  userEventRoles?: Prisma.RoleCreateNestedManyWithoutUserProjectInput
+  ownedEvents?: Prisma.EventCreateNestedManyWithoutOwnerUserInput
+  userAssignments?: Prisma.EventUserRoleAssignmentCreateNestedManyWithoutUserInput
+}
+
+export type UserProjectionUncheckedCreateWithoutAssignedByInput = {
+  id: string
+  username: string
+  displayName?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  email?: string | null
+  primaryPhone?: string | null
+  avatarUrl?: string | null
+  locale?: string | null
+  lastSynced?: Date | string
+  userEventRoles?: Prisma.RoleUncheckedCreateNestedManyWithoutUserProjectInput
+  ownedEvents?: Prisma.EventUncheckedCreateNestedManyWithoutOwnerUserInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserProjectionCreateOrConnectWithoutAssignedByInput = {
+  where: Prisma.UserProjectionWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserProjectionCreateWithoutAssignedByInput, Prisma.UserProjectionUncheckedCreateWithoutAssignedByInput>
+}
+
+export type UserProjectionUpsertWithoutUserAssignmentsInput = {
+  update: Prisma.XOR<Prisma.UserProjectionUpdateWithoutUserAssignmentsInput, Prisma.UserProjectionUncheckedUpdateWithoutUserAssignmentsInput>
+  create: Prisma.XOR<Prisma.UserProjectionCreateWithoutUserAssignmentsInput, Prisma.UserProjectionUncheckedCreateWithoutUserAssignmentsInput>
+  where?: Prisma.UserProjectionWhereInput
+}
+
+export type UserProjectionUpdateToOneWithWhereWithoutUserAssignmentsInput = {
+  where?: Prisma.UserProjectionWhereInput
+  data: Prisma.XOR<Prisma.UserProjectionUpdateWithoutUserAssignmentsInput, Prisma.UserProjectionUncheckedUpdateWithoutUserAssignmentsInput>
+}
+
+export type UserProjectionUpdateWithoutUserAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userEventRoles?: Prisma.RoleUpdateManyWithoutUserProjectNestedInput
+  ownedEvents?: Prisma.EventUpdateManyWithoutOwnerUserNestedInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUpdateManyWithoutAssignedByUserNestedInput
+}
+
+export type UserProjectionUncheckedUpdateWithoutUserAssignmentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userEventRoles?: Prisma.RoleUncheckedUpdateManyWithoutUserProjectNestedInput
+  ownedEvents?: Prisma.EventUncheckedUpdateManyWithoutOwnerUserNestedInput
+  assignedBy?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput
+}
+
+export type UserProjectionUpsertWithoutAssignedByInput = {
+  update: Prisma.XOR<Prisma.UserProjectionUpdateWithoutAssignedByInput, Prisma.UserProjectionUncheckedUpdateWithoutAssignedByInput>
+  create: Prisma.XOR<Prisma.UserProjectionCreateWithoutAssignedByInput, Prisma.UserProjectionUncheckedCreateWithoutAssignedByInput>
+  where?: Prisma.UserProjectionWhereInput
+}
+
+export type UserProjectionUpdateToOneWithWhereWithoutAssignedByInput = {
+  where?: Prisma.UserProjectionWhereInput
+  data: Prisma.XOR<Prisma.UserProjectionUpdateWithoutAssignedByInput, Prisma.UserProjectionUncheckedUpdateWithoutAssignedByInput>
+}
+
+export type UserProjectionUpdateWithoutAssignedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userEventRoles?: Prisma.RoleUpdateManyWithoutUserProjectNestedInput
+  ownedEvents?: Prisma.EventUpdateManyWithoutOwnerUserNestedInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUpdateManyWithoutUserNestedInput
+}
+
+export type UserProjectionUncheckedUpdateWithoutAssignedByInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  firstName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  primaryPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locale?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  lastSynced?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  userEventRoles?: Prisma.RoleUncheckedUpdateManyWithoutUserProjectNestedInput
+  ownedEvents?: Prisma.EventUncheckedUpdateManyWithoutOwnerUserNestedInput
+  userAssignments?: Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -518,10 +839,16 @@ export type UserProjectionUncheckedUpdateWithoutUserEventRolesInput = {
 
 export type UserProjectionCountOutputType = {
   userEventRoles: number
+  ownedEvents: number
+  userAssignments: number
+  assignedBy: number
 }
 
 export type UserProjectionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userEventRoles?: boolean | UserProjectionCountOutputTypeCountUserEventRolesArgs
+  ownedEvents?: boolean | UserProjectionCountOutputTypeCountOwnedEventsArgs
+  userAssignments?: boolean | UserProjectionCountOutputTypeCountUserAssignmentsArgs
+  assignedBy?: boolean | UserProjectionCountOutputTypeCountAssignedByArgs
 }
 
 /**
@@ -541,6 +868,27 @@ export type UserProjectionCountOutputTypeCountUserEventRolesArgs<ExtArgs extends
   where?: Prisma.RoleWhereInput
 }
 
+/**
+ * UserProjectionCountOutputType without action
+ */
+export type UserProjectionCountOutputTypeCountOwnedEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventWhereInput
+}
+
+/**
+ * UserProjectionCountOutputType without action
+ */
+export type UserProjectionCountOutputTypeCountUserAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventUserRoleAssignmentWhereInput
+}
+
+/**
+ * UserProjectionCountOutputType without action
+ */
+export type UserProjectionCountOutputTypeCountAssignedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EventUserRoleAssignmentWhereInput
+}
+
 
 export type UserProjectionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -554,6 +902,9 @@ export type UserProjectionSelect<ExtArgs extends runtime.Types.Extensions.Intern
   locale?: boolean
   lastSynced?: boolean
   userEventRoles?: boolean | Prisma.UserProjection$userEventRolesArgs<ExtArgs>
+  ownedEvents?: boolean | Prisma.UserProjection$ownedEventsArgs<ExtArgs>
+  userAssignments?: boolean | Prisma.UserProjection$userAssignmentsArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserProjection$assignedByArgs<ExtArgs>
   _count?: boolean | Prisma.UserProjectionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["userProjection"]>
 
@@ -599,6 +950,9 @@ export type UserProjectionSelectScalar = {
 export type UserProjectionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "username" | "displayName" | "firstName" | "lastName" | "email" | "primaryPhone" | "avatarUrl" | "locale" | "lastSynced", ExtArgs["result"]["userProjection"]>
 export type UserProjectionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   userEventRoles?: boolean | Prisma.UserProjection$userEventRolesArgs<ExtArgs>
+  ownedEvents?: boolean | Prisma.UserProjection$ownedEventsArgs<ExtArgs>
+  userAssignments?: boolean | Prisma.UserProjection$userAssignmentsArgs<ExtArgs>
+  assignedBy?: boolean | Prisma.UserProjection$assignedByArgs<ExtArgs>
   _count?: boolean | Prisma.UserProjectionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserProjectionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -608,6 +962,9 @@ export type $UserProjectionPayload<ExtArgs extends runtime.Types.Extensions.Inte
   name: "UserProjection"
   objects: {
     userEventRoles: Prisma.$RolePayload<ExtArgs>[]
+    ownedEvents: Prisma.$EventPayload<ExtArgs>[]
+    userAssignments: Prisma.$EventUserRoleAssignmentPayload<ExtArgs>[]
+    assignedBy: Prisma.$EventUserRoleAssignmentPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1015,6 +1372,9 @@ readonly fields: UserProjectionFieldRefs;
 export interface Prisma__UserProjectionClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   userEventRoles<T extends Prisma.UserProjection$userEventRolesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserProjection$userEventRolesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RolePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  ownedEvents<T extends Prisma.UserProjection$ownedEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserProjection$ownedEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  userAssignments<T extends Prisma.UserProjection$userAssignmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserProjection$userAssignmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventUserRoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  assignedBy<T extends Prisma.UserProjection$assignedByArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserProjection$assignedByArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EventUserRoleAssignmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1468,6 +1828,78 @@ export type UserProjection$userEventRolesArgs<ExtArgs extends runtime.Types.Exte
   take?: number
   skip?: number
   distinct?: Prisma.RoleScalarFieldEnum | Prisma.RoleScalarFieldEnum[]
+}
+
+/**
+ * UserProjection.ownedEvents
+ */
+export type UserProjection$ownedEventsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Event
+   */
+  select?: Prisma.EventSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Event
+   */
+  omit?: Prisma.EventOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventInclude<ExtArgs> | null
+  where?: Prisma.EventWhereInput
+  orderBy?: Prisma.EventOrderByWithRelationInput | Prisma.EventOrderByWithRelationInput[]
+  cursor?: Prisma.EventWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventScalarFieldEnum | Prisma.EventScalarFieldEnum[]
+}
+
+/**
+ * UserProjection.userAssignments
+ */
+export type UserProjection$userAssignmentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventUserRoleAssignment
+   */
+  select?: Prisma.EventUserRoleAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventUserRoleAssignment
+   */
+  omit?: Prisma.EventUserRoleAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventUserRoleAssignmentInclude<ExtArgs> | null
+  where?: Prisma.EventUserRoleAssignmentWhereInput
+  orderBy?: Prisma.EventUserRoleAssignmentOrderByWithRelationInput | Prisma.EventUserRoleAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.EventUserRoleAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventUserRoleAssignmentScalarFieldEnum | Prisma.EventUserRoleAssignmentScalarFieldEnum[]
+}
+
+/**
+ * UserProjection.assignedBy
+ */
+export type UserProjection$assignedByArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EventUserRoleAssignment
+   */
+  select?: Prisma.EventUserRoleAssignmentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EventUserRoleAssignment
+   */
+  omit?: Prisma.EventUserRoleAssignmentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EventUserRoleAssignmentInclude<ExtArgs> | null
+  where?: Prisma.EventUserRoleAssignmentWhereInput
+  orderBy?: Prisma.EventUserRoleAssignmentOrderByWithRelationInput | Prisma.EventUserRoleAssignmentOrderByWithRelationInput[]
+  cursor?: Prisma.EventUserRoleAssignmentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EventUserRoleAssignmentScalarFieldEnum | Prisma.EventUserRoleAssignmentScalarFieldEnum[]
 }
 
 /**

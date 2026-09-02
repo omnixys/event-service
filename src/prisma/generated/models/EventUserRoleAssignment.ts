@@ -200,6 +200,8 @@ export type EventUserRoleAssignmentWhereInput = {
   updatedAt?: Prisma.DateTimeNullableFilter<"EventUserRoleAssignment"> | Date | string | null
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   role?: Prisma.XOR<Prisma.EventRoleDefinitionScalarRelationFilter, Prisma.EventRoleDefinitionWhereInput>
+  user?: Prisma.XOR<Prisma.UserProjectionNullableScalarRelationFilter, Prisma.UserProjectionWhereInput> | null
+  assignedByUser?: Prisma.XOR<Prisma.UserProjectionNullableScalarRelationFilter, Prisma.UserProjectionWhereInput> | null
 }
 
 export type EventUserRoleAssignmentOrderByWithRelationInput = {
@@ -212,6 +214,8 @@ export type EventUserRoleAssignmentOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   event?: Prisma.EventOrderByWithRelationInput
   role?: Prisma.EventRoleDefinitionOrderByWithRelationInput
+  user?: Prisma.UserProjectionOrderByWithRelationInput
+  assignedByUser?: Prisma.UserProjectionOrderByWithRelationInput
 }
 
 export type EventUserRoleAssignmentWhereUniqueInput = Prisma.AtLeast<{
@@ -228,6 +232,8 @@ export type EventUserRoleAssignmentWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeNullableFilter<"EventUserRoleAssignment"> | Date | string | null
   event?: Prisma.XOR<Prisma.EventScalarRelationFilter, Prisma.EventWhereInput>
   role?: Prisma.XOR<Prisma.EventRoleDefinitionScalarRelationFilter, Prisma.EventRoleDefinitionWhereInput>
+  user?: Prisma.XOR<Prisma.UserProjectionNullableScalarRelationFilter, Prisma.UserProjectionWhereInput> | null
+  assignedByUser?: Prisma.XOR<Prisma.UserProjectionNullableScalarRelationFilter, Prisma.UserProjectionWhereInput> | null
 }, "id" | "eventId_userId_roleId">
 
 export type EventUserRoleAssignmentOrderByWithAggregationInput = {
@@ -258,12 +264,12 @@ export type EventUserRoleAssignmentScalarWhereWithAggregatesInput = {
 
 export type EventUserRoleAssignmentCreateInput = {
   id?: string
-  userId: string
-  assignedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
   event: Prisma.EventCreateNestedOneWithoutUserRoleAssignmentsInput
   role: Prisma.EventRoleDefinitionCreateNestedOneWithoutAssignmentsInput
+  user?: Prisma.UserProjectionCreateNestedOneWithoutUserAssignmentsInput
+  assignedByUser?: Prisma.UserProjectionCreateNestedOneWithoutAssignedByInput
 }
 
 export type EventUserRoleAssignmentUncheckedCreateInput = {
@@ -278,12 +284,12 @@ export type EventUserRoleAssignmentUncheckedCreateInput = {
 
 export type EventUserRoleAssignmentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   event?: Prisma.EventUpdateOneRequiredWithoutUserRoleAssignmentsNestedInput
   role?: Prisma.EventRoleDefinitionUpdateOneRequiredWithoutAssignmentsNestedInput
+  user?: Prisma.UserProjectionUpdateOneWithoutUserAssignmentsNestedInput
+  assignedByUser?: Prisma.UserProjectionUpdateOneWithoutAssignedByNestedInput
 }
 
 export type EventUserRoleAssignmentUncheckedUpdateInput = {
@@ -308,8 +314,6 @@ export type EventUserRoleAssignmentCreateManyInput = {
 
 export type EventUserRoleAssignmentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
@@ -454,13 +458,97 @@ export type EventUserRoleAssignmentUncheckedUpdateManyWithoutRoleNestedInput = {
   deleteMany?: Prisma.EventUserRoleAssignmentScalarWhereInput | Prisma.EventUserRoleAssignmentScalarWhereInput[]
 }
 
+export type EventUserRoleAssignmentCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput> | Prisma.EventUserRoleAssignmentCreateWithoutUserInput[] | Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.EventUserRoleAssignmentCreateOrConnectWithoutUserInput | Prisma.EventUserRoleAssignmentCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.EventUserRoleAssignmentCreateManyUserInputEnvelope
+  connect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+}
+
+export type EventUserRoleAssignmentCreateNestedManyWithoutAssignedByUserInput = {
+  create?: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput> | Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput[] | Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput[]
+  connectOrCreate?: Prisma.EventUserRoleAssignmentCreateOrConnectWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentCreateOrConnectWithoutAssignedByUserInput[]
+  createMany?: Prisma.EventUserRoleAssignmentCreateManyAssignedByUserInputEnvelope
+  connect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+}
+
+export type EventUserRoleAssignmentUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput> | Prisma.EventUserRoleAssignmentCreateWithoutUserInput[] | Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.EventUserRoleAssignmentCreateOrConnectWithoutUserInput | Prisma.EventUserRoleAssignmentCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.EventUserRoleAssignmentCreateManyUserInputEnvelope
+  connect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+}
+
+export type EventUserRoleAssignmentUncheckedCreateNestedManyWithoutAssignedByUserInput = {
+  create?: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput> | Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput[] | Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput[]
+  connectOrCreate?: Prisma.EventUserRoleAssignmentCreateOrConnectWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentCreateOrConnectWithoutAssignedByUserInput[]
+  createMany?: Prisma.EventUserRoleAssignmentCreateManyAssignedByUserInputEnvelope
+  connect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+}
+
+export type EventUserRoleAssignmentUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput> | Prisma.EventUserRoleAssignmentCreateWithoutUserInput[] | Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.EventUserRoleAssignmentCreateOrConnectWithoutUserInput | Prisma.EventUserRoleAssignmentCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.EventUserRoleAssignmentUpsertWithWhereUniqueWithoutUserInput | Prisma.EventUserRoleAssignmentUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.EventUserRoleAssignmentCreateManyUserInputEnvelope
+  set?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  disconnect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  delete?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  connect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  update?: Prisma.EventUserRoleAssignmentUpdateWithWhereUniqueWithoutUserInput | Prisma.EventUserRoleAssignmentUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.EventUserRoleAssignmentUpdateManyWithWhereWithoutUserInput | Prisma.EventUserRoleAssignmentUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.EventUserRoleAssignmentScalarWhereInput | Prisma.EventUserRoleAssignmentScalarWhereInput[]
+}
+
+export type EventUserRoleAssignmentUpdateManyWithoutAssignedByUserNestedInput = {
+  create?: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput> | Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput[] | Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput[]
+  connectOrCreate?: Prisma.EventUserRoleAssignmentCreateOrConnectWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentCreateOrConnectWithoutAssignedByUserInput[]
+  upsert?: Prisma.EventUserRoleAssignmentUpsertWithWhereUniqueWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentUpsertWithWhereUniqueWithoutAssignedByUserInput[]
+  createMany?: Prisma.EventUserRoleAssignmentCreateManyAssignedByUserInputEnvelope
+  set?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  disconnect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  delete?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  connect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  update?: Prisma.EventUserRoleAssignmentUpdateWithWhereUniqueWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentUpdateWithWhereUniqueWithoutAssignedByUserInput[]
+  updateMany?: Prisma.EventUserRoleAssignmentUpdateManyWithWhereWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentUpdateManyWithWhereWithoutAssignedByUserInput[]
+  deleteMany?: Prisma.EventUserRoleAssignmentScalarWhereInput | Prisma.EventUserRoleAssignmentScalarWhereInput[]
+}
+
+export type EventUserRoleAssignmentUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput> | Prisma.EventUserRoleAssignmentCreateWithoutUserInput[] | Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.EventUserRoleAssignmentCreateOrConnectWithoutUserInput | Prisma.EventUserRoleAssignmentCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.EventUserRoleAssignmentUpsertWithWhereUniqueWithoutUserInput | Prisma.EventUserRoleAssignmentUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.EventUserRoleAssignmentCreateManyUserInputEnvelope
+  set?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  disconnect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  delete?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  connect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  update?: Prisma.EventUserRoleAssignmentUpdateWithWhereUniqueWithoutUserInput | Prisma.EventUserRoleAssignmentUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.EventUserRoleAssignmentUpdateManyWithWhereWithoutUserInput | Prisma.EventUserRoleAssignmentUpdateManyWithWhereWithoutUserInput[]
+  deleteMany?: Prisma.EventUserRoleAssignmentScalarWhereInput | Prisma.EventUserRoleAssignmentScalarWhereInput[]
+}
+
+export type EventUserRoleAssignmentUncheckedUpdateManyWithoutAssignedByUserNestedInput = {
+  create?: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput> | Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput[] | Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput[]
+  connectOrCreate?: Prisma.EventUserRoleAssignmentCreateOrConnectWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentCreateOrConnectWithoutAssignedByUserInput[]
+  upsert?: Prisma.EventUserRoleAssignmentUpsertWithWhereUniqueWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentUpsertWithWhereUniqueWithoutAssignedByUserInput[]
+  createMany?: Prisma.EventUserRoleAssignmentCreateManyAssignedByUserInputEnvelope
+  set?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  disconnect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  delete?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  connect?: Prisma.EventUserRoleAssignmentWhereUniqueInput | Prisma.EventUserRoleAssignmentWhereUniqueInput[]
+  update?: Prisma.EventUserRoleAssignmentUpdateWithWhereUniqueWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentUpdateWithWhereUniqueWithoutAssignedByUserInput[]
+  updateMany?: Prisma.EventUserRoleAssignmentUpdateManyWithWhereWithoutAssignedByUserInput | Prisma.EventUserRoleAssignmentUpdateManyWithWhereWithoutAssignedByUserInput[]
+  deleteMany?: Prisma.EventUserRoleAssignmentScalarWhereInput | Prisma.EventUserRoleAssignmentScalarWhereInput[]
+}
+
 export type EventUserRoleAssignmentCreateWithoutEventInput = {
   id?: string
-  userId: string
-  assignedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
   role: Prisma.EventRoleDefinitionCreateNestedOneWithoutAssignmentsInput
+  user?: Prisma.UserProjectionCreateNestedOneWithoutUserAssignmentsInput
+  assignedByUser?: Prisma.UserProjectionCreateNestedOneWithoutAssignedByInput
 }
 
 export type EventUserRoleAssignmentUncheckedCreateWithoutEventInput = {
@@ -513,11 +601,11 @@ export type EventUserRoleAssignmentScalarWhereInput = {
 
 export type EventUserRoleAssignmentCreateWithoutRoleInput = {
   id?: string
-  userId: string
-  assignedBy?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string | null
   event: Prisma.EventCreateNestedOneWithoutUserRoleAssignmentsInput
+  user?: Prisma.UserProjectionCreateNestedOneWithoutUserAssignmentsInput
+  assignedByUser?: Prisma.UserProjectionCreateNestedOneWithoutAssignedByInput
 }
 
 export type EventUserRoleAssignmentUncheckedCreateWithoutRoleInput = {
@@ -555,6 +643,94 @@ export type EventUserRoleAssignmentUpdateManyWithWhereWithoutRoleInput = {
   data: Prisma.XOR<Prisma.EventUserRoleAssignmentUpdateManyMutationInput, Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutRoleInput>
 }
 
+export type EventUserRoleAssignmentCreateWithoutUserInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  event: Prisma.EventCreateNestedOneWithoutUserRoleAssignmentsInput
+  role: Prisma.EventRoleDefinitionCreateNestedOneWithoutAssignmentsInput
+  assignedByUser?: Prisma.UserProjectionCreateNestedOneWithoutAssignedByInput
+}
+
+export type EventUserRoleAssignmentUncheckedCreateWithoutUserInput = {
+  id?: string
+  eventId: string
+  roleId: string
+  assignedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+}
+
+export type EventUserRoleAssignmentCreateOrConnectWithoutUserInput = {
+  where: Prisma.EventUserRoleAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput>
+}
+
+export type EventUserRoleAssignmentCreateManyUserInputEnvelope = {
+  data: Prisma.EventUserRoleAssignmentCreateManyUserInput | Prisma.EventUserRoleAssignmentCreateManyUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type EventUserRoleAssignmentCreateWithoutAssignedByUserInput = {
+  id?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+  event: Prisma.EventCreateNestedOneWithoutUserRoleAssignmentsInput
+  role: Prisma.EventRoleDefinitionCreateNestedOneWithoutAssignmentsInput
+  user?: Prisma.UserProjectionCreateNestedOneWithoutUserAssignmentsInput
+}
+
+export type EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput = {
+  id?: string
+  eventId: string
+  userId: string
+  roleId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+}
+
+export type EventUserRoleAssignmentCreateOrConnectWithoutAssignedByUserInput = {
+  where: Prisma.EventUserRoleAssignmentWhereUniqueInput
+  create: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput>
+}
+
+export type EventUserRoleAssignmentCreateManyAssignedByUserInputEnvelope = {
+  data: Prisma.EventUserRoleAssignmentCreateManyAssignedByUserInput | Prisma.EventUserRoleAssignmentCreateManyAssignedByUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type EventUserRoleAssignmentUpsertWithWhereUniqueWithoutUserInput = {
+  where: Prisma.EventUserRoleAssignmentWhereUniqueInput
+  update: Prisma.XOR<Prisma.EventUserRoleAssignmentUpdateWithoutUserInput, Prisma.EventUserRoleAssignmentUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutUserInput>
+}
+
+export type EventUserRoleAssignmentUpdateWithWhereUniqueWithoutUserInput = {
+  where: Prisma.EventUserRoleAssignmentWhereUniqueInput
+  data: Prisma.XOR<Prisma.EventUserRoleAssignmentUpdateWithoutUserInput, Prisma.EventUserRoleAssignmentUncheckedUpdateWithoutUserInput>
+}
+
+export type EventUserRoleAssignmentUpdateManyWithWhereWithoutUserInput = {
+  where: Prisma.EventUserRoleAssignmentScalarWhereInput
+  data: Prisma.XOR<Prisma.EventUserRoleAssignmentUpdateManyMutationInput, Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutUserInput>
+}
+
+export type EventUserRoleAssignmentUpsertWithWhereUniqueWithoutAssignedByUserInput = {
+  where: Prisma.EventUserRoleAssignmentWhereUniqueInput
+  update: Prisma.XOR<Prisma.EventUserRoleAssignmentUpdateWithoutAssignedByUserInput, Prisma.EventUserRoleAssignmentUncheckedUpdateWithoutAssignedByUserInput>
+  create: Prisma.XOR<Prisma.EventUserRoleAssignmentCreateWithoutAssignedByUserInput, Prisma.EventUserRoleAssignmentUncheckedCreateWithoutAssignedByUserInput>
+}
+
+export type EventUserRoleAssignmentUpdateWithWhereUniqueWithoutAssignedByUserInput = {
+  where: Prisma.EventUserRoleAssignmentWhereUniqueInput
+  data: Prisma.XOR<Prisma.EventUserRoleAssignmentUpdateWithoutAssignedByUserInput, Prisma.EventUserRoleAssignmentUncheckedUpdateWithoutAssignedByUserInput>
+}
+
+export type EventUserRoleAssignmentUpdateManyWithWhereWithoutAssignedByUserInput = {
+  where: Prisma.EventUserRoleAssignmentScalarWhereInput
+  data: Prisma.XOR<Prisma.EventUserRoleAssignmentUpdateManyMutationInput, Prisma.EventUserRoleAssignmentUncheckedUpdateManyWithoutAssignedByUserInput>
+}
+
 export type EventUserRoleAssignmentCreateManyEventInput = {
   id?: string
   userId: string
@@ -566,11 +742,11 @@ export type EventUserRoleAssignmentCreateManyEventInput = {
 
 export type EventUserRoleAssignmentUpdateWithoutEventInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   role?: Prisma.EventRoleDefinitionUpdateOneRequiredWithoutAssignmentsNestedInput
+  user?: Prisma.UserProjectionUpdateOneWithoutUserAssignmentsNestedInput
+  assignedByUser?: Prisma.UserProjectionUpdateOneWithoutAssignedByNestedInput
 }
 
 export type EventUserRoleAssignmentUncheckedUpdateWithoutEventInput = {
@@ -602,11 +778,11 @@ export type EventUserRoleAssignmentCreateManyRoleInput = {
 
 export type EventUserRoleAssignmentUpdateWithoutRoleInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  userId?: Prisma.StringFieldUpdateOperationsInput | string
-  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   event?: Prisma.EventUpdateOneRequiredWithoutUserRoleAssignmentsNestedInput
+  user?: Prisma.UserProjectionUpdateOneWithoutUserAssignmentsNestedInput
+  assignedByUser?: Prisma.UserProjectionUpdateOneWithoutAssignedByNestedInput
 }
 
 export type EventUserRoleAssignmentUncheckedUpdateWithoutRoleInput = {
@@ -627,6 +803,78 @@ export type EventUserRoleAssignmentUncheckedUpdateManyWithoutRoleInput = {
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
+export type EventUserRoleAssignmentCreateManyUserInput = {
+  id?: string
+  eventId: string
+  roleId: string
+  assignedBy?: string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+}
+
+export type EventUserRoleAssignmentCreateManyAssignedByUserInput = {
+  id?: string
+  eventId: string
+  userId: string
+  roleId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string | null
+}
+
+export type EventUserRoleAssignmentUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  event?: Prisma.EventUpdateOneRequiredWithoutUserRoleAssignmentsNestedInput
+  role?: Prisma.EventRoleDefinitionUpdateOneRequiredWithoutAssignmentsNestedInput
+  assignedByUser?: Prisma.UserProjectionUpdateOneWithoutAssignedByNestedInput
+}
+
+export type EventUserRoleAssignmentUncheckedUpdateWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type EventUserRoleAssignmentUncheckedUpdateManyWithoutUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
+  assignedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type EventUserRoleAssignmentUpdateWithoutAssignedByUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  event?: Prisma.EventUpdateOneRequiredWithoutUserRoleAssignmentsNestedInput
+  role?: Prisma.EventRoleDefinitionUpdateOneRequiredWithoutAssignmentsNestedInput
+  user?: Prisma.UserProjectionUpdateOneWithoutUserAssignmentsNestedInput
+}
+
+export type EventUserRoleAssignmentUncheckedUpdateWithoutAssignedByUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
+export type EventUserRoleAssignmentUncheckedUpdateManyWithoutAssignedByUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  eventId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  roleId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+}
+
 
 
 export type EventUserRoleAssignmentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -639,6 +887,8 @@ export type EventUserRoleAssignmentSelect<ExtArgs extends runtime.Types.Extensio
   updatedAt?: boolean
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   role?: boolean | Prisma.EventRoleDefinitionDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EventUserRoleAssignment$userArgs<ExtArgs>
+  assignedByUser?: boolean | Prisma.EventUserRoleAssignment$assignedByUserArgs<ExtArgs>
 }, ExtArgs["result"]["eventUserRoleAssignment"]>
 
 export type EventUserRoleAssignmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -651,6 +901,8 @@ export type EventUserRoleAssignmentSelectCreateManyAndReturn<ExtArgs extends run
   updatedAt?: boolean
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   role?: boolean | Prisma.EventRoleDefinitionDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EventUserRoleAssignment$userArgs<ExtArgs>
+  assignedByUser?: boolean | Prisma.EventUserRoleAssignment$assignedByUserArgs<ExtArgs>
 }, ExtArgs["result"]["eventUserRoleAssignment"]>
 
 export type EventUserRoleAssignmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -663,6 +915,8 @@ export type EventUserRoleAssignmentSelectUpdateManyAndReturn<ExtArgs extends run
   updatedAt?: boolean
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   role?: boolean | Prisma.EventRoleDefinitionDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EventUserRoleAssignment$userArgs<ExtArgs>
+  assignedByUser?: boolean | Prisma.EventUserRoleAssignment$assignedByUserArgs<ExtArgs>
 }, ExtArgs["result"]["eventUserRoleAssignment"]>
 
 export type EventUserRoleAssignmentSelectScalar = {
@@ -679,14 +933,20 @@ export type EventUserRoleAssignmentOmit<ExtArgs extends runtime.Types.Extensions
 export type EventUserRoleAssignmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   role?: boolean | Prisma.EventRoleDefinitionDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EventUserRoleAssignment$userArgs<ExtArgs>
+  assignedByUser?: boolean | Prisma.EventUserRoleAssignment$assignedByUserArgs<ExtArgs>
 }
 export type EventUserRoleAssignmentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   role?: boolean | Prisma.EventRoleDefinitionDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EventUserRoleAssignment$userArgs<ExtArgs>
+  assignedByUser?: boolean | Prisma.EventUserRoleAssignment$assignedByUserArgs<ExtArgs>
 }
 export type EventUserRoleAssignmentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.EventDefaultArgs<ExtArgs>
   role?: boolean | Prisma.EventRoleDefinitionDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.EventUserRoleAssignment$userArgs<ExtArgs>
+  assignedByUser?: boolean | Prisma.EventUserRoleAssignment$assignedByUserArgs<ExtArgs>
 }
 
 export type $EventUserRoleAssignmentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -694,6 +954,8 @@ export type $EventUserRoleAssignmentPayload<ExtArgs extends runtime.Types.Extens
   objects: {
     event: Prisma.$EventPayload<ExtArgs>
     role: Prisma.$EventRoleDefinitionPayload<ExtArgs>
+    user: Prisma.$UserProjectionPayload<ExtArgs> | null
+    assignedByUser: Prisma.$UserProjectionPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1099,6 +1361,8 @@ export interface Prisma__EventUserRoleAssignmentClient<T, Null = never, ExtArgs 
   readonly [Symbol.toStringTag]: "PrismaPromise"
   event<T extends Prisma.EventDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventDefaultArgs<ExtArgs>>): Prisma.Prisma__EventClient<runtime.Types.Result.GetResult<Prisma.$EventPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   role<T extends Prisma.EventRoleDefinitionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventRoleDefinitionDefaultArgs<ExtArgs>>): Prisma.Prisma__EventRoleDefinitionClient<runtime.Types.Result.GetResult<Prisma.$EventRoleDefinitionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.EventUserRoleAssignment$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventUserRoleAssignment$userArgs<ExtArgs>>): Prisma.Prisma__UserProjectionClient<runtime.Types.Result.GetResult<Prisma.$UserProjectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  assignedByUser<T extends Prisma.EventUserRoleAssignment$assignedByUserArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EventUserRoleAssignment$assignedByUserArgs<ExtArgs>>): Prisma.Prisma__UserProjectionClient<runtime.Types.Result.GetResult<Prisma.$UserProjectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1533,6 +1797,44 @@ export type EventUserRoleAssignmentDeleteManyArgs<ExtArgs extends runtime.Types.
    * Limit how many EventUserRoleAssignments to delete.
    */
   limit?: number
+}
+
+/**
+ * EventUserRoleAssignment.user
+ */
+export type EventUserRoleAssignment$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserProjection
+   */
+  select?: Prisma.UserProjectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserProjection
+   */
+  omit?: Prisma.UserProjectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserProjectionInclude<ExtArgs> | null
+  where?: Prisma.UserProjectionWhereInput
+}
+
+/**
+ * EventUserRoleAssignment.assignedByUser
+ */
+export type EventUserRoleAssignment$assignedByUserArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserProjection
+   */
+  select?: Prisma.UserProjectionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserProjection
+   */
+  omit?: Prisma.UserProjectionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserProjectionInclude<ExtArgs> | null
+  where?: Prisma.UserProjectionWhereInput
 }
 
 /**

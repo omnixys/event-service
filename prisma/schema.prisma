@@ -20,7 +20,7 @@ datasource db {
 model Event {
   id    String   @id @default(uuid()) @map("id") @db.Uuid
   name  String
-  owner String
+  owner String   @db.Uuid
   tags  String[] @default([])
 
   parentId String? @map("parent_id") @db.Uuid
@@ -47,6 +47,8 @@ model Event {
 
   coverMedia Media? @relation("EventCover", fields: [coverMediaId], references: [id])
   logoMedia  Media? @relation("EventLogo", fields: [logoMediaId], references: [id])
+
+  ownerUser UserProjection? @relation("EventOwner", fields: [owner], references: [id], onDelete: Restrict)
 
   @@index([parentId])
   @@map("event")
@@ -277,6 +279,9 @@ model EventUserRoleAssignment {
   event Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
   role  EventRoleDefinition @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
+  user           UserProjection? @relation("EventAssignmentUser", fields: [userId], references: [id], onDelete: Restrict)
+  assignedByUser UserProjection? @relation("EventAssignmentAssignedBy", fields: [assignedBy], references: [id], onDelete: SetNull)
+
   @@unique([eventId, userId, roleId])
   @@index([eventId, userId])
   @@index([roleId])
@@ -412,7 +417,10 @@ model UserProjection {
   locale       String?  @map("locale")
   lastSynced   DateTime @default(now()) @map("last_synced")
 
-  userEventRoles Role[] @relation("UserProjectionRoles")
+userEventRoles  Role[]                     @relation("UserProjectionRoles")
+  ownedEvents     Event[]                    @relation("EventOwner")
+  userAssignments EventUserRoleAssignment[]  @relation("EventAssignmentUser")
+  assignedBy      EventUserRoleAssignment[]  @relation("EventAssignmentAssignedBy")
 
   @@map("user_projection")
 }
