@@ -593,7 +593,7 @@ export class EventWriteService {
         topic: KafkaTopics.event.ownerChanged,
         payload: {
           eventId: result.id,
-          oldOwnerId: '',
+          oldOwnerId: '00000000-0000-0000-0000-000000000000',
           newOwnerId: actorId,
           changedBy: actorId,
           occurredAt: now,

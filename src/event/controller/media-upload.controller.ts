@@ -338,6 +338,8 @@ export class MediaUploadController {
 
   private async publishMediaUploaded(payload: EventMediaUploadedDTO): Promise<void> {
     const context = ContextAccessor.get();
+    const principal = context?.principal;
+    const tenant = context?.tenant;
     await this.producer.send({
       topic: KafkaTopics.event.mediaUploaded,
       payload,
@@ -347,8 +349,8 @@ export class MediaUploadController {
         operation: 'Process Event Media',
         clazz: this.constructor.name,
         type: 'EVENT',
-        actorId: context?.principal?.actorId ?? '',
-        tenantId: context?.tenant?.tenantId ?? context?.principal?.tenantId ?? '',
+        actorId: principal?.actorId,
+        tenantId: tenant?.tenantId ?? principal?.tenantId,
       },
     });
   }

@@ -417,10 +417,10 @@ model UserProjection {
   locale       String?  @map("locale")
   lastSynced   DateTime @default(now()) @map("last_synced")
 
-userEventRoles  Role[]                     @relation("UserProjectionRoles")
-  ownedEvents     Event[]                    @relation("EventOwner")
-  userAssignments EventUserRoleAssignment[]  @relation("EventAssignmentUser")
-  assignedBy      EventUserRoleAssignment[]  @relation("EventAssignmentAssignedBy")
+  userEventRoles  Role[]                    @relation("UserProjectionRoles")
+  ownedEvents     Event[]                   @relation("EventOwner")
+  userAssignments EventUserRoleAssignment[] @relation("EventAssignmentUser")
+  assignedBy      EventUserRoleAssignment[] @relation("EventAssignmentAssignedBy")
 
   @@map("user_projection")
 }
