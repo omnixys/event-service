@@ -78,7 +78,9 @@ export class AuthenticationHandler {
       const headers = context.headers;
       const actorId = headers[KAFKA_HEADERS.ACTOR_ID];
       if (!actorId) {
-        this.logger.error('Missing ACTOR_ID header in deleteEvents event - fail closed');
+        this.logger.error(
+          'Missing ACTOR_ID header in deleteEvents event - fail closed',
+        );
         return;
       }
 
