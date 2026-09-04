@@ -63,7 +63,7 @@ export class AuthenticationHandler {
     private readonly cache: ValkeyService,
     private readonly encryptionService: EncryptionService,
   ) {
-    this.logger = loggerService.log(this.constructor.name);
+    this.logger = loggerService.log(this.constructor.name, 'service:event');
   }
 
   @KafkaEvent(KafkaTopics.event.delete)

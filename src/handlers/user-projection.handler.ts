@@ -19,7 +19,7 @@ export class UserProjectionHandler {
     loggerService: OmnixysLogger,
     private readonly userProjectionService: UserProjectionService,
   ) {
-    this.logger = loggerService.log(this.constructor.name);
+    this.logger = loggerService.log(this.constructor.name, 'service:event');
   }
 
   @KafkaEvent(KafkaTopics.user.changedProjection)

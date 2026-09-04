@@ -28,6 +28,7 @@ export class EventQueryResolver {
   ) {
     this.logger = this.omnixysLogger.log(
       this.constructor.name,
+      'service:event',
     );
   }
 

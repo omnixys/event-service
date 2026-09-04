@@ -17,7 +17,7 @@ export class EventStaffService {
     private readonly rbacService: EventRbacService,
     private readonly omnixysLogger: OmnixysLogger,
   ) {
-    this.logger = this.omnixysLogger.log(this.constructor.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name, 'service:event');
   }
 
   async getStaff(eventId: string, _authToken?: string): Promise<EventStaffPayload[]> {

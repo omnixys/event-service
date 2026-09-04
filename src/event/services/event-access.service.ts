@@ -38,7 +38,7 @@ export class EventAccessService extends EventRoleResolver implements EventPermis
     private readonly omnixysLogger: OmnixysLogger,
   ) {
     super();
-    this.logger = this.omnixysLogger.log(this.constructor.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name, 'service:event');
   }
 
   async getRoleForUser(userId: string, eventId: string): Promise<EventRoleType | null> {

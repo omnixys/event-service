@@ -22,7 +22,7 @@ export class MediaService {
     @Inject(FILE_STORAGE)
     private readonly storage: FileStorage,
   ) {
-    this.logger = this.omnixysLogger.log(this.constructor.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name, 'service:event');
   }
 
   async create(dto: CreateMediaDto): Promise<Media> {

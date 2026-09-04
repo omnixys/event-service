@@ -27,7 +27,7 @@ export class MediaProcessingService {
     @Inject(FILE_STORAGE)
     private readonly storage: FileStorage,
   ) {
-    this.logger = this.loggerService.log(this.constructor.name);
+    this.logger = this.loggerService.log(this.constructor.name, 'service:event');
   }
 
   /**

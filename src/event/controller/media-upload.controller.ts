@@ -64,7 +64,7 @@ export class MediaUploadController {
     private readonly producer: KafkaProducerService,
     private readonly loggerService: OmnixysLogger,
   ) {
-    this.logger = this.loggerService.log(this.constructor.name);
+    this.logger = this.loggerService.log(this.constructor.name, 'service:event');
   }
 
   @UseGuards(CookieAuthGuard)

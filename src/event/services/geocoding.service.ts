@@ -23,7 +23,7 @@ export class GeocodingService {
     private readonly http: HttpService,
     logger: OmnixysLogger,
   ) {
-    this.logger = logger.log(this.constructor.name);
+    this.logger = logger.log(this.constructor.name, 'service:event');
   }
 
   async geocode(address: string): Promise<GeocodeResultPayload | null> {

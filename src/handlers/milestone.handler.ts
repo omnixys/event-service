@@ -13,7 +13,7 @@ export class MilestoneHandler {
     private readonly events: EventWriteService,
     logger: OmnixysLogger,
   ) {
-    this.logger = logger.log(this.constructor.name);
+    this.logger = logger.log(this.constructor.name, 'service:event');
   }
 
   @KafkaEvent(KafkaTopics.event.milestoneRecorded)

@@ -115,7 +115,7 @@ export class EventRbacService {
     private readonly kafkaProducerService: KafkaProducerService,
     private readonly userProjectionService: UserProjectionService,
   ) {
-    this.logger = this.omnixysLogger.log(this.constructor.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name, 'service:event');
   }
 
   async getPermissionCatalog(): Promise<EventPermissionPayload[]> {
