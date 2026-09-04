@@ -258,7 +258,7 @@ export class EventRbacService {
     });
 
     this.publishRoleDefinitionChanged(input.eventId, actorId).catch((err) =>
-      this.logger.error('Failed to publish role definition change', err),
+      this.logger.error('Failed to publish role definition change: %o', err),
     );
     return this.toRolePayload(role);
   }
@@ -285,7 +285,7 @@ export class EventRbacService {
     });
 
     this.publishRoleDefinitionChanged(existing.eventId, actorId).catch((err) =>
-      this.logger.error('Failed to publish role definition change', err),
+      this.logger.error('Failed to publish role definition change: %o', err),
     );
     return this.toRolePayload(role);
   }
@@ -307,7 +307,7 @@ export class EventRbacService {
     });
 
     this.publishRoleDefinitionChanged(existing.eventId, actorId).catch((err) =>
-      this.logger.error('Failed to publish role definition change', err),
+      this.logger.error('Failed to publish role definition change: %o', err),
     );
     await this.publishAccessChangedForRoleUsers(existing.eventId, input.roleId, actorId);
     return this.toRolePayload(role);
@@ -330,7 +330,7 @@ export class EventRbacService {
 
     await this.prisma.eventRoleDefinition.delete({ where: { id: input.roleId } });
     this.publishRoleDefinitionChanged(existing.eventId, actorId).catch((err) =>
-      this.logger.error('Failed to publish role definition change', err),
+      this.logger.error('Failed to publish role definition change: %o', err),
     );
     return true;
   }
@@ -350,7 +350,7 @@ export class EventRbacService {
 
     const role = await this.getRoleOrThrow(input.roleId);
     this.publishRoleDefinitionChanged(existing.eventId, actorId).catch((err) =>
-      this.logger.error('Failed to publish role definition change', err),
+      this.logger.error('Failed to publish role definition change: %o', err),
     );
     await this.publishAccessChangedForRoleUsers(existing.eventId, input.roleId, actorId);
     return this.toRolePayload(role);

@@ -101,7 +101,7 @@ export class MediaUploadController {
       }
 
       if (!ALLOWED_MIME.has(part.mimetype)) {
-        this.logger.warn('Invalid MIME type', {
+        this.logger.warn('Invalid MIME type: %o', {
           mimetype: part.mimetype,
           filename: part.filename,
           actorId: user.id,
@@ -154,7 +154,7 @@ export class MediaUploadController {
           });
         } catch (error) {
           await this.mediaService.delete(media.id).catch((cleanupError: unknown) => {
-            this.logger.error('Media compensation failed', {
+            this.logger.error('Media compensation failed: %o', {
               mediaId: media.id,
               error: cleanupError,
             });
@@ -162,7 +162,7 @@ export class MediaUploadController {
           throw error;
         }
 
-        this.logger.info('Media upload accepted for async processing', {
+        this.logger.info('Media upload accepted for async processing: %o', {
           mediaId: media.id,
           eventId,
           size,
@@ -180,7 +180,7 @@ export class MediaUploadController {
       } catch (error) {
         if (uploaded) {
           await this.storage.delete({ key }).catch((cleanupError: unknown) => {
-            this.logger.error('Storage compensation failed', {
+            this.logger.error('Storage compensation failed: %o', {
               key,
               error: cleanupError,
             });
@@ -314,7 +314,7 @@ export class MediaUploadController {
         });
       } catch (error) {
         await this.mediaService.delete(media.id).catch((cleanupError: unknown) => {
-          this.logger.error('Completed upload compensation failed', {
+          this.logger.error('Completed upload compensation failed: %o', {
             mediaId: media.id,
             error: cleanupError,
           });

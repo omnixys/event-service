@@ -36,7 +36,7 @@ export class MediaProcessingService {
    * ------------------------------------------------------------------------
    */
   async processImage(mediaId: string, buffer: Buffer): Promise<ProcessedImageVariant[]> {
-    this.logger.debug('Processing image variants', { mediaId });
+    this.logger.debug('Processing image variants: %o', { mediaId });
 
     const variants = await this.image.generateVariants(buffer);
 
@@ -81,7 +81,7 @@ export class MediaProcessingService {
       ),
     );
 
-    this.logger.debug('Variants created', {
+    this.logger.debug('Variants created: %o', {
       mediaId,
       count: uploads.length,
     });
@@ -95,7 +95,7 @@ export class MediaProcessingService {
       select: { id: true, key: true },
     });
     if (media?.key !== key) {
-      this.logger.warn('media_key_mismatch', {
+      this.logger.warn('media_key_mismatch: %o', {
         mediaId,
         expectedKey: key,
         actualKey: media?.key,
@@ -103,7 +103,7 @@ export class MediaProcessingService {
       throw new EventMediaNotFoundError(mediaId);
     }
 
-    this.logger.info('process_from_storage', { mediaId, key });
+    this.logger.info('process_from_storage: %o', { mediaId, key });
     const buffer = await this.storage.get({ key });
     return this.processImage(mediaId, buffer);
   }
