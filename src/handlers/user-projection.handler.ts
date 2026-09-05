@@ -19,7 +19,7 @@ export class UserProjectionHandler {
     loggerService: OmnixysLogger,
     private readonly userProjectionService: UserProjectionService,
   ) {
-    this.logger = loggerService.log(this.constructor.name);
+    this.logger = loggerService.log(this.constructor.name, 'service:event');
   }
 
   @KafkaEvent(KafkaTopics.user.changedProjection)
@@ -28,7 +28,7 @@ export class UserProjectionHandler {
     _context: IKafkaEventContext,
   ): Promise<void> {
     return TraceRunner.run('[HANDLER] user.changed.projection', async () => {
-      this.logger.debug('User projection update received', {
+      this.logger.debug('User projection update received: %o', {
         userId: payload.id,
       });
 

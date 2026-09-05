@@ -63,7 +63,7 @@ export class AuthenticationHandler {
     private readonly cache: ValkeyService,
     private readonly encryptionService: EncryptionService,
   ) {
-    this.logger = loggerService.log(this.constructor.name);
+    this.logger = loggerService.log(this.constructor.name, 'service:event');
   }
 
   @KafkaEvent(KafkaTopics.event.delete)
@@ -71,12 +71,18 @@ export class AuthenticationHandler {
     payload: UserIdDTO,
     context: IKafkaEventContext,
   ): Promise<void> {
-    return TraceRunner.run('[HANDLER] delte Events', async () => {
+    return TraceRunner.run('[HANDLER] delete Events', async () => {
       this.logger.warn('Delete event received');
       this.logger.debug('Payload: %o', payload);
 
       const headers = context.headers;
-      const actorId = headers[KAFKA_HEADERS.ACTOR_ID] ?? 'Unkown';
+      const actorId = headers[KAFKA_HEADERS.ACTOR_ID];
+      if (!actorId) {
+        this.logger.error(
+          'Missing ACTOR_ID header in deleteEvents event - fail closed',
+        );
+        return;
+      }
 
       await this.eventWriteService.deleteEvents(payload.userId, actorId);
     });

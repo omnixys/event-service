@@ -27,7 +27,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
       adapter,
       log: [{ emit: 'event', level: 'query' }],
     });
-    this.logger = logger.log(this.constructor.name);
+    this.logger = logger.log(this.constructor.name, 'service:event');
   }
 
   async onModuleInit(): Promise<void> {

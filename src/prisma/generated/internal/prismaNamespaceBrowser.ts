@@ -127,6 +127,9 @@ export const SettingsScalarFieldEnum = {
   ticketReleaseAt: 'ticketReleaseAt',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
+  guestConfirmationReminderEnabled: 'guestConfirmationReminderEnabled',
+  guestConfirmationReminderPresets: 'guestConfirmationReminderPresets',
+  guestConfirmationMaxResends: 'guestConfirmationMaxResends',
   category: 'category',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

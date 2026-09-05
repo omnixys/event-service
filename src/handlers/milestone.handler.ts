@@ -13,18 +13,18 @@ export class MilestoneHandler {
     private readonly events: EventWriteService,
     logger: OmnixysLogger,
   ) {
-    this.logger = logger.log(this.constructor.name);
+    this.logger = logger.log(this.constructor.name, 'service:event');
   }
 
   @KafkaEvent(KafkaTopics.event.milestoneRecorded)
   async handleMilestone(payload: EventMilestoneRecordedDTO): Promise<void> {
-    this.logger.info('Kafka event milestone received', {
+    this.logger.info('Kafka event milestone received: %o', {
       eventId: payload.eventId,
       milestoneId: payload.milestoneId,
       type: payload.type,
     });
     await this.events.recordMilestone(payload);
-    this.logger.info('Kafka event milestone processed', {
+    this.logger.info('Kafka event milestone processed: %o', {
       eventId: payload.eventId,
       milestoneId: payload.milestoneId,
     });

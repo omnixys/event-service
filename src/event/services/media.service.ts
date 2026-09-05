@@ -22,11 +22,11 @@ export class MediaService {
     @Inject(FILE_STORAGE)
     private readonly storage: FileStorage,
   ) {
-    this.logger = this.omnixysLogger.log(this.constructor.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name, 'service:event');
   }
 
   async create(dto: CreateMediaDto): Promise<Media> {
-    this.logger.info('media_create', {
+    this.logger.info('media_create: %o', {
       eventId: dto.eventId,
       type: dto.type,
       filename: dto.filename,
@@ -66,7 +66,7 @@ export class MediaService {
       });
     }
 
-    this.logger.info('media_create_success', { mediaId: media.id, eventId: dto.eventId });
+    this.logger.info('media_create_success: %o', { mediaId: media.id, eventId: dto.eventId });
     return media;
   }
 
@@ -76,7 +76,7 @@ export class MediaService {
     });
 
     if (!media) {
-      this.logger.warn('media_delete_not_found', { mediaId: id });
+      this.logger.warn('media_delete_not_found: %o', { mediaId: id });
       throw new EventMediaNotFoundError(id);
     }
 
@@ -84,14 +84,14 @@ export class MediaService {
      * WHY:
      * Always delete storage first to avoid orphan files
      */
-    this.logger.info('media_delete', { mediaId: id, key: media.key, eventId: media.eventId });
+    this.logger.info('media_delete: %o', { mediaId: id, key: media.key, eventId: media.eventId });
     await this.storage.delete({ key: media.key });
 
     await this.prisma.media.delete({
       where: { id },
     });
 
-    this.logger.info('media_delete_success', { mediaId: id });
+    this.logger.info('media_delete_success: %o', { mediaId: id });
     return { success: true };
   }
 

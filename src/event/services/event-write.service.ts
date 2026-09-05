@@ -40,6 +40,7 @@ import {
   type EventRoleRemovedDTO,
   type EventUpdatedDTO,
   type EventVisibleTab,
+  type GuestReminderPreset,
   type SeatColorGroupDTO,
 } from '@omnixys/contracts-ts';
 import {
@@ -502,6 +503,10 @@ export class EventWriteService {
         allowPublicPlusOne: s.allowPublicPlusOne,
         allowGuestSeatSelection: s.allowGuestSeatSelection,
         scheduleTicketRelease: s.scheduleTicketRelease,
+        guestConfirmationReminderEnabled: s.guestConfirmationReminderEnabled,
+        guestConfirmationReminderPresets:
+          s.guestConfirmationReminderPresets as unknown as GuestReminderPreset[],
+        guestConfirmationMaxResends: s.guestConfirmationMaxResends ?? undefined,
         ticketReleaseAt: s.ticketReleaseAt?.toISOString(),
         rsvpDeadline: s.rsvpDeadline?.toISOString(),
         category: s.category,
@@ -593,7 +598,7 @@ export class EventWriteService {
         topic: KafkaTopics.event.ownerChanged,
         payload: {
           eventId: result.id,
-          oldOwnerId: '',
+          oldOwnerId: '00000000-0000-0000-0000-000000000000',
           newOwnerId: actorId,
           changedBy: actorId,
           occurredAt: now,
@@ -758,6 +763,16 @@ export class EventWriteService {
                     : s.ticketReleaseAt
                       ? new Date(s.ticketReleaseAt)
                       : null,
+              }),
+
+              ...(s.guestConfirmationReminderEnabled !== undefined && {
+                guestConfirmationReminderEnabled: s.guestConfirmationReminderEnabled,
+              }),
+              ...(s.guestConfirmationReminderPresets !== undefined && {
+                guestConfirmationReminderPresets: s.guestConfirmationReminderPresets,
+              }),
+              ...(s.guestConfirmationMaxResends !== undefined && {
+                guestConfirmationMaxResends: s.guestConfirmationMaxResends,
               }),
 
               ...(s.invitedByOptions !== undefined && {
@@ -927,6 +942,10 @@ export class EventWriteService {
           allowPublicPlusOne: updatedSettings.allowPublicPlusOne,
           allowGuestSeatSelection: updatedSettings.allowGuestSeatSelection,
           scheduleTicketRelease: updatedSettings.scheduleTicketRelease,
+          guestConfirmationReminderEnabled: updatedSettings.guestConfirmationReminderEnabled,
+          guestConfirmationReminderPresets:
+            updatedSettings.guestConfirmationReminderPresets as unknown as GuestReminderPreset[],
+          guestConfirmationMaxResends: updatedSettings.guestConfirmationMaxResends ?? undefined,
           ticketReleaseAt: updatedSettings.ticketReleaseAt?.toISOString(),
           rsvpDeadline: updatedSettings.rsvpDeadline?.toISOString(),
           category: updatedSettings.category,

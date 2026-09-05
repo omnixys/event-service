@@ -20,7 +20,7 @@ datasource db {
 model Event {
   id    String   @id @default(uuid()) @map("id") @db.Uuid
   name  String
-  owner String
+  owner String   @db.Uuid
   tags  String[] @default([])
 
   parentId String? @map("parent_id") @db.Uuid
@@ -47,6 +47,8 @@ model Event {
 
   coverMedia Media? @relation("EventCover", fields: [coverMediaId], references: [id])
   logoMedia  Media? @relation("EventLogo", fields: [logoMediaId], references: [id])
+
+  ownerUser UserProjection? @relation("EventOwner", fields: [owner], references: [id], onDelete: Restrict)
 
   @@index([parentId])
   @@map("event")
@@ -91,6 +93,10 @@ model Settings {
   startsAt DateTime @map("starts_at")
   endsAt   DateTime @map("ends_at")
 
+  guestConfirmationReminderEnabled Boolean                @default(true) @map("guest_confirmation_reminder_enabled")
+  guestConfirmationReminderPresets GuestReminderPreset[]  @default([WEEK_BEFORE, THREE_DAYS_BEFORE, HOURS_24_BEFORE]) @map("guest_confirmation_reminder_presets")
+  guestConfirmationMaxResends      Int?                   @map("guest_confirmation_max_resends")
+
   category EventCategory @default(GENERAL) @map("category")
 
   seatColorGroups SeatColorGroup[]
@@ -99,6 +105,14 @@ model Settings {
   updatedAt DateTime? @updatedAt @map("updated_at")
 
   @@map("settings")
+}
+
+enum GuestReminderPreset {
+  WEEK_BEFORE
+  THREE_DAYS_BEFORE
+  HOURS_24_BEFORE
+
+  @@map("guest_reminder_preset")
 }
 
 //
@@ -130,7 +144,7 @@ model AnalyticsOutbox {
   topic          String
   payload        Json
   correlationId  String?   @map("correlation_id")
-  actorId        String?   @map("actor_id")
+  actorId        String?   @map("actor_id") @db.Uuid
   attempts       Int       @default(0)
   nextAttemptAt  DateTime  @default(now()) @map("next_attempt_at")
   lockedAt       DateTime? @map("locked_at")
@@ -277,6 +291,9 @@ model EventUserRoleAssignment {
   event Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
   role  EventRoleDefinition @relation(fields: [roleId], references: [id], onDelete: Cascade)
 
+  user           UserProjection? @relation("EventAssignmentUser", fields: [userId], references: [id], onDelete: Restrict)
+  assignedByUser UserProjection? @relation("EventAssignmentAssignedBy", fields: [assignedBy], references: [id], onDelete: SetNull)
+
   @@unique([eventId, userId, roleId])
   @@index([eventId, userId])
   @@index([roleId])
@@ -412,7 +429,10 @@ model UserProjection {
   locale       String?  @map("locale")
   lastSynced   DateTime @default(now()) @map("last_synced")
 
-  userEventRoles Role[] @relation("UserProjectionRoles")
+  userEventRoles  Role[]                    @relation("UserProjectionRoles")
+  ownedEvents     Event[]                   @relation("EventOwner")
+  userAssignments EventUserRoleAssignment[] @relation("EventAssignmentUser")
+  assignedBy      EventUserRoleAssignment[] @relation("EventAssignmentAssignedBy")
 
   @@map("user_projection")
 }

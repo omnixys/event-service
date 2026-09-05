@@ -85,6 +85,15 @@ export class EventMapper {
             scheduleTicketRelease: settings.scheduleTicketRelease,
             ticketReleaseAt: n2u(settings.ticketReleaseAt),
 
+            // 🔔 Guest Confirmation Reminder
+            guestConfirmationReminderEnabled:
+              settings.guestConfirmationReminderEnabled,
+            guestConfirmationReminderPresets:
+              settings.guestConfirmationReminderPresets ?? [],
+            guestConfirmationMaxResends: n2u(
+              settings.guestConfirmationMaxResends,
+            ),
+
             // 📂 Category
             category: settings.category,
 

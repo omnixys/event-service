@@ -26,7 +26,10 @@ export class EventQueryResolver {
     private readonly geocoding: GeocodingService,
     private readonly omnixysLogger: OmnixysLogger,
   ) {
-    this.logger = this.omnixysLogger.log(this.constructor.name);
+    this.logger = this.omnixysLogger.log(
+      this.constructor.name,
+      'service:event',
+    );
   }
 
   @Query(() => GeocodeResultPayload, { nullable: true })
@@ -47,19 +50,19 @@ export class EventQueryResolver {
     @Args('id', { type: () => ID }) id: string,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload> {
-    this.logger.debug('Query event requested', {
+    this.logger.debug('Query event requested: %o', {
       eventId: id,
       userId: currentUser?.id,
     });
 
     if (!currentUser?.id) {
-      this.logger.warn('Unauthorized event query attempt', { eventId: id });
+      this.logger.warn('Unauthorized event query attempt: %o', { eventId: id });
       throw new EventAuthenticationRequiredError();
     }
 
     const event = await this.readService.getEventById(id, currentUser.id);
 
-    this.logger.debug('Event query resolved', {
+    this.logger.debug('Event query resolved: %o', {
       eventId: id,
       userId: currentUser.id,
     });
@@ -113,7 +116,7 @@ export class EventQueryResolver {
   async getMyEvents(
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<EventPayload[]> {
-    this.logger.debug('Query myEvents requested', {
+    this.logger.debug('Query myEvents requested: %o', {
       userId: currentUser?.id,
     });
 
@@ -141,19 +144,21 @@ export class EventQueryResolver {
     @Args('eventId', { type: () => ID }) eventId: string,
     @CurrentUser() currentUser: CurrentUserData,
   ): Promise<string[]> {
-    this.logger.debug('Query eventGuests requested', {
+    this.logger.debug('Query eventGuests requested: %o', {
       eventId,
       userId: currentUser?.id,
     });
 
     if (!currentUser?.id) {
-      this.logger.warn('Unauthorized eventGuests query attempt', { eventId });
+      this.logger.warn('Unauthorized eventGuests query attempt: %o', {
+        eventId,
+      });
       throw new EventAuthenticationRequiredError();
     }
 
     const guests = await this.readService.findMyGuests(eventId);
 
-    this.logger.debug('eventGuests query resolved', {
+    this.logger.debug('eventGuests query resolved: %o', {
       eventId,
       count: guests.length,
     });

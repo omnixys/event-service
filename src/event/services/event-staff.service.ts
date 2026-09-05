@@ -17,12 +17,12 @@ export class EventStaffService {
     private readonly rbacService: EventRbacService,
     private readonly omnixysLogger: OmnixysLogger,
   ) {
-    this.logger = this.omnixysLogger.log(this.constructor.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name, 'service:event');
   }
 
   async getStaff(eventId: string, _authToken?: string): Promise<EventStaffPayload[]> {
     return TraceRunner.run('[SERVICE] getEventStaff', async () => {
-      this.logger.debug('Fetching staff for event', { eventId });
+      this.logger.debug('Fetching staff for event: %o', { eventId });
 
       const rows = await this.prisma.role.findMany({
         where: {
@@ -32,7 +32,7 @@ export class EventStaffService {
         select: { userId: true, role: true },
       });
 
-      this.logger.debug('Staff roles resolved from DB', {
+      this.logger.debug('Staff roles resolved from DB: %o', {
         eventId,
         count: rows.length,
       });
@@ -59,7 +59,7 @@ export class EventStaffService {
           const access = await this.rbacService.getAccessForUser(userId, eventId);
           permissions = [...access.permissions];
         } catch {
-          this.logger.debug('Could not resolve permissions via RBAC, falling back to empty', {
+          this.logger.debug('Could not resolve permissions via RBAC, falling back to empty: %o', {
             userId,
             eventId,
           });

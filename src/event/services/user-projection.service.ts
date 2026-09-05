@@ -42,7 +42,7 @@ export class UserProjectionService implements OnModuleInit {
     private readonly prisma: PrismaService,
     private readonly logger: OmnixysLogger,
   ) {
-    this.log = this.logger.log(this.constructor.name);
+    this.log = this.logger.log(this.constructor.name, 'service:event');
   }
 
   async onModuleInit(): Promise<void> {

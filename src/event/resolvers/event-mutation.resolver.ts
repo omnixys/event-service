@@ -47,7 +47,7 @@ export class EventMutationResolver {
     private readonly writeService: EventWriteService,
     logger: OmnixysLogger,
   ) {
-    this.log = logger.log(this.constructor.name);
+    this.log = logger.log(this.constructor.name, 'service:event');
   }
 
   @Mutation(() => EventPayload)

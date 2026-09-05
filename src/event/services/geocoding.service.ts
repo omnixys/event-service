@@ -23,12 +23,12 @@ export class GeocodingService {
     private readonly http: HttpService,
     logger: OmnixysLogger,
   ) {
-    this.logger = logger.log(this.constructor.name);
+    this.logger = logger.log(this.constructor.name, 'service:event');
   }
 
   async geocode(address: string): Promise<GeocodeResultPayload | null> {
     return TraceRunner.run('[SERVICE] geocodeAddress', async () => {
-      this.logger.info('External geocoding call started', {
+      this.logger.info('External geocoding call started: %o', {
         provider: 'nominatim',
       });
 
@@ -49,7 +49,7 @@ export class GeocodingService {
         );
 
         if (!Array.isArray(response.data) || response.data.length === 0) {
-          this.logger.info('External geocoding call finished', {
+          this.logger.info('External geocoding call finished: %o', {
             provider: 'nominatim',
             matched: false,
           });
@@ -63,7 +63,7 @@ export class GeocodingService {
           throw new GeocodingUnavailableError('invalid-response');
         }
 
-        this.logger.info('External geocoding call finished', {
+        this.logger.info('External geocoding call finished: %o', {
           provider: 'nominatim',
           matched: true,
         });
@@ -76,7 +76,7 @@ export class GeocodingService {
         if (error instanceof GeocodingUnavailableError) {
           throw error;
         }
-        this.logger.error('External geocoding call failed', {
+        this.logger.error('External geocoding call failed: %o', {
           provider: 'nominatim',
           error,
         });

@@ -1,6 +1,7 @@
 import {
   EventCategory,
   EventVisibleTab,
+  GuestReminderPreset,
   InvitationApprovalMode,
 } from '../../../prisma/generated/enums.js';
 import { SeatColorGroupInput } from './seat-color-group.input.js';
@@ -105,6 +106,17 @@ export class UpdateSettingsInput {
 
   @Field(() => Boolean, { nullable: true })
   scheduleTicketRelease?: boolean;
+
+  @Field(() => Boolean, { nullable: true })
+  guestConfirmationReminderEnabled?: boolean;
+
+  @Field(() => [GuestReminderPreset], { nullable: true })
+  @IsArray()
+  @ArrayMaxSize(3)
+  guestConfirmationReminderPresets?: GuestReminderPreset[];
+
+  @Field(() => Int, { nullable: true })
+  guestConfirmationMaxResends?: number;
 
   @Field(() => GraphQLISODateTime, { nullable: true })
   @IsOptional()

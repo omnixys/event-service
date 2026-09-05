@@ -14,13 +14,13 @@ export class MediaHandler {
     private readonly processing: MediaProcessingService,
     logger: OmnixysLogger,
   ) {
-    this.logger = logger.log(this.constructor.name);
+    this.logger = logger.log(this.constructor.name, 'service:event');
   }
 
   @KafkaEvent(KafkaTopics.event.mediaUploaded)
   async handleMediaUploaded(payload: EventMediaUploadedDTO): Promise<void> {
     return TraceRunner.run('[HANDLER] event.media.uploaded', async () => {
-      this.logger.info('Kafka media processing started', {
+      this.logger.info('Kafka media processing started: %o', {
         mediaId: payload.mediaId,
         eventId: payload.eventId,
       });
@@ -30,13 +30,13 @@ export class MediaHandler {
           payload.mediaId,
           payload.key,
         );
-        this.logger.info('Kafka media processing finished', {
+        this.logger.info('Kafka media processing finished: %o', {
           mediaId: payload.mediaId,
           eventId: payload.eventId,
           variants: variants.length,
         });
       } catch (error) {
-        this.logger.error('Kafka media processing failed', {
+        this.logger.error('Kafka media processing failed: %o', {
           mediaId: payload.mediaId,
           eventId: payload.eventId,
           error,

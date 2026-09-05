@@ -1549,6 +1549,9 @@ export const SettingsScalarFieldEnum = {
   ticketReleaseAt: 'ticketReleaseAt',
   startsAt: 'startsAt',
   endsAt: 'endsAt',
+  guestConfirmationReminderEnabled: 'guestConfirmationReminderEnabled',
+  guestConfirmationReminderPresets: 'guestConfirmationReminderPresets',
+  guestConfirmationMaxResends: 'guestConfirmationMaxResends',
   category: 'category',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -1847,6 +1850,20 @@ export type ListEnumEventVisibleTabFieldRefInput<$PrismaModel> = FieldRefInputTy
  * Reference to a field of type 'EventVisibleTab'
  */
 export type EnumEventVisibleTabFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EventVisibleTab'>
+    
+
+
+/**
+ * Reference to a field of type 'GuestReminderPreset[]'
+ */
+export type ListEnumGuestReminderPresetFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestReminderPreset[]'>
+    
+
+
+/**
+ * Reference to a field of type 'GuestReminderPreset'
+ */
+export type EnumGuestReminderPresetFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GuestReminderPreset'>
     
 
 

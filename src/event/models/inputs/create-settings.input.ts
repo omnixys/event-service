@@ -1,6 +1,7 @@
 import {
   EventCategory,
   EventVisibleTab,
+  GuestReminderPreset,
   InvitationApprovalMode,
 } from '../../../prisma/generated/enums.js';
 import {
@@ -32,11 +33,18 @@ import { Type } from 'class-transformer';
 registerEnumType(EventCategory, { name: 'EventCategory' });
 registerEnumType(EventVisibleTab, { name: 'EventVisibleTab' });
 registerEnumType(InvitationApprovalMode, { name: 'InvitationApprovalMode' });
+registerEnumType(GuestReminderPreset, { name: 'GuestReminderPreset' });
 
 const DEFAULT_VISIBLE_TABS = [
   EventVisibleTab.TIMELINE,
   EventVisibleTab.DETAILS,
   EventVisibleTab.MAP,
+];
+
+const DEFAULT_GUEST_REMINDER_PRESETS = [
+  GuestReminderPreset.WEEK_BEFORE,
+  GuestReminderPreset.THREE_DAYS_BEFORE,
+  GuestReminderPreset.HOURS_24_BEFORE,
 ];
 
 @InputType()
@@ -157,6 +165,25 @@ export class CreateSettingsInput {
   @Type(() => Date)
   @IsDate()
   ticketReleaseAt?: Date;
+
+  // 🔔 Guest Confirmation Reminder
+  @Field(() => Boolean, { defaultValue: true })
+  @IsBoolean()
+  guestConfirmationReminderEnabled!: boolean;
+
+  @Field(() => [GuestReminderPreset], {
+    defaultValue: DEFAULT_GUEST_REMINDER_PRESETS,
+  })
+  @IsArray()
+  @ArrayMaxSize(3)
+  guestConfirmationReminderPresets!: GuestReminderPreset[];
+
+  @Field(() => Int, { nullable: true })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(5)
+  guestConfirmationMaxResends?: number;
 
   // 📅 Time
   @Field(() => GraphQLISODateTime, { nullable: true })

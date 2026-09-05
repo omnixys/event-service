@@ -38,7 +38,7 @@ export class EventAccessService extends EventRoleResolver implements EventPermis
     private readonly omnixysLogger: OmnixysLogger,
   ) {
     super();
-    this.logger = this.omnixysLogger.log(this.constructor.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name, 'service:event');
   }
 
   async getRoleForUser(userId: string, eventId: string): Promise<EventRoleType | null> {
@@ -47,18 +47,18 @@ export class EventAccessService extends EventRoleResolver implements EventPermis
     });
 
     if (!event) {
-      this.logger.debug('event_not_found_for_role_check', { userId, eventId });
+      this.logger.debug('event_not_found_for_role_check: %o', { userId, eventId });
       return null;
     }
 
     // Owner shortcut: event owner always has ADMIN access
     if (event.owner === userId) {
-      this.logger.debug('user_is_owner_admin', { userId, eventId });
+      this.logger.debug('user_is_owner_admin: %o', { userId, eventId });
       return 'ADMIN' as EventRoleType;
     }
 
     const role = await this.resolveRole(eventId, userId);
-    this.logger.debug('role_resolved', { userId, eventId, role: role ?? 'none' });
+    this.logger.debug('role_resolved: %o', { userId, eventId, role: role ?? 'none' });
     return mapToEventRoleType(role);
   }
 

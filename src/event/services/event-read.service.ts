@@ -25,7 +25,7 @@ export class EventReadService {
     private readonly prisma: PrismaService,
     private readonly omnixysLogger: OmnixysLogger,
   ) {
-    this.logger = this.omnixysLogger.log(this.constructor.name);
+    this.logger = this.omnixysLogger.log(this.constructor.name, 'service:event');
   }
 
   // ─────────────────────────────────────────────
@@ -33,11 +33,11 @@ export class EventReadService {
   // ─────────────────────────────────────────────
   async getEventById(id: string, userId: string) {
     return TraceRunner.run('[SERVICE] getEventById', async () => {
-      this.logger.debug('Fetching event for user', { eventId: id, userId });
+      this.logger.debug('Fetching event for user: %o', { eventId: id, userId });
 
       const { event, role } = await this.findEventOrThrow(id, userId);
 
-      this.logger.debug('Resolved user role for event', {
+      this.logger.debug('Resolved user role for event: %o', {
         eventId: id,
         userId,
         role,
@@ -56,7 +56,7 @@ export class EventReadService {
       });
 
       if (!event) {
-        this.logger.warn('Event not found', { eventId: id });
+        this.logger.warn('Event not found: %o', { eventId: id });
         throw new EventNotFoundError(id);
       }
 
@@ -74,7 +74,7 @@ export class EventReadService {
 
   async getChildren(eventId: string): Promise<EventPayload[]> {
     return TraceRunner.run('[SERVICE] getChildren', async () => {
-      this.logger.debug('Fetching direct children only', { eventId });
+      this.logger.debug('Fetching direct children only: %o', { eventId });
 
       /**
        * Only direct children
@@ -92,7 +92,7 @@ export class EventReadService {
         orderBy: { createdAt: 'asc' },
       });
 
-      this.logger.debug('Children resolved', {
+      this.logger.debug('Children resolved: %o', {
         eventId,
         count: children.length,
       });
@@ -103,7 +103,7 @@ export class EventReadService {
 
   async getTree(eventId: string, userId: string): Promise<EventTreePayload> {
     return TraceRunner.run('[SERVICE] getTree', async () => {
-      this.logger.debug('Fetching full event tree', { eventId, userId });
+      this.logger.debug('Fetching full event tree: %o', { eventId, userId });
 
       /**
        * 1. Load root
@@ -242,7 +242,7 @@ export class EventReadService {
         orderBy: { createdAt: 'desc' },
       });
 
-      this.logger.debug('Events fetched count: $s ', events.length);
+      this.logger.debug('Events fetched count: %s ', events.length);
 
       const roles = await this.resolveRolesBatch(events, userId);
       return events.map((event, index) => EventMapper.toPayload(event, roles[index]));
@@ -288,7 +288,7 @@ export class EventReadService {
 
   async findMyEvents(userId: string): Promise<EventPayload[]> {
     return TraceRunner.run('[SERVICE] findMyEvents', async () => {
-      this.logger.debug('Fetching user events (entry points)', { userId });
+      this.logger.debug('Fetching user events (entry points): %o', { userId });
 
       /**
        * 1. Load direct roles
@@ -369,14 +369,14 @@ export class EventReadService {
 
   async findMyGuests(eventId: string): Promise<string[]> {
     return TraceRunner.run('[SERVICE] findMyGuests', async () => {
-      this.logger.debug('Fetching guests for event', { eventId });
+      this.logger.debug('Fetching guests for event: %o', { eventId });
 
       const rows = await this.prisma.role.findMany({
         where: { eventId, role: 'GUEST' },
         select: { userId: true },
       });
 
-      this.logger.debug('Guests resolved', {
+      this.logger.debug('Guests resolved: %o', {
         eventId,
         count: rows.length,
       });
@@ -387,7 +387,7 @@ export class EventReadService {
 
   async getMedia(eventId: string) {
     return TraceRunner.run('[SERVICE] getMedia', async () => {
-      this.logger.debug('Fetching media for event', { eventId });
+      this.logger.debug('Fetching media for event: %o', { eventId });
 
       const media = await this.prisma.media.findMany({
         where: { eventId },
@@ -399,7 +399,7 @@ export class EventReadService {
         },
       });
 
-      this.logger.debug('Media fetched', {
+      this.logger.debug('Media fetched: %o', {
         eventId,
         count: media.length,
       });
@@ -411,11 +411,11 @@ export class EventReadService {
   async getSingleMedia(mediaId: string | null | undefined, context: string) {
     return TraceRunner.run(`[SERVICE] ${context}`, async () => {
       if (!mediaId) {
-        this.logger.debug('No mediaId provided', { context });
+        this.logger.debug('No mediaId provided: %o', { context });
         return null;
       }
 
-      this.logger.debug('Fetching single media', {
+      this.logger.debug('Fetching single media: %o', {
         mediaId,
         context,
       });
@@ -430,11 +430,11 @@ export class EventReadService {
       });
 
       if (!media) {
-        this.logger.warn('Media not found', { mediaId, context });
+        this.logger.warn('Media not found: %o', { mediaId, context });
         return null;
       }
 
-      this.logger.debug('Media resolved', {
+      this.logger.debug('Media resolved: %o', {
         mediaId,
         variants: media.variants.length,
       });
@@ -467,7 +467,7 @@ export class EventReadService {
       });
 
       if (!event) {
-        this.logger.warn('Event not found', { eventId: id });
+        this.logger.warn('Event not found: %o', { eventId: id });
         throw new EventNotFoundError(id);
       }
 
@@ -487,7 +487,7 @@ export class EventReadService {
           );
 
       if (!isAdmin && event.roles.length === 0 && !hasDynamicAccess && event.owner !== userId) {
-        this.logger.warn('User tried to access event without role', {
+        this.logger.warn('User tried to access event without role: %o', {
           eventId: id,
           userId,
         });

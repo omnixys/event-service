@@ -9,7 +9,7 @@
 
 - Kind: Service
 - Package: `event-service` (version: 3.3.0)
-- Runtime: Node >=25.8.2 (pnpm >=10.33.0)
+- Runtime: Node >=26.8.1 (pnpm >=11.24.0)
 - Description: Omnixys Event Service – event domain (events, layout, catalog, admin, analytics).
 - Architecture: src/adapter, admin, analytics, config, core, event, handlers, health, prisma, security
 - Database: PostgreSQL via Prisma (prisma/schema.prisma); Migrations: Prisma Migrate (prisma:migrate / generate / validate)
