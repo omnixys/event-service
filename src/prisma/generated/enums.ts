@@ -9,6 +9,15 @@
 * 🟢 You can import this file directly.
 */
 
+export const GuestReminderPreset = {
+  WEEK_BEFORE: 'WEEK_BEFORE',
+  THREE_DAYS_BEFORE: 'THREE_DAYS_BEFORE',
+  HOURS_24_BEFORE: 'HOURS_24_BEFORE'
+} as const
+
+export type GuestReminderPreset = (typeof GuestReminderPreset)[keyof typeof GuestReminderPreset]
+
+
 export const UserRoleType = {
   ADMIN: 'ADMIN',
   SECURITY: 'SECURITY',

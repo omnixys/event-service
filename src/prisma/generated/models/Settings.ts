@@ -30,12 +30,14 @@ export type SettingsAvgAggregateOutputType = {
   rotateSeconds: number | null
   maxSeats: number | null
   maxPlusOnes: number | null
+  guestConfirmationMaxResends: number | null
 }
 
 export type SettingsSumAggregateOutputType = {
   rotateSeconds: number | null
   maxSeats: number | null
   maxPlusOnes: number | null
+  guestConfirmationMaxResends: number | null
 }
 
 export type SettingsMinAggregateOutputType = {
@@ -63,6 +65,8 @@ export type SettingsMinAggregateOutputType = {
   ticketReleaseAt: Date | null
   startsAt: Date | null
   endsAt: Date | null
+  guestConfirmationReminderEnabled: boolean | null
+  guestConfirmationMaxResends: number | null
   category: $Enums.EventCategory | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -93,6 +97,8 @@ export type SettingsMaxAggregateOutputType = {
   ticketReleaseAt: Date | null
   startsAt: Date | null
   endsAt: Date | null
+  guestConfirmationReminderEnabled: boolean | null
+  guestConfirmationMaxResends: number | null
   category: $Enums.EventCategory | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -125,6 +131,9 @@ export type SettingsCountAggregateOutputType = {
   ticketReleaseAt: number
   startsAt: number
   endsAt: number
+  guestConfirmationReminderEnabled: number
+  guestConfirmationReminderPresets: number
+  guestConfirmationMaxResends: number
   category: number
   createdAt: number
   updatedAt: number
@@ -136,12 +145,14 @@ export type SettingsAvgAggregateInputType = {
   rotateSeconds?: true
   maxSeats?: true
   maxPlusOnes?: true
+  guestConfirmationMaxResends?: true
 }
 
 export type SettingsSumAggregateInputType = {
   rotateSeconds?: true
   maxSeats?: true
   maxPlusOnes?: true
+  guestConfirmationMaxResends?: true
 }
 
 export type SettingsMinAggregateInputType = {
@@ -169,6 +180,8 @@ export type SettingsMinAggregateInputType = {
   ticketReleaseAt?: true
   startsAt?: true
   endsAt?: true
+  guestConfirmationReminderEnabled?: true
+  guestConfirmationMaxResends?: true
   category?: true
   createdAt?: true
   updatedAt?: true
@@ -199,6 +212,8 @@ export type SettingsMaxAggregateInputType = {
   ticketReleaseAt?: true
   startsAt?: true
   endsAt?: true
+  guestConfirmationReminderEnabled?: true
+  guestConfirmationMaxResends?: true
   category?: true
   createdAt?: true
   updatedAt?: true
@@ -231,6 +246,9 @@ export type SettingsCountAggregateInputType = {
   ticketReleaseAt?: true
   startsAt?: true
   endsAt?: true
+  guestConfirmationReminderEnabled?: true
+  guestConfirmationReminderPresets?: true
+  guestConfirmationMaxResends?: true
   category?: true
   createdAt?: true
   updatedAt?: true
@@ -350,6 +368,9 @@ export type SettingsGroupByOutputType = {
   ticketReleaseAt: Date | null
   startsAt: Date
   endsAt: Date
+  guestConfirmationReminderEnabled: boolean
+  guestConfirmationReminderPresets: $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends: number | null
   category: $Enums.EventCategory
   createdAt: Date
   updatedAt: Date | null
@@ -405,6 +426,9 @@ export type SettingsWhereInput = {
   ticketReleaseAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   startsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFilter<"Settings"> | boolean
+  guestConfirmationReminderPresets?: Prisma.EnumGuestReminderPresetNullableListFilter<"Settings">
+  guestConfirmationMaxResends?: Prisma.IntNullableFilter<"Settings"> | number | null
   category?: Prisma.EnumEventCategoryFilter<"Settings"> | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   updatedAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
@@ -439,6 +463,9 @@ export type SettingsOrderByWithRelationInput = {
   ticketReleaseAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  guestConfirmationReminderEnabled?: Prisma.SortOrder
+  guestConfirmationReminderPresets?: Prisma.SortOrder
+  guestConfirmationMaxResends?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -476,6 +503,9 @@ export type SettingsWhereUniqueInput = Prisma.AtLeast<{
   ticketReleaseAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
   startsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   endsAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFilter<"Settings"> | boolean
+  guestConfirmationReminderPresets?: Prisma.EnumGuestReminderPresetNullableListFilter<"Settings">
+  guestConfirmationMaxResends?: Prisma.IntNullableFilter<"Settings"> | number | null
   category?: Prisma.EnumEventCategoryFilter<"Settings"> | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFilter<"Settings"> | Date | string
   updatedAt?: Prisma.DateTimeNullableFilter<"Settings"> | Date | string | null
@@ -510,6 +540,9 @@ export type SettingsOrderByWithAggregationInput = {
   ticketReleaseAt?: Prisma.SortOrderInput | Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  guestConfirmationReminderEnabled?: Prisma.SortOrder
+  guestConfirmationReminderPresets?: Prisma.SortOrder
+  guestConfirmationMaxResends?: Prisma.SortOrderInput | Prisma.SortOrder
   category?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -550,6 +583,9 @@ export type SettingsScalarWhereWithAggregatesInput = {
   ticketReleaseAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Settings"> | Date | string | null
   startsAt?: Prisma.DateTimeWithAggregatesFilter<"Settings"> | Date | string
   endsAt?: Prisma.DateTimeWithAggregatesFilter<"Settings"> | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolWithAggregatesFilter<"Settings"> | boolean
+  guestConfirmationReminderPresets?: Prisma.EnumGuestReminderPresetNullableListFilter<"Settings">
+  guestConfirmationMaxResends?: Prisma.IntNullableWithAggregatesFilter<"Settings"> | number | null
   category?: Prisma.EnumEventCategoryWithAggregatesFilter<"Settings"> | $Enums.EventCategory
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Settings"> | Date | string
   updatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Settings"> | Date | string | null
@@ -581,6 +617,9 @@ export type SettingsCreateInput = {
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsCreateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: number | null
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -615,6 +654,9 @@ export type SettingsUncheckedCreateInput = {
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsCreateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: number | null
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -647,6 +689,9 @@ export type SettingsUpdateInput = {
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsUpdateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -681,6 +726,9 @@ export type SettingsUncheckedUpdateInput = {
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsUpdateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -714,6 +762,9 @@ export type SettingsCreateManyInput = {
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsCreateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: number | null
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -745,6 +796,9 @@ export type SettingsUpdateManyMutationInput = {
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsUpdateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -777,6 +831,9 @@ export type SettingsUncheckedUpdateManyInput = {
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsUpdateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -792,6 +849,14 @@ export type EnumEventVisibleTabNullableListFilter<$PrismaModel = never> = {
   has?: $Enums.EventVisibleTab | Prisma.EnumEventVisibleTabFieldRefInput<$PrismaModel> | null
   hasEvery?: $Enums.EventVisibleTab[] | Prisma.ListEnumEventVisibleTabFieldRefInput<$PrismaModel>
   hasSome?: $Enums.EventVisibleTab[] | Prisma.ListEnumEventVisibleTabFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
+}
+
+export type EnumGuestReminderPresetNullableListFilter<$PrismaModel = never> = {
+  equals?: $Enums.GuestReminderPreset[] | Prisma.ListEnumGuestReminderPresetFieldRefInput<$PrismaModel> | null
+  has?: $Enums.GuestReminderPreset | Prisma.EnumGuestReminderPresetFieldRefInput<$PrismaModel> | null
+  hasEvery?: $Enums.GuestReminderPreset[] | Prisma.ListEnumGuestReminderPresetFieldRefInput<$PrismaModel>
+  hasSome?: $Enums.GuestReminderPreset[] | Prisma.ListEnumGuestReminderPresetFieldRefInput<$PrismaModel>
   isEmpty?: boolean
 }
 
@@ -822,6 +887,9 @@ export type SettingsCountOrderByAggregateInput = {
   ticketReleaseAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  guestConfirmationReminderEnabled?: Prisma.SortOrder
+  guestConfirmationReminderPresets?: Prisma.SortOrder
+  guestConfirmationMaxResends?: Prisma.SortOrder
   category?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -831,6 +899,7 @@ export type SettingsAvgOrderByAggregateInput = {
   rotateSeconds?: Prisma.SortOrder
   maxSeats?: Prisma.SortOrder
   maxPlusOnes?: Prisma.SortOrder
+  guestConfirmationMaxResends?: Prisma.SortOrder
 }
 
 export type SettingsMaxOrderByAggregateInput = {
@@ -858,6 +927,8 @@ export type SettingsMaxOrderByAggregateInput = {
   ticketReleaseAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  guestConfirmationReminderEnabled?: Prisma.SortOrder
+  guestConfirmationMaxResends?: Prisma.SortOrder
   category?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -888,6 +959,8 @@ export type SettingsMinOrderByAggregateInput = {
   ticketReleaseAt?: Prisma.SortOrder
   startsAt?: Prisma.SortOrder
   endsAt?: Prisma.SortOrder
+  guestConfirmationReminderEnabled?: Prisma.SortOrder
+  guestConfirmationMaxResends?: Prisma.SortOrder
   category?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -897,6 +970,7 @@ export type SettingsSumOrderByAggregateInput = {
   rotateSeconds?: Prisma.SortOrder
   maxSeats?: Prisma.SortOrder
   maxPlusOnes?: Prisma.SortOrder
+  guestConfirmationMaxResends?: Prisma.SortOrder
 }
 
 export type SettingsScalarRelationFilter = {
@@ -944,6 +1018,10 @@ export type SettingsCreatevisibleTabsInput = {
   set: $Enums.EventVisibleTab[]
 }
 
+export type SettingsCreateguestConfirmationReminderPresetsInput = {
+  set: $Enums.GuestReminderPreset[]
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
@@ -960,6 +1038,19 @@ export type SettingsUpdateinvitedByOptionsInput = {
 export type SettingsUpdatevisibleTabsInput = {
   set?: $Enums.EventVisibleTab[]
   push?: $Enums.EventVisibleTab | $Enums.EventVisibleTab[]
+}
+
+export type SettingsUpdateguestConfirmationReminderPresetsInput = {
+  set?: $Enums.GuestReminderPreset[]
+  push?: $Enums.GuestReminderPreset | $Enums.GuestReminderPreset[]
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type EnumEventCategoryFieldUpdateOperationsInput = {
@@ -1006,6 +1097,9 @@ export type SettingsCreateWithoutEventInput = {
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsCreateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: number | null
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -1038,6 +1132,9 @@ export type SettingsUncheckedCreateWithoutEventInput = {
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsCreateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: number | null
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -1086,6 +1183,9 @@ export type SettingsUpdateWithoutEventInput = {
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsUpdateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1118,6 +1218,9 @@ export type SettingsUncheckedUpdateWithoutEventInput = {
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsUpdateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1150,6 +1253,9 @@ export type SettingsCreateWithoutSeatColorGroupsInput = {
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsCreateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: number | null
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -1183,6 +1289,9 @@ export type SettingsUncheckedCreateWithoutSeatColorGroupsInput = {
   ticketReleaseAt?: Date | string | null
   startsAt: Date | string
   endsAt: Date | string
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsCreateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: number | null
   category?: $Enums.EventCategory
   createdAt?: Date | string
   updatedAt?: Date | string | null
@@ -1230,6 +1339,9 @@ export type SettingsUpdateWithoutSeatColorGroupsInput = {
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsUpdateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1263,6 +1375,9 @@ export type SettingsUncheckedUpdateWithoutSeatColorGroupsInput = {
   ticketReleaseAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   startsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   endsAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guestConfirmationReminderEnabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  guestConfirmationReminderPresets?: Prisma.SettingsUpdateguestConfirmationReminderPresetsInput | $Enums.GuestReminderPreset[]
+  guestConfirmationMaxResends?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   category?: Prisma.EnumEventCategoryFieldUpdateOperationsInput | $Enums.EventCategory
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1326,6 +1441,9 @@ export type SettingsSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: boolean
+  guestConfirmationMaxResends?: boolean
   category?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1361,6 +1479,9 @@ export type SettingsSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: boolean
+  guestConfirmationMaxResends?: boolean
   category?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1394,6 +1515,9 @@ export type SettingsSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: boolean
+  guestConfirmationMaxResends?: boolean
   category?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1427,12 +1551,15 @@ export type SettingsSelectScalar = {
   ticketReleaseAt?: boolean
   startsAt?: boolean
   endsAt?: boolean
+  guestConfirmationReminderEnabled?: boolean
+  guestConfirmationReminderPresets?: boolean
+  guestConfirmationMaxResends?: boolean
   category?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "allowReEntry" | "rotateSeconds" | "maxSeats" | "allowPublicRsvp" | "allowPublicPlusOne" | "allowPublicRsvpWebsite" | "allowPlusOneUpdate" | "approvalMode" | "allowGuestSeatSelection" | "maxPlusOnes" | "requireApprovalForPlusOnes" | "rsvpDeadline" | "allowSeatOverbooking" | "publicRsvpWebsite" | "invitedByOptions" | "visibleTabs" | "isActive" | "isPublic" | "dressCode" | "description" | "scheduleTicketRelease" | "ticketReleaseAt" | "startsAt" | "endsAt" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["settings"]>
+export type SettingsOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "eventId" | "allowReEntry" | "rotateSeconds" | "maxSeats" | "allowPublicRsvp" | "allowPublicPlusOne" | "allowPublicRsvpWebsite" | "allowPlusOneUpdate" | "approvalMode" | "allowGuestSeatSelection" | "maxPlusOnes" | "requireApprovalForPlusOnes" | "rsvpDeadline" | "allowSeatOverbooking" | "publicRsvpWebsite" | "invitedByOptions" | "visibleTabs" | "isActive" | "isPublic" | "dressCode" | "description" | "scheduleTicketRelease" | "ticketReleaseAt" | "startsAt" | "endsAt" | "guestConfirmationReminderEnabled" | "guestConfirmationReminderPresets" | "guestConfirmationMaxResends" | "category" | "createdAt" | "updatedAt", ExtArgs["result"]["settings"]>
 export type SettingsInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   event?: boolean | Prisma.Settings$eventArgs<ExtArgs>
   seatColorGroups?: boolean | Prisma.Settings$seatColorGroupsArgs<ExtArgs>
@@ -1478,6 +1605,9 @@ export type $SettingsPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     ticketReleaseAt: Date | null
     startsAt: Date
     endsAt: Date
+    guestConfirmationReminderEnabled: boolean
+    guestConfirmationReminderPresets: $Enums.GuestReminderPreset[]
+    guestConfirmationMaxResends: number | null
     category: $Enums.EventCategory
     createdAt: Date
     updatedAt: Date | null
@@ -1932,6 +2062,9 @@ export interface SettingsFieldRefs {
   readonly ticketReleaseAt: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly startsAt: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly endsAt: Prisma.FieldRef<"Settings", 'DateTime'>
+  readonly guestConfirmationReminderEnabled: Prisma.FieldRef<"Settings", 'Boolean'>
+  readonly guestConfirmationReminderPresets: Prisma.FieldRef<"Settings", 'GuestReminderPreset[]'>
+  readonly guestConfirmationMaxResends: Prisma.FieldRef<"Settings", 'Int'>
   readonly category: Prisma.FieldRef<"Settings", 'EventCategory'>
   readonly createdAt: Prisma.FieldRef<"Settings", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Settings", 'DateTime'>

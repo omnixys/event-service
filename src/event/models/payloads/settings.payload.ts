@@ -1,10 +1,17 @@
 import {
   EventCategory,
   EventVisibleTab,
+  GuestReminderPreset,
   InvitationApprovalMode,
 } from '../../../prisma/generated/client.js';
 import { SeatColorGroupPayload } from './seat-color-group.payload.js';
-import { ObjectType, Field, ID, GraphQLISODateTime } from '@nestjs/graphql';
+import {
+  ObjectType,
+  Field,
+  ID,
+  GraphQLISODateTime,
+  Int,
+} from '@nestjs/graphql';
 
 @ObjectType()
 export class SettingsPayload {
@@ -88,6 +95,15 @@ export class SettingsPayload {
 
   @Field(() => GraphQLISODateTime, { nullable: true })
   ticketReleaseAt?: Date;
+
+  @Field(() => Boolean)
+  guestConfirmationReminderEnabled!: boolean;
+
+  @Field(() => [GuestReminderPreset])
+  guestConfirmationReminderPresets!: GuestReminderPreset[];
+
+  @Field(() => Int, { nullable: true })
+  guestConfirmationMaxResends?: number;
 
   @Field(() => GraphQLISODateTime)
   createdAt!: Date;

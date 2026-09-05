@@ -93,6 +93,10 @@ model Settings {
   startsAt DateTime @map("starts_at")
   endsAt   DateTime @map("ends_at")
 
+  guestConfirmationReminderEnabled Boolean                @default(true) @map("guest_confirmation_reminder_enabled")
+  guestConfirmationReminderPresets GuestReminderPreset[]  @default([WEEK_BEFORE, THREE_DAYS_BEFORE, HOURS_24_BEFORE]) @map("guest_confirmation_reminder_presets")
+  guestConfirmationMaxResends      Int?                   @map("guest_confirmation_max_resends")
+
   category EventCategory @default(GENERAL) @map("category")
 
   seatColorGroups SeatColorGroup[]
@@ -101,6 +105,14 @@ model Settings {
   updatedAt DateTime? @updatedAt @map("updated_at")
 
   @@map("settings")
+}
+
+enum GuestReminderPreset {
+  WEEK_BEFORE
+  THREE_DAYS_BEFORE
+  HOURS_24_BEFORE
+
+  @@map("guest_reminder_preset")
 }
 
 //

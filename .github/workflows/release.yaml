@@ -23,11 +23,6 @@ on:
   push:
     branches:
       - main
-      - '!release'
-  pull_request:
-    branches:
-      - '**'
-      - '!release'
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -73,6 +68,14 @@ jobs:
           node-version: '26.8.1'
           cache: 'pnpm'
 
+      - name: ♻️ Restore pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
       - name: Setup npm registry auth
         run: |
           echo "@omnixys:registry=https://npm.pkg.github.com" >> .npmrc
@@ -101,10 +104,18 @@ jobs:
       released: ${{ steps.semantic.outputs.released }}
       version: ${{ steps.read_version.outputs.version }}
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Setup npm registry auth
+        run: |
+          echo "@omnixys:registry=https://npm.pkg.github.com" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${OMNIXYS_TOKEN}" >> .npmrc
+        env:
+          OMNIXYS_TOKEN: ${{ secrets.OMNIXYS_TOKEN }}
 
       - name: ⚙️ Setup pnpm
         uses: pnpm/action-setup@v4
@@ -117,8 +128,18 @@ jobs:
           node-version: '26.8.1'
           cache: 'pnpm'
 
+      - name: ♻️ Restore pnpm cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.pnpm-store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-${{ runner.os }}-
+
       - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
+        env:
+          OMNIXYS_TOKEN: ${{ secrets.OMNIXYS_TOKEN }}
 
       - name: 🚀 Semantic Release
         id: semantic
@@ -171,9 +192,6 @@ jobs:
       CURRENT_VERSION: ${{ needs.release.outputs.version }}
     name: 🐳 Build & Push Multi-Arch Images (Docker)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [26.8.1]
 
     steps:
       - name: 🧾 Checkout repository
@@ -243,7 +261,7 @@ jobs:
             CREATED=${{ vars.CURRENT_DATE }}
             APP_VERSION=${{ needs.release.outputs.version }}
             APP_NAME=${{ vars.SERVICE }}
-            NODE_VERSION=${{ matrix.node-version }}
+            NODE_VERSION=26.8.1
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -263,9 +281,6 @@ jobs:
       CURRENT_VERSION: ${{ needs.release.outputs.version }}
     name: 🐳 Build & Push Multi-Arch Images (Github)
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [26.8.1]
 
     steps:
       - name: 🧾 Checkout repository
@@ -329,7 +344,7 @@ jobs:
             CREATED=${{ vars.CURRENT_DATE }}
             APP_VERSION=${{ needs.release.outputs.version }}
             APP_NAME=${{ vars.SERVICE }}
-            NODE_VERSION=${{ matrix.node-version }}
+            NODE_VERSION=26.8.1
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -341,3 +356,74 @@ jobs:
         run: |
           cosign sign --yes --recursive ${{ env.IMAGE_NAME_REPOSITORY }}:${{ needs.release.outputs.version }}
           cosign sign --yes --recursive ${{ env.IMAGE_NAME_REPOSITORY }}:latest
+
+  # deploy:
+  #   needs: push-docker
+  #   runs-on: [self-hosted, omnixys-prod]
+  #   concurrency:
+  #     group: omnixys-prod
+  #     cancel-in-progress: false
+  #   env:
+  #     SERVICE: ${{ vars.SERVICE }}
+
+  #   steps:
+  #     - name: 🔑 Login to Docker Hub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.DOCKER_USER }}
+  #         password: ${{ secrets.DOCKER_PASSWORD }}
+
+  #     - name: Deploy ${{ vars.SERVICE }}
+  #       shell: bash
+  #       run: |
+  #         set -euo pipefail
+  #         cd /opt/omnixys/compose/app/backend
+
+  #         echo "----------------------------------------"
+  #         echo "🚀 Deploying service: $SERVICE"
+  #         echo "----------------------------------------"
+
+  #         # ---------------------------------------
+  #         # 1️⃣ Pull image (prefer immutable SHA tag)
+  #         # ---------------------------------------
+
+  #         docker pull "omnixys/${SERVICE}-service:latest"
+  #         docker image prune -f --filter "until=24h"
+
+  #         # ---------------------------------------
+  #         # 2️⃣ Update service
+  #         # ---------------------------------------
+  #         docker compose up -d --no-deps "$SERVICE"
+
+
+  #         # ---------------------------------------
+  #         # 3️⃣ Health Check
+  #         # --------------------------------------- 
+  #         echo "⏳ Waiting for health..."
+
+  #         CID=$(docker compose ps -q "$SERVICE")
+
+  #         if [ -z "$CID" ]; then
+  #           echo "❌ No container for service $SERVICE"
+  #           docker compose ps
+  #           exit 1
+  #         fi
+
+  #         for i in {1..45}; do
+  #           STATUS=$(docker inspect --format='{{if .State.Health}}{{.State.Health.Status}}{{else}}no-healthcheck{{end}}' "$CID")
+
+  #           if [ "$STATUS" = "healthy" ] || [ "$STATUS" = "no-healthcheck" ]; then
+  #             echo "✅ $SERVICE is ok ($STATUS)"
+  #             exit 0
+  #           fi
+
+  #           echo "Waiting... ($i/45) Status: $STATUS"
+  #           sleep 2
+  #         done
+
+
+  #         echo "❌ $SERVICE failed health check"
+  #         echo "------ Recent Logs ------"
+  #         docker compose logs "$SERVICE" --tail=50 || true
+  #         echo "-------------------------"
+  #         exit 1

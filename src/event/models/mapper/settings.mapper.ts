@@ -1,5 +1,6 @@
 import {
   EventVisibleTab,
+  GuestReminderPreset,
   type Settings,
 } from '../../../prisma/generated/client.js';
 import type { SettingsCreateInput } from '../../../prisma/generated/models.js';
@@ -68,6 +69,15 @@ export class SettingsCreateMapper {
       ticketReleaseAt: base.scheduleTicketRelease
         ? (base.ticketReleaseAt ?? null)
         : null,
+
+      guestConfirmationReminderEnabled: base.guestConfirmationReminderEnabled,
+      guestConfirmationReminderPresets:
+        base.guestConfirmationReminderPresets ?? [
+          GuestReminderPreset.WEEK_BEFORE,
+          GuestReminderPreset.THREE_DAYS_BEFORE,
+          GuestReminderPreset.HOURS_24_BEFORE,
+        ],
+      guestConfirmationMaxResends: base.guestConfirmationMaxResends ?? null,
 
       startsAt: base.startsAt,
       endsAt: base.endsAt,
