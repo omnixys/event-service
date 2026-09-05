@@ -3,6 +3,40 @@
 All notable changes in this project will be documented in this file.
 
 
+## [4.0.0](https://github.com/omnixys/event-service/compare/v3.4.5...v4.0.0) (2026-09-05)
+
+### Deps
+
+* **Deps:** update omnixys deps ([](https://github.com/omnixys/event-service/commit/3c32317fc7cb3e8ae47ee63bacaed126ca8890c0))
+
+### Event
+
+* **Event:** rewire omnixys service deps to file: ([](https://github.com/omnixys/event-service/commit/9e18bf4bd371236e67d6410cf61fa23c31393f6b))
+* **Event:** align event.owner with UserId and enforce user_projection FKs ([](https://github.com/omnixys/event-service/commit/7080b094155d8bab47a5710b5b8cbb8cd5cc7ad5))
+* **Event:** type analytics_outbox.actor_id as user UUID ([](https://github.com/omnixys/event-service/commit/7c85fd9c59c52be872222b203fe9ff1f6f6b96ff))
+
+### Identity
+
+* **Identity:** document U/K identity conventions in AGENTS.md ([](https://github.com/omnixys/event-service/commit/5f23dc485993830fb12176b0c638c228cfa1033b))
+* **Identity:** fail-closed on missing ACTOR_ID, remove empty string fallbacks, use nil UUID for initial owner ([](https://github.com/omnixys/event-service/commit/d16286e20314720aa58167847383d60e9eb0ad1e))
+
+### Logging
+
+* **Logging:** add service:event provenance source to logger acquisitions ([](https://github.com/omnixys/event-service/commit/00824704e003b696fa6741f2972730aaa238cc46))
+* **Logging:** add missing format placeholders to structured log calls ([](https://github.com/omnixys/event-service/commit/1210a77075360763bf5227c3d03350a481ad0453))
+
+### Other
+
+* **Other:** Merge pull request #10 from omnixys/migration/uuid-v7 ([](https://github.com/omnixys/event-service/commit/e1f06a661a908cb7045cc24f28fcc5e9398825db)), closes [#10](https://github.com/omnixys/event-service/issues/10)
+
+### Runtime
+
+* **Runtime:** require node 26.8.1 and pnpm 11.24.0 ([](https://github.com/omnixys/event-service/commit/23aa73161417d9d06be14d0f7fb75315a903ed3a))
+
+### Settings
+
+* **Settings:** add guest confirmation reminder presets ([](https://github.com/omnixys/event-service/commit/d50395d62ca84f4befc12d93fb427161afd36ecc))
+
 ## [3.4.5](https://github.com/omnixys/event-service/compare/v3.4.4...v3.4.5) (2026-08-28)
 
 ### Deps
