@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [4.0.1](https://github.com/omnixys/event-service/compare/v4.0.0...v4.0.1) (2026-09-10)
+
+### Deps
+
+* **Deps:** update graphql-ts ([](https://github.com/omnixys/event-service/commit/c81c440f9a0a6ac88b7cb3885962958f5aa5a1de))
+
 ## [4.0.0](https://github.com/omnixys/event-service/compare/v3.4.5...v4.0.0) (2026-09-05)
 
 ### Deps
