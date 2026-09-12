@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [4.0.3](https://github.com/omnixys/event-service/compare/v4.0.2...v4.0.3) (2026-09-12)
+
+### Event
+
+* **Event:** bump omnixys packages to 4.4.0 ([](https://github.com/omnixys/event-service/commit/f47352182d52ec7960c02e678c03318efb63b3f3))
+
 ## [4.0.2](https://github.com/omnixys/event-service/compare/v4.0.1...v4.0.2) (2026-09-11)
 
 ### Deps
