@@ -3,6 +3,12 @@
 All notable changes in this project will be documented in this file.
 
 
+## [4.0.5](https://github.com/omnixys/event-service/compare/v4.0.4...v4.0.5) (2026-09-15)
+
+### Event
+
+* **Event:** fix permissions ([](https://github.com/omnixys/event-service/commit/f5688a9e116bd0d466509b65e8ec8ba145458a6d))
+
 ## [4.0.4](https://github.com/omnixys/event-service/compare/v4.0.3...v4.0.4) (2026-09-13)
 
 ### Deps
