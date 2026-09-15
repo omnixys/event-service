@@ -49,6 +49,7 @@ export class EventRbacResolver {
   }
 
   @Query(() => EventAccessPayload)
+  @Roles(RealmRoleType.USER, RealmRoleType.ADMIN, RealmRoleType.GUEST)
   myEventAccess(
     @Args('eventId', { type: () => ID }) eventId: string,
     @CurrentUser() currentUser: CurrentUserData,
